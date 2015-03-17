@@ -1,0 +1,20 @@
+@* Style uses curly brackets which also control flow *@
+@args (boolean b, String size)
+<html>
+    <head>
+        <style type="text/css">
+            @if (b) {
+            .body {
+                font-family: "Times New Roman", Times, serif;
+                font-size: @size;
+            }
+            }
+            .h1 {
+                margin: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>hello world</h1>
+    </body>
+</html>

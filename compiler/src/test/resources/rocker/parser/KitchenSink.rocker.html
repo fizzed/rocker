@@ -1,0 +1,25 @@
+@*
+ Example file containing many features of Rocker templates
+*@
+
+@import java.util.*
+@import java.util.concurrent.*
+
+@args (String title, Date now, Map<String,String> map)
+
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
+        <h1>Hello World @@ millis @now.getTime()</h1>
+        @for (String s : list) {
+            for-block
+            @if (valueForIfTrue) {
+                if-block
+            } else {
+                else-block
+            }
+        }
+    </body>
+</html>

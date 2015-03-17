@@ -1,0 +1,167 @@
+
+@import com.fizzed.play.util.*
+@import com.fizzed.play.twitter.*
+
+@args (Page page, Html extrajs, Html extracss)
+
+<!DOCTYPE html>
+<!-- lauer.bz v@bz.lauer.webapp.BuildInfo.version built @bz.lauer.webapp.BuildInfo.builtAt; Copyright @PlayUtil.getCurrentYear() Joe Lauer -->
+<html>
+<head>
+	<!-- Meta
+	================================================== -->	
+	<title>@page.anyTitle()</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="@page.anyDescription()">
+	<meta name="keywords" content="@page.anyKeywords()">
+	<meta name="author" content="@page.anyAuthor()">
+	<meta name="twitter:card" content="@page.anyTwitterCard()">
+	<meta name="twitter:site" content="@page.anyTwitterSite()">
+	<meta name="twitter:creator" content="@page.anyTwitterCreator()">
+	<meta property="@Page.OG_TITLE" content="@page.openGraphTitles()">
+	<meta property="@Page.OG_DESCRIPTION" content="@page.openGraphDescriptions()">
+	<meta property="@Page.OG_SITE_NAME" content="@page.anyOpenGraphSiteName()">
+	<meta property="@Page.OG_IMAGE" content="@routes.Assets.at("img/jjlauer-headshot.240x240.png").absoluteURL()">
+	<meta property="@Page.OG_TYPE" content="@page.anyOpenGraphType()">
+
+	<!-- Styles
+	================================================== -->
+	@com.fizzed.play.sprockets.OptimizedAssets.stylesheets("app", Array(
+		"plugins/bootstrap/css/bootstrap.min.css",
+		"plugins/bootstrap/css/bootstrap-responsive.min.css",
+		"plugins/font-awesome/css/font-awesome.css",
+		"plugins/font-mfizz/font-mfizz.css",
+		"css/app.css",
+		"plugins/google-code-prettify/prettify.css"
+	))
+	
+	<!-- Google Fonts
+	================================================== -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:200,300,400,400italic,700" >
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:200,300,400,400italic,700" >	
+	
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	@com.fizzed.play.sprockets.OptimizedAssets.javascript("js/html5.js")
+	<![endif]-->
+	
+	<!-- Fav and touch icons -->
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="@com.fizzed.play.sprockets.OptimizedAssets.fingerprint("img/apple-touch-icon-144-precomposed.png")">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="@com.fizzed.play.sprockets.OptimizedAssets.fingerprint("img/apple-touch-icon-114-precomposed.png")">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="@com.fizzed.play.sprockets.OptimizedAssets.fingerprint("img/apple-touch-icon-72-precomposed.png")">
+	<link rel="apple-touch-icon-precomposed" href="@com.fizzed.play.sprockets.OptimizedAssets.fingerprint("img/apple-touch-icon-57-precomposed.png")">
+    @extracss
+</head>
+<body>
+	
+<!-- Page Wrapper
+================================================== -->
+<div id="wrap" class="page">
+
+<!-- Navbar
+================================================== -->
+<div class="nav-wrap">
+	<div class="container">
+		<div class="navbar">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="@routes.Application.home()"><i class="icon-coffee-bean"></i> jjlauer</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav pull-right">
+							@page_nav_item(routes.Application.home(), "Home.")
+							@page_nav_item(routes.Application.blog(), "Blog.")
+							@page_nav_item(routes.Application.about(), "About.")
+							@page_nav_item(routes.Application.contact(), "Contact.")
+							<li><a class="navbar-icon" href="https://twitter.com/jjlauer"><i class="icon-twitter"></i></a></li>
+							<li><a class="navbar-icon" href="https://linkedin.com/in/jjlauer"><i class="icon-linkedin-sign"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@content
+
+</div>
+<!-- End Page Wrapper -->
+
+<!-- Footer
+================================================== -->
+<div id="footer">	
+	<div class="container">
+		<div class="row">
+			<div class="span3 connect">
+				<h4>Connect</h4>
+				<ul class="unstyled social-list">
+					<li><a href="https://twitter.com/jjlauer" title="Follow @@jjlauer on Twitter"><i class="icon-twitter icon-2x"></i></a></li>
+					<li><a href="https://www.linkedin.com/in/jjlauer" title="Linked In for Joe Lauer"><i class="icon-linkedin icon-2x"></i></a></li>
+					<li><a href="https://github.com/jjlauer" title="GitHub repos for jjlauer"><i class="icon-github icon-2x"></i></a></li>
+					<li><a href="https://bitbucket.org/jlauer" title="BitBucket repos for jjlauer"><i class="icon-bitbucket icon-2x"></i></a></li>
+					<li><a href="@routes.Application.blog_feed()" title="Subscribe to atom feed for Joe Lauer"><i class="icon-rss icon-2x"></i></a></li>
+				</ul>
+			</div>
+			<div class="span6 tweets">
+				<h4>Latest</h4>
+				@for(t : Application.twitter().tweets(2)) {
+					<blockquote>
+						@Html(com.fizzed.play.twitter.TweetRenderer.renderHtml(t))
+					</blockquote>
+				}
+			</div>
+			<div class="span3 contact">
+				<h4>Contact</h4>
+				<ul class="unstyled contact-list">
+					<li><i class="icon-home contact-icon"></i>Seattle, WA, United States</li>
+					<li><i class="icon-envelope-alt contact-icon"></i>pin<span class="go-away-spam">bad@@example.org</span>g@@<span class="go-away-spam">lau</span>lauer.bz</li>
+					<li><i class="icon-globe contact-icon"></i><a href="http://lauer.bz">http://lauer.bz</a></li>
+				</ul>
+			</div>	
+		</div>
+	</div>
+</div>
+
+<!-- Sub-Footer -Sticky
+================================================== -->
+<div id="sub-footer">
+	<div class="container">
+		<div class="row credits">
+			<div class="span6"><p>&copy; @Application.currentYear() Joe Lauer</p></div>
+		</div>
+  	</div>
+</div>	
+
+<!-- Javascript
+================================================== -->
+@com.fizzed.play.sprockets.OptimizedAssets.javascripts("app", Array(
+	"js/jquery-1.10.2.min.js",
+	"plugins/jquery-migrate/jquery-migrate-1.2.1.min.js",
+	"plugins/bootstrap/js/bootstrap.min.js",
+	"plugins/momentjs/moment.min.js",
+	"js/app.js",
+	"plugins/google-code-prettify/prettify.js"
+))
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+@if(play.Play.isProd()) {
+	  // analytics
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-40949837-2', 'lauer.bz');
+	  ga('send', 'pageview');
+}
+	});
+</script>
+@extrajs
+</body> 	
+</html>

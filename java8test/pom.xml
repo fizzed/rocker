@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rocker-java8test</artifactId>
+    <name>rocker-java8test</name>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.fizzed</groupId>
+        <artifactId>rocker</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.fizzed</groupId>
+                <artifactId>rocker-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-rocker-templates</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <javaVersion>${java.version}</javaVersion>
+                            <templateDirectory>${basedir}/src/test/java</templateDirectory>
+                            <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
+                            <discardLogicWhitespace>false</discardLogicWhitespace>
+                            <addAsTestSources>true</addAsTestSources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- depend on maven plugin to force order of build -->
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>rocker-maven-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- test scope -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        
+    </dependencies>
+</project>
