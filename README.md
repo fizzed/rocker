@@ -11,13 +11,13 @@ that produces statically typed, plain java object templates that are compiled al
 with the rest of your project.  No more "warm-up" time in production, slow
 reflection-based logic, or nasty surprises that should have been caught during development.
 
-Write your templates using an intuitive, **tagless** syntax with standard Java expressions
+Write your templates using an [intuitive, **tagless** syntax](SYNTAX.md) with standard Java expressions
 for logic, iteration, and values. All the heavy lifting is done by the Rocker
 parser during development -- which keeps the runtime dependencies down to just a
 handful of classes.  Rocker will parse your templates and generate well-documented
 Java source files (so you can easily inspect and understand how it works).
 
-## 2-Minute drill
+## Two-minute drill
 
 Most templates are used for websites, so here is a quick sample showing how
 Rocker templates work and can call each other during the rendering process.
@@ -46,6 +46,11 @@ a block of rendering code to be executed within another template. Create templat
     @views.main.template("Home") -> {
         Hello @message!
     }
+
+Hey, what about the ```RockerBody content``` argument?  We cover it in more
+detail in the [syntax readme](SYNTAX.md), but for now just understand that its
+the only special type of argument and instructs Rocker that a template expects
+a "body" to be passed to it.
 
 The Rocker parser will generate a Java source file for each template. They
 will be `target/generated-sources/rocker/views/main.java` and 
