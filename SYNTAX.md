@@ -23,6 +23,19 @@ plain text, simply escape it using ```@@```. If you find the need to escape the 
 characters, escape them using ```@{``` and ```@}```.  However, as long as you make sure your
 left curly has a matching right curly, you will rarely ever need to escape them.
 
+## Raw output
+
+Rocker will automatically escape any of your dynamic content based on the
+template content type. If your template is named `index.rocker.html` then 
+HTML escaping will be in effect. For the cases where you'd like to bypass these
+rules and directly render your content, use the `@raw` method.
+
+```html
+@args ()
+
+@raw("<html>")
+```
+
 ## Template Preamble
 
 Each template starts with an optional preamble.  The preamble is where you define
@@ -56,10 +69,12 @@ option statement accepts a key=value syntax.  Here is a sample disabling
 the discardLogicWhitespace and setting the target charset to something other
 than the global default.
 
-    @option discardLogicWhitespace=false
-    @option targetCharset=UTF-16
+```html
+@option discardLogicWhitespace=false
+@option targetCharset=UTF-16
 
-    Hello!
+Hello!
+```
 
 A full list of options is below.
 
