@@ -104,11 +104,15 @@ context/implicit state).
 
  * Since templates are just Java classes -- your logic / dynamic content can call
    out to any other Java code. Your templates can be as advanced or as simple as
-   you need.
+   you need. No reflection used.
 
  * No runtime configuration/engine required -- there isn't any sort of RockerEngine
    class required to execute templates.  Each compiled template is ready-to-go
    and knows how to render itself.
+
+ * Templates retain enough information about the original template to throw
+   exceptions at runtime (during render()) that let you track down the problematic line
+   in the original template source file.
 
 ## Near zero-copy rendering
 
@@ -131,6 +135,12 @@ to service 10000 requests (1000 bytes x 10000 requests).  Besides lower memory,
 you also cut out 90MB of memory copies and 90MB of UTF-8 String->byte conversions.
 A pretty useful optimization.
 
+## No reflection
+
+Everything is compiled by your project's compiler along with your other Java
+source code.  Any dynamic code in your template is ultimately converted into
+standard Java and compiled.  No reflection used.
+
 ## Hot-reloading?
 
 Almost all template engines for Java attempt to make development easier by
@@ -138,19 +148,17 @@ supporting "hot-reloading" of templates (e.g. you change template and it'll be
 automatically reloaded on the next request).  While obviously convenient, if
 you dig into the internals, you'll notice how supporting this reloading 
 strategy was a **major** influence on the overall design from the onset. This
-leads to complicated internals and large/slow runtime dependencies.
+leads to complicated internals and large/slow runtime dependencies.  Many engines
+even design their own rules for resolving other templates.
 
 We took the approach to design Rocker w/ little consideration for "hot reloading"
-from the onset. In the MVC (model-view-controller) world -- your model and views
-require code anyway -- so we felt like standard class reloading techniques 
-have advanced enough to handle the "automatic reload" feature.
+from the onset. We just wanted a clean design for what a template should be.
+Rules for resolving other templates use entirely standard Java import statements
+for resolution.
 
-Let your modern build tool solve the hot reload of your app and gain the most
-important benefit -- the Java compiler will compile your templates and catch
-most of your common mistakes ahead of time.  We did make sure to include 
-enough info in the generated Java class to track the line number and column
-if a runtime exception does occur (e.g. a NullPointerException -- although
-we have suggestions how you handle that too).
+Hot-reloading via temporary classloaders is a feature we've been digging into,
+but for now we find the [Fizzed watcher maven plugin](https://github.com/fizzed/maven-plugins)
+quite sufficient to trigger recompiles as you change code.
 
 ## Getting started
 
@@ -158,7 +166,7 @@ Rocker consists of 2 components - the parser/generator and the runtime.  To
 use Rocker in your project, add the runtime dependency to your application,
 then enable the parser in your build tool followed by creating your first template.
 
-### Step 1 - Add dependency
+### Add dependency
 
 Rocker is published to Maven central. To add as a dependency in Maven:
 
@@ -170,7 +178,7 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 </dependency>
 ```
 
-### Step 2 - Enable parser/generator in build tool
+### Integrate parser/generator in build tool
 
 #### Not using maven?
 
@@ -276,7 +284,7 @@ to Rocker's default value.
     parse.
     Defaults to Rocker's default.
 
-### Step 3 - Create first template
+### Create first template
 
 The template syntax is described in detail below, but for now create a new
 file in `${templateDirectory}/views/HelloWorld.rocker.html`
@@ -287,6 +295,8 @@ file in `${templateDirectory}/views/HelloWorld.rocker.html`
     @args (String message)
 
     Hello @message!
+
+### Use compiled template
 
 Time to compile your project and starting using the template.  You can call it
 from java like so:
@@ -301,6 +311,11 @@ static public void main(String[] args) {
 
 }
 ```
+
+## Ninja framework integration
+
+Looking to integrate Rocker into your own application/framework?  Check out
+[Rocker's integration into the Ninja web framework](https://github.com/fizzed/ninja-rocker) for ideas.
 
 ## License
 
