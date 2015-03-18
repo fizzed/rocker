@@ -99,7 +99,7 @@ context/implicit state).
    to tap into your IDEs code completion, syntax highlighting, etc.
 
  * Support for injecting intermediate application-specific super classes during
-   parsing phase  -- thereby creating your own app-specific template engine
+   parsing & generating phase  -- thereby creating your own app-specific template engine
    where you can make implicit variables/methods available to all templates.
 
  * Since templates are just Java classes -- your logic / dynamic content can call
