@@ -69,12 +69,10 @@ option statement accepts a key=value syntax.  Here is a sample disabling
 the discardLogicWhitespace and setting the target charset to something other
 than the global default.
 
-```html
-@option discardLogicWhitespace=false
-@option targetCharset=UTF-16
+    @option discardLogicWhitespace=false
+    @option targetCharset=UTF-16
 
-Hello!
-```
+    Hello!
 
 A full list of options is below.
 
@@ -156,7 +154,7 @@ If the item is the last
 
 #### Enhanced for-loop with Collection
 
-For Java 8
+For Java 8 (note this is statically typed and checked at compile time)
 
     @for (item : items) {
         Item: @item
@@ -170,7 +168,7 @@ And for Java 6/7
 
 #### Enhanced for-loop with Collection and Rocker iterator support
 
-For Java 8
+For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((i, item) : items) {
         Item @i.index() = @item
@@ -184,7 +182,7 @@ And for Java 6/7
 
 #### Enhanced for-loop with Map
 
-For Java 8
+For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((key, item) : itemMap) {
         @key = @item
@@ -198,7 +196,7 @@ And for Java 6/7
 
 #### Enhanced for-loop with Map and Rocker iterator support
 
-For Java 8
+For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((i, key, item) : itemMap) {
         @key = @item (at index @i.index())
