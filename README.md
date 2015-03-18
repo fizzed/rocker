@@ -57,8 +57,7 @@ will be `target/generated-sources/rocker/views/main.java` and
 `target/generated-sources/rocker/views/index.java`. In your application, you
 can render the index template like so.
 
-```
-#!java
+```java
 static public void main(String[] args) {
 
     String output = views.index
@@ -163,11 +162,13 @@ then enable the parser in your build tool followed by creating your first templa
 
 Rocker is published to Maven central. To add as a dependency in Maven:
 
-    <dependency>
-        <groupId>com.fizzed</groupId>
-        <artifactId>rocker-runtime</artifactId>
-        <version>0.9.0</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rocker-runtime</artifactId>
+    <version>0.9.0</version>
+</dependency>
+```
 
 ### Step 2 - Enable parser/generator in build tool
 
@@ -184,26 +185,26 @@ Java main methods.
 
 For maven, add the following to your pom:
 
-    <build>
-        <plugins>
-            ...
-            <plugin>
-                <groupId>com.fizzed</groupId>
-                <artifactId>rocker-maven-plugin</artifactId>
-                <version>0.9.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-rocker-templates</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            ...
-        </plugins>
-    </build>
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.fizzed</groupId>
+            <artifactId>rocker-maven-plugin</artifactId>
+            <version>0.9.0</version>
+            <executions>
+                <execution>
+                    <id>generate-rocker-templates</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
 By default, Rocker will recursively process any template files ending with
 `.rocker.html` in `src/main/java`.  The directory the
