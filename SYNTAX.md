@@ -299,6 +299,33 @@ default for certain content types such as HTML.  The algorithm is as follows:
    blocks, or content/value closures.  Lines that mix non-whitespace text and
    block-level logic will be skipped.
 
+Without this feature enabled, Rocker and many other template engines render
+HTML that includes blank lines due to server-side logic. The following is pulled
+from twitter.com. Notice all the blank lines?  Clearly twitter has lots of 
+server-side logic in those places.
+
+```html
+
+
+<!DOCTYPE html>
+  <head>
+    
+
+    <meta charset="utf-8">
+```
+
+With this feature enabled, usually Rocker can get you to close to this:
+
+```html
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+```
+
+This feature's goal is to not remove all whitespace, just the whitespace added
+due to server-side logic that unfortunately adds extra newlines you really didn't
+want rendered.
+
 ### Java version
 
     @option javaVersion=1.8
