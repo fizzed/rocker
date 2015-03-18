@@ -4,13 +4,18 @@
     <groupId>com.fizzed</groupId>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.0</version>
+    <version>0.9.0-SNAPSHOT</version>
 
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
         <version>1.12</version>
     </parent>
+    
+    <scm>
+        <url>https://github.com/fizzed/rocker</url>
+        <connection>scm:git:git@github.com:fizzed/rocker.git</connection>
+    </scm>
     
     <properties>
         <main.java.package />
@@ -109,8 +114,5 @@
 
         </dependencies>
     </dependencyManagement>
-
-  <scm>
-    <tag>v0.9.0</tag>
-  </scm>
+    
 </project>
