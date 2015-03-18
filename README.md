@@ -291,8 +291,7 @@ file in `${templateDirectory}/views/HelloWorld.rocker.html`
 Time to compile your project and starting using the template.  You can call it
 from java like so:
 
-```
-#!java
+```java
 static public void main(String[] args) {
 
     String output = views.HelloWorld
