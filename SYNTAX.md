@@ -314,7 +314,7 @@ server-side logic in those places.
     <meta charset="utf-8">
 ```
 
-With this feature enabled, usually Rocker can get you to close to this:
+With this feature enabled, Rocker can get you close to this:
 
 ```html
 <!DOCTYPE html>
