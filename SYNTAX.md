@@ -298,8 +298,7 @@ Defaults to the Java version of the JVM executing the parser (e.g. "1.8").
     @option extendsClass=com.sample.MyAppBaseTemplate
 
 The class that all templates should extend. Useful for application-specific
-intermediate classes that you'd like all templates to extend. Defaults to
-```com.fizzed.rocker.RockerTemplate```
+intermediate classes that you'd like all templates to extend. Defaults to ```com.fizzed.rocker.RockerTemplate```
 
 ### Target charset
 
