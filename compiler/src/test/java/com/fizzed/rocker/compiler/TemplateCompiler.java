@@ -15,10 +15,38 @@
  */
 package com.fizzed.rocker.compiler;
 
+import java.io.File;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
 /**
  *
  * @author joelauer
  */
 public class TemplateCompiler {
+    
+    // directory compiled classes will be output to
+    private File outputDirectory;
+    
+    
+    
+    public TemplateCompiler() {
+        
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+        
+    }
+    
+    public void compile() {
+        
+        
+        
+    }
     
 }
