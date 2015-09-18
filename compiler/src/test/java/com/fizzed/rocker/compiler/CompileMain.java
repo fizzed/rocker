@@ -140,7 +140,7 @@ public class CompileMain {
         
         File javaFile = generator.generate(model);
         
-        String javaSource = IOUtils.toString(new FileInputStream(javaFile));
+        //String javaSource = IOUtils.toString(new FileInputStream(javaFile));
         
         
         //
