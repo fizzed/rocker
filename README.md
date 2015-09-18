@@ -16,6 +16,14 @@ parser during development -- which keeps the runtime dependencies down to just a
 handful of classes.  Rocker will parse your templates and generate well-documented
 Java source files (so you can easily inspect and understand how it works).
 
+## Performance
+
+Based on the following template benchmark(https://github.com/fizzed/template-benchmark),
+Rocker is the clear winner.  ~15% faster than Pebble and ~250% faster than Freemarker
+while also using much less memory.
+
+![Template Comparison](benchmark.png)
+
 ## Two-minute drill
 
 Most templates are used for websites, so here is a quick sample showing how
