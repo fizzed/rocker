@@ -39,14 +39,14 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
 
     // do not stringify a value
     
-    public Raw raw(Object obj) throws IOException {
+    protected Raw raw(Object obj) throws IOException {
         if (obj == null) {
             throw new NullPointerException("Value was null");
         }
         return Raw.of(obj.toString());
     }
     
-    public Raw raw(String s) throws IOException {
+    protected Raw raw(String s) throws IOException {
         if (s == null) {
             throw new NullPointerException("Value was null");
         }
