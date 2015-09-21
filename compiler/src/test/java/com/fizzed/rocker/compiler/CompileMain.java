@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -68,18 +69,37 @@ public class CompileMain {
     static public void main(String[] args) throws Exception {
         
         //File templateFile = new File("compiler/src/test/resources/rocker/parser/NoHeader.rocker.html");
-        File templateFile = new File("compiler/src/test/resources/rocker/parser/UnescapeAtAt.rocker.html");
+
+        TemplateCompiler compiler = new TemplateCompiler()
+                .setTemplateBaseDirectory(new File("compiler/src/test/java"))
+                .setJavaGenerateDirectory(new File("compiler/target/generated-test-sources/rocker"))
+                .setOutputDirectory(new File("compiler/target/test-classes"));
+
+        File templateFile = new File("compiler/src/test/java/com/fizzed/rocker/compiler/Compile.rocker.html");
         
         
         while (true) {
-        
-            compile(templateFile);
+
+            //List<TemplateModel> templateModels = compiler.parseTemplates(Arrays.asList(templateFile));
+
+            //List<File> javaFiles = compiler.generateJavaFiles(templateModels);
+
+            List<File> javaFiles = Arrays.asList(
+                    new File("compiler/target/generated-test-sources/rocker/com/fizzed/rocker/compiler/Compile2.java")
+            );
+
+            compiler.compileJavaFiles(javaFiles);
+
+
+            //compile(templateFile);
+
+
 
             Class<RockerTemplate> templateClass;
 
             ReloadableClassLoader rcl = new ReloadableClassLoader(CompileMain.class.getClassLoader());
 
-            templateClass = rcl.loadClass("rocker.parser.UnescapeAtAt");
+            templateClass = rcl.loadClass("com.fizzed.rocker.compiler.Compile2");
 
             RockerTemplate template = templateClass.newInstance();
 
@@ -95,144 +115,6 @@ public class CompileMain {
         
     }
     
-    
-    static public void compile(File templateFile) throws Exception {
-        
-        // build classpath...
-        StringBuilder buffer = new StringBuilder();
-        for (URL url :
-            ((URLClassLoader) (Thread.currentThread()
-                .getContextClassLoader())).getURLs()) {
-          buffer.append(new File(url.getPath()));
-          buffer.append(File.pathSeparator);
-        }
-        String classpath = buffer.toString();
-        
-        List<String> javacOptions = new ArrayList<>();
-        javacOptions.add("-cp");
-        javacOptions.add(classpath);
-        
-        // directory output to
-        javacOptions.add("-d");
-        javacOptions.add("compiler/target/test-classes");
-        
-        
-        
-        
-        
-        //
-        // template -> model
-        //
-        TemplateParser parser = new TemplateParser();
-        
-        parser.setBaseDirectory(new File("compiler/src/test/resources"));
-        
-        
-        TemplateModel model = parser.parse(templateFile);
-
-        
-        //
-        // model -> java
-        //
-        JavaGenerator generator = new JavaGenerator();
-        
-        generator.setOutputDirectory(new File("compiler/target/test-classes"));
-        
-        File javaFile = generator.generate(model);
-        
-        //String javaSource = IOUtils.toString(new FileInputStream(javaFile));
-        
-        
-        //
-        // java -> class
-        //
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-        
-        Iterable<? extends JavaFileObject> compilationUnits =
-            fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFile));
-        
-        
-        
-        CompilationTask task = compiler.getTask(null, null, diagnostics, javacOptions, null, compilationUnits);
-
-        boolean success = task.call();
-        for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            System.out.println(diagnostic.getCode());
-            System.out.println(diagnostic.getKind());
-            System.out.println(diagnostic.getPosition());
-            System.out.println(diagnostic.getStartPosition());
-            System.out.println(diagnostic.getEndPosition());
-            System.out.println(diagnostic.getSource());
-            System.out.println(diagnostic.getMessage(null));
-
-        }
-        System.out.println("Success: " + success);
-        
-        /**
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        
-        compiler.
-        */
-        
-        
-        /**
-        Class<?> helloClass = InMemoryJavaCompiler.compile("rocker.parser.NoHeader", javaSource);
-        
-        System.out.println("class: " + helloClass.getName());
-        */
-        
-        /**
-        ASTParser jdtParser = ASTParser.newParser(AST.JLS3);
-      
-        jdtParser.setSource(javaSource.toCharArray());
-
-        jdtParser.setKind(ASTParser.K_COMPILATION_UNIT);
-
-        final CompilationUnit cu = (CompilationUnit)jdtParser.createAST(null);
-
-        cu.accept(new ASTVisitor() {
-
-            Set names = new HashSet();
-
-            @Override
-            public boolean visit(LineComment node) {
-                
-                System.out.println("line comment: " + node.toString());
-                
-                return false;
-            }
-
-            
-            
-            @Override
-            public boolean visit(VariableDeclarationFragment node) {
-                
-                SimpleName name = node.getName();
-                this.names.add(name.getIdentifier());
-                System.out.println("Declaration of '" + name + "' at line" + cu.getLineNumber(name.getStartPosition()));
-                
-                return false; // do not continue to avoid usage info
-            }
-
-            @Override
-            public boolean visit(SimpleName node) {
-                
-                System.out.println("FQDN: " + node.getFullyQualifiedName());
-                
-                System.out.println("Usage of '" + node + "' at line " + cu.getLineNumber(node.getStartPosition()));
-                
-                return true;
-            }
-
-        });
-        */
-    }
-    
-    
     static public class ReloadableClassLoader extends ClassLoader{
 
         public ReloadableClassLoader(ClassLoader parent) {
@@ -241,8 +123,13 @@ public class CompileMain {
 
         @Override
         public Class loadClass(String name) throws ClassNotFoundException {
-            
-            if (!name.startsWith("rocker")) {
+
+            if (name.startsWith("com.fizzed.rocker.compiler")) {
+                log.debug("loading class: {}", name);
+            }
+
+            if (!name.equals("com.fizzed.rocker.compiler.Compile2$Renderer")) {
+            //if (true)
                 return super.loadClass(name);
             }
 
