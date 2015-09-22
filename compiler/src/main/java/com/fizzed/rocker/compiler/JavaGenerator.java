@@ -226,6 +226,14 @@ public class JavaGenerator {
         
         indent++;
         
+        w.append(CRLF);
+        
+        // static info about this template
+        tab(w, indent).append("static public final ContentType CONTENT_TYPE = ContentType.").append(model.getContentType().toString()).append(";").append(CRLF);
+        tab(w, indent).append("static public final String TEMPLATE_NAME = \"").append(model.getTemplateName()).append("\";").append(CRLF);
+        tab(w, indent).append("static public final String TEMPLATE_PACKAGE_NAME = \"").append(model.getPackageName()).append("\";").append(CRLF);
+        
+
         // model arguments as members of model class
         appendArgumentMembers(model, w, "private", false, indent);
         
@@ -301,11 +309,23 @@ public class JavaGenerator {
         //
         w.append(CRLF);
         
+        
+        
+        
         // model "template" static builder
         tab(w, indent).append("@Override").append(CRLF);
         tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
+        
+        
+        /**
         tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
         tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        */
+        
+        tab(w, indent+1).append("DefaultRockerTemplate template = com.fizzed.rocker.compiler.RockerDynamicBootstrap.getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
+        tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        
+        
         tab(w, indent).append("}").append(CRLF);
         
         
@@ -417,9 +437,9 @@ public class JavaGenerator {
         
         tab(w, indent+1).append("super(model);").append(CRLF);
         tab(w, indent+1).append("__internal.setCharset(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
-        tab(w, indent+1).append("__internal.setContentType(ContentType.").append(model.getContentType().toString()).append(");").append(CRLF);
-        tab(w, indent+1).append("__internal.setTemplateName(\"").append(model.getTemplateName()).append("\");").append(CRLF);
-        tab(w, indent+1).append("__internal.setTemplatePackageName(\"").append(model.getPackageName()).append("\");").append(CRLF);
+        tab(w, indent+1).append("__internal.setContentType(CONTENT_TYPE);").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplateName(TEMPLATE_NAME);").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplatePackageName(TEMPLATE_PACKAGE_NAME);").append(CRLF);
         
         // each model argument passed along as well
         for (Argument arg : model.getArguments()) {

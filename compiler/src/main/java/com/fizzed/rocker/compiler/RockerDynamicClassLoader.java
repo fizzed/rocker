@@ -28,27 +28,31 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author joelauer
  */
-public class RockerTemplateClassLoader extends ClassLoader {
+public class RockerDynamicClassLoader extends ClassLoader {
 
-    private final RockerTemplateBootstrap bootstrap;
+    private final RockerDynamicBootstrap bootstrap;
     
-    public RockerTemplateClassLoader(RockerTemplateBootstrap bootstrap, ClassLoader parent) {
+    public RockerDynamicClassLoader(RockerDynamicBootstrap bootstrap, ClassLoader parent) {
         super(parent);
         this.bootstrap = bootstrap;
     }
 
+    public boolean isClassLoaded(String className) {
+        return this.findLoadedClass(className) != null;
+    }
+    
     @Override
-    public Class loadClass(String name) throws ClassNotFoundException {
+    public Class loadClass(String className) throws ClassNotFoundException {
         
         // if the class name is NOT registered with rocker bootstrap then 
         // delegate it's loading back up to super classloader
-        if (!bootstrap.isTemplateClass(name)) {
-            return super.loadClass(name);
+        if (!bootstrap.isDynamicTemplateClass(className)) {
+            return super.loadClass(className);
         }
 
         // load 
         try {
-            URL myUrl = new File("compiler/target/test-classes/" + name.replace(".", "/") + ".class").toURI().toURL();
+            URL myUrl = new File("java6test/target/test-classes/" + className.replace(".", "/") + ".class").toURI().toURL();
             
             System.out.println("Loading: " + myUrl);
             
@@ -67,7 +71,7 @@ public class RockerTemplateClassLoader extends ClassLoader {
 
             byte[] classData = buffer.toByteArray();
 
-            return defineClass(name, classData, 0, classData.length);
+            return defineClass(className, classData, 0, classData.length);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

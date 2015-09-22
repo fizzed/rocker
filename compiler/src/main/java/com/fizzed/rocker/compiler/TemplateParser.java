@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
 import com.fizzed.rocker.antlr4.RockerParserBaseListener;
@@ -86,13 +87,54 @@ public class TemplateParser {
         this.defaultOptions = defaultOptions;
     }
    
+    static class TemplateIdentity {
+        public File templateFile;           // e.g. src/main/java/views/index.rocker.html
+        public String packageName;          // e.g. views
+        public String templateName;         // e.g. index.rocker.html
+        public String name;                 // e.g. index
+        public ContentType contentType;     // e.g. HTML
+    }
+    
+    static TemplateIdentity parseIdentity(File baseDirectory, File templateFile) throws IOException {
+        TemplateIdentity identity = new TemplateIdentity();
+        
+        identity.templateFile = templateFile;
+        
+        // deduce "package" of file by relativizing it to input directory
+        identity.packageName = RockerUtil.pathToPackageName(templateFile.toPath());
+        
+        Path p = templateFile.toPath();
+        
+        if (baseDirectory != null) {
+            Path bdp = baseDirectory.toPath();
+            
+            if (!RockerUtil.isRelativePath(bdp, p)) {
+                throw new IOException("Template file [" + templateFile + "] not relative to base dir [" + baseDirectory + "]");
+            }
+            
+            Path relativePath = bdp.relativize(p);
+            
+            // new package name is the parent of this file
+            identity.packageName = RockerUtil.pathToPackageName(relativePath.getParent());
+        }
+        
+        identity.templateName = templateFile.getName();
+        identity.name = RockerUtil.templateNameToName(identity.templateName);
+        identity.contentType = RockerUtil.templateNameToContentType(identity.templateName);
+        
+        return identity;
+    }
+    
     public TemplateModel parse(File f) throws IOException, ParserException {
         if (!f.exists() || !f.canRead()) {
             throw new IOException("File cannot read or does not exist [" + f + "]");
         }
         
+        TemplateIdentity identity = parseIdentity(this.baseDirectory, f);
+        
         ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
        
+        /**
         // deduce "package" of file by relativizing it to input directory
         String packageName = RockerUtil.pathToPackageName(f.toPath());
         
@@ -110,8 +152,9 @@ public class TemplateParser {
             // new package name is the parent of this file
             packageName = RockerUtil.pathToPackageName(relativePath.getParent());
         }
+        */
         
-        return parse(input, packageName, f.getName());
+        return parse(input, identity.packageName, identity.templateName);
     }
     
     public TemplateModel parse(File f, String packageName) throws IOException, ParserException {

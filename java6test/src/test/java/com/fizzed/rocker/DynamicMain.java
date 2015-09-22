@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.compiler;
+package com.fizzed.rocker;
 
 import java.io.File;
 import org.slf4j.Logger;
@@ -23,24 +23,31 @@ import org.slf4j.LoggerFactory;
  *
  * @author joelauer
  */
-public class CompileMain {
-    static private final Logger log = LoggerFactory.getLogger(CompileMain.class);
+public class DynamicMain {
+    static private final Logger log = LoggerFactory.getLogger(DynamicMain.class);
     
     static public void main(String[] args) throws Exception {
         
         //File templateFile = new File("compiler/src/test/resources/rocker/parser/NoHeader.rocker.html");
 
+        /**
         TemplateCompiler compiler = new TemplateCompiler()
                 .setTemplateBaseDirectory(new File("compiler/src/test/java"))
                 .setJavaGenerateDirectory(new File("compiler/target/generated-test-sources/rocker"))
                 .setOutputDirectory(new File("compiler/target/test-classes"));
 
         File templateFile = new File("compiler/src/test/java/com/fizzed/rocker/compiler/Compile.rocker.html");
-        
+        */
         
         while (true) {
 
-            //String out = parser
+            String out = rocker.Args.template("hello", 2).render().toString();
+            
+            System.out.println("render: " + out);
+        
+            System.out.println("waitng for input for next render...");
+            
+            System.in.read();
             
             //List<TemplateModel> templateModels = compiler.parseTemplates(Arrays.asList(templateFile));
 
@@ -70,10 +77,7 @@ public class CompileMain {
             
             String out = template.render().toString();
 
-            System.out.println("render: " + out);
-        
-            System.out.println("waitng for input for next render...");
-            System.in.read();
+            
             */
             
         }
