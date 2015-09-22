@@ -39,7 +39,7 @@ public class RockerDynamicBootstrap {
     static public class LoadedTemplate {
         
         public File templateFile;                   // resolved path to template file
-        public long modifiedAt;
+        public long modifiedAt;                     // modified date of version loaded
         
         //public String hash;
         
@@ -64,11 +64,10 @@ public class RockerDynamicBootstrap {
     
     
     public RockerDynamicBootstrap() {
-        this.classLoader = new RockerDynamicClassLoader(this, RockerDynamicBootstrap.class.getClassLoader());
+        this.classLoader = buildClassLoader();
         this.templates = new ConcurrentHashMap<>();
         
-        
-        
+        // these need to be set some way via property file?
         this.templateBaseDirectory = new File("java6test/src/test/java");
     }
     
@@ -83,11 +82,15 @@ public class RockerDynamicBootstrap {
     public void setJavaClassDirectory(File javaClassDirectory) {
         this.javaClassDirectory = javaClassDirectory;
     }
-    
+
+    private RockerDynamicClassLoader buildClassLoader() {
+        return new RockerDynamicClassLoader(this, RockerDynamicBootstrap.class.getClassLoader());
+    }
+
     public boolean isDynamicTemplateClass(String className) {
         System.out.println("isDynamicTemplateClass: " + className);
         
-        if (className.endsWith("$Template") && className.length() >= 10) {
+        if (className.endsWith("$Template")) {
             className = className.substring(0, className.length() - 9);
         } else {
             return false;
@@ -117,13 +120,19 @@ public class RockerDynamicBootstrap {
         
         if (template != null && template.modifiedAt != template.templateFile.lastModified()) {
             log.debug("template file " + template.templateFile + " changed -- recompiling...");
-            
-            
-            
+
+            /**
+            TemplateCompiler compiler = new TemplateCompiler()
+                .setTemplateBaseDirectory(new File("compiler/src/test/java"))
+                .setJavaGenerateDirectory(new File("compiler/target/generated-test-sources/rocker"))
+                .setOutputDirectory(new File("compiler/target/test-classes"));
+             */
             
             // save current modifiedAt!
+            template.modifiedAt = template.templateFile.lastModified();
             
             // create new classloader to force new class load
+            this.classLoader = buildClassLoader();
         }
         
         try {

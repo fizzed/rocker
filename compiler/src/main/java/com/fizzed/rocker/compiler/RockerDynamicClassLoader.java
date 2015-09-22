@@ -44,19 +44,26 @@ public class RockerDynamicClassLoader extends ClassLoader {
     @Override
     public Class loadClass(String className) throws ClassNotFoundException {
         
-        // if the class name is NOT registered with rocker bootstrap then 
-        // delegate it's loading back up to super classloader
+        // only load classes registered with rocker dynamic bootstrap
         if (!bootstrap.isDynamicTemplateClass(className)) {
             return super.loadClass(className);
         }
 
-        // load 
+        // load as though class was a resource
         try {
-            URL myUrl = new File("java6test/target/test-classes/" + className.replace(".", "/") + ".class").toURI().toURL();
+            String resourceName = className.replace(".", "/") + ".class";
+
+            URL url = this.getResource(resourceName);
+
+            if (url == null) {
+                throw new ClassNotFoundException("Class " + className + " not found");
+            }
+
+            //URL myUrl = new File("java6test/target/test-classes/" + className.replace(".", "/") + ".class").toURI().toURL();
             
-            System.out.println("Loading: " + myUrl);
+            System.out.println("Loading: " + url);
             
-            URLConnection connection = myUrl.openConnection();
+            URLConnection connection = url.openConnection();
 
             InputStream input = connection.getInputStream();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -72,14 +79,10 @@ public class RockerDynamicClassLoader extends ClassLoader {
             byte[] classData = buffer.toByteArray();
 
             return defineClass(className, classData, 0, classData.length);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ClassNotFoundException(e.getMessage(), e);
         }
-
-        return null;
     }
 
 }
