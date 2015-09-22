@@ -7,3 +7,4 @@ accounts.json
 /java8test/target/
 /maven-plugin/target/
 /java6test/target/
+/dynamic/target/

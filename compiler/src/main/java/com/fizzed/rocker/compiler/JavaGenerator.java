@@ -322,7 +322,7 @@ public class JavaGenerator {
         tab(w, indent+1).append("return template.__render(context);").append(CRLF);
         */
         
-        tab(w, indent+1).append("DefaultRockerTemplate template = com.fizzed.rocker.compiler.RockerDynamicBootstrap.getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
+        tab(w, indent+1).append("DefaultRockerTemplate template = com.fizzed.rocker.dynamic.RockerDynamicBootstrap.getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
         tab(w, indent+1).append("return template.__render(context);").append(CRLF);
         
         

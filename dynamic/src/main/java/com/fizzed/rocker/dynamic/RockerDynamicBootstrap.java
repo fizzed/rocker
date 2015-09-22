@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.compiler;
+package com.fizzed.rocker.dynamic;
 
 import com.fizzed.rocker.RenderingException;
-import com.fizzed.rocker.RockerTemplate;
-import com.fizzed.rocker.compiler.TemplateParser.TemplateIdentity;
+import com.fizzed.rocker.compiler.TemplateCompiler;
+import com.fizzed.rocker.model.TemplateModel;
 import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class RockerDynamicBootstrap {
         this.templates = new ConcurrentHashMap<>();
         
         // these need to be set some way via property file?
-        this.templateBaseDirectory = new File("java6test/src/test/java");
+        this.templateBaseDirectory = new File("dynamic/src/test/java");
     }
     
     static public RockerDynamicBootstrap getInstance() {
@@ -87,16 +88,20 @@ public class RockerDynamicBootstrap {
         return new RockerDynamicClassLoader(this, RockerDynamicBootstrap.class.getClassLoader());
     }
 
+    // views.index$Template
+    // views.index$Template$1 (if something like an inner class)
     public boolean isDynamicTemplateClass(String className) {
         System.out.println("isDynamicTemplateClass: " + className);
         
-        if (className.endsWith("$Template")) {
-            className = className.substring(0, className.length() - 9);
-        } else {
+        // find first occurrence of $
+        int pos = className.indexOf('$');
+        if (pos < 0) {
             return false;
         }
         
-        return this.templates.containsKey(className);
+        String modelClassName = className.substring(0, pos);
+        
+        return this.templates.containsKey(modelClassName);
     }
     
     public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model, String templatePackageName, String templateName) throws RenderingException {
@@ -118,21 +123,35 @@ public class RockerDynamicBootstrap {
             }
         }
         
-        if (template != null && template.modifiedAt != template.templateFile.lastModified()) {
-            log.debug("template file " + template.templateFile + " changed -- recompiling...");
+        if (template != null) {
+            long modifiedAt = template.templateFile.lastModified();
+            
+            if (modifiedAt != template.modifiedAt) {
+            
+                log.debug("template file " + template.templateFile + " changed -- recompiling...");
 
-            /**
-            TemplateCompiler compiler = new TemplateCompiler()
-                .setTemplateBaseDirectory(new File("compiler/src/test/java"))
-                .setJavaGenerateDirectory(new File("compiler/target/generated-test-sources/rocker"))
-                .setOutputDirectory(new File("compiler/target/test-classes"));
-             */
-            
-            // save current modifiedAt!
-            template.modifiedAt = template.templateFile.lastModified();
-            
-            // create new classloader to force new class load
-            this.classLoader = buildClassLoader();
+                TemplateCompiler compiler = new TemplateCompiler()
+                    .setTemplateBaseDirectory(this.templateBaseDirectory)
+                    .setJavaGenerateDirectory(new File("dynamic/target/generated-test-sources/rocker"))
+                    .setOutputDirectory(new File("dynamic/target/test-classes"));
+
+                try {
+                    List<TemplateModel> templateModels
+                            = compiler.parseTemplates(Arrays.asList(template.templateFile));
+
+                    List<File> javaFiles = compiler.generateJavaFiles(templateModels);
+
+                    compiler.compileJavaFiles(javaFiles);
+                } catch (Exception e) {
+                    throw new RenderingException("Unable to compile template " + template.templateFile, e);
+                }
+
+                // save current modifiedAt!
+                template.modifiedAt = modifiedAt;
+
+                // create new classloader to force new class load
+                this.classLoader = buildClassLoader();
+            }
         }
         
         try {

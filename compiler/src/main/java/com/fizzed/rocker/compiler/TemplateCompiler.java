@@ -15,6 +15,8 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.compiler.JavaGenerator;
+import com.fizzed.rocker.compiler.TemplateParser;
 import com.fizzed.rocker.model.TemplateModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -32,6 +32,7 @@
         <module>runtime</module>
         <module>compiler</module>
         <module>maven-plugin</module>
+	<module>dynamic</module>
         <module>java6test</module>
         <module>java8test</module>
     </modules>
