@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker;
+package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.runtime.DefaultRockerTemplate;
+import com.fizzed.rocker.RockerOutput;
 
 /**
  *
  * @author joelauer
  */
-public interface RockerTemplate {
-
-    // no public methods
+public interface RockerTemplateModel {
+    
+    public RockerOutput render() throws Exception;
     
 }

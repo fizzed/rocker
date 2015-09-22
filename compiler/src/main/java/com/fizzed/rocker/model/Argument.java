@@ -43,6 +43,26 @@ public class Argument extends TemplateUnit {
         return this.variable.getName();
     }
     
+    public boolean isRockerBodyType() {
+        return this.variable.getType().equals("RockerBody");
+    }
+    
+    public String getExternalType() {
+        if (isRockerBodyType()) {
+            return "RockerContent";
+        } else {
+            return getType();
+        }
+    }
+    
+    public String getExternalName() {
+        if (isRockerBodyType()) {
+            return "__body";
+        } else {
+            return getName();
+        }
+    }
+    
     @Override
     public boolean isBlockLevel() {
         return true;

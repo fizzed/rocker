@@ -114,13 +114,10 @@ public class TemplateModel {
         return (T)units.get(index);
     }
     
-    public LinkedHashMap<String,LinkedHashMap<String,String>> createPlainTextMap(int chunkSize) {
-        
-        LinkedHashMap<String, LinkedHashMap<String,String>> plainTextMap = new LinkedHashMap<>();
-        
+    public LinkedHashMap<String,LinkedHashMap<String,String>> createPlainTextMap(int chunkSize) {        
         // optimize static plain text constants
         int index = 0;
-        plainTextMap = new LinkedHashMap<>();
+        LinkedHashMap<String, LinkedHashMap<String,String>> plainTextMap = new LinkedHashMap<>();
 
         for (TemplateUnit unit : getUnits()) {
             if (unit instanceof PlainText) {

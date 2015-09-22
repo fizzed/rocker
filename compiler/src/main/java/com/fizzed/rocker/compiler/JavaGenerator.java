@@ -159,6 +159,20 @@ public class JavaGenerator {
         return type != null &&
                 (type.equals("ForIterator") || type.equals(com.fizzed.rocker.ForIterator.class.getName()));
     }
+    
+    public void appendArgumentMembers(TemplateModel model, Writer w, String access, boolean finalModifier, int indent) throws IOException {
+        // arguments (including possible RockerBody)
+        if (model.getArguments().size() > 0) {
+            w.append(CRLF);
+            for (Argument arg : model.getArguments()) {
+                tab(w, indent).append("// argument ").append(sourceRef(arg)).append(CRLF);
+                tab(w, indent)
+                    .append(access).append(" ")
+                    .append((finalModifier ? "final " : ""))
+                    .append(arg.getExternalType()).append(" " + arg.getName()).append(";").append(CRLF);
+            }
+        }
+    }
 
     // TODO: square's JavaWriter looks like a possible replacement
     private void createSourceTemplate(TemplateModel model, Writer w) throws GeneratorException, IOException {
@@ -176,8 +190,9 @@ public class JavaGenerator {
         w.append("import ").append(com.fizzed.rocker.ForIterator.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.RenderingException.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.RockerContent.class.getName()).append(";").append(CRLF);
+        w.append("import ").append(com.fizzed.rocker.RockerOutput.class.getName()).append(";").append(CRLF);
+        w.append("import ").append(com.fizzed.rocker.runtime.DefaultRockerTemplate.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader.class.getName()).append(";").append(CRLF);
-        
         
         // template imports
         if (model.getImports().size() > 0) {
@@ -197,20 +212,124 @@ public class JavaGenerator {
         w.append(" */").append(CRLF);
         
         
+        int indent = 0;
+        
+        
+        // MODEL CLASS
+        
         // class definition
-        w.append("public class ")
+        tab(w, indent).append("public class ")
                 .append(model.getName())
                 .append(" extends ")
-                .append(model.getOptions().getExtendsClass())
-                .append("<").append(model.getName()).append("> ");
+                .append(model.getOptions().getExtendsModelClass())
+                .append(" {").append(CRLF);
         
-        if (model.getOptions().getImplementsInterface() != null) {
-            w.append("implements ").append(model.getOptions().getImplementsInterface());
-            w.append(" ");
-        }
+        indent++;
+        
+        // model arguments as members of model class
+        appendArgumentMembers(model, w, "private", false, indent);
+        
+        //w.append(CRLF);
+
+        // model setters & getters with builder-style pattern
+        // special case for the RockerBody argument which sorta "hides" its getter/setter
+        if (model.getArguments().size() > 0) {
+            for (Argument arg : model.getArguments()) {
                 
-        w.append("{").append(CRLF);
+                /**
+                String argName = arg.getName();
+                String argType = arg.getType();
+                
+                // RockerBody special case
+                if (arg.getType().equals("RockerBody")) {
+                    argName = "__body";
+                    argType = "RockerContent";
+                }
+                */
+                
+                // setter
+                w.append(CRLF);
+                tab(w, indent)
+                        .append("public ").append(model.getName()).append(" ").append(arg.getExternalName())
+                        .append("(" + arg.getExternalType()).append(" ").append(arg.getName())
+                        .append(") {").append(CRLF);
+                tab(w, indent+1).append("this.").append(arg.getName()).append(" = ").append(arg.getName()).append(";").append(CRLF);
+                tab(w, indent+1).append("return this;").append(CRLF);
+                tab(w, indent).append("}").append(CRLF);
+                
+                // getter
+                w.append(CRLF);
+                tab(w, indent).append("public ").append(arg.getExternalType()).append(" ").append(arg.getExternalName()).append("() {").append(CRLF);
+                tab(w, indent+1).append("return this.").append(arg.getName()).append(";").append(CRLF);
+                tab(w, indent).append("}").append(CRLF);
+            }
+        }
         
+        w.append(CRLF);
+        
+        //
+        // model "template" static builder
+        //
+        tab(w, indent).append("static public ").append(model.getName()).append(" template(");
+        
+        if (model.getArguments().size() > 0) {
+            int i = 0;
+            // RockerBody is NOT included (it is passed via a closure block in other templates)
+            // so we only care about the other arguments
+            for (Argument arg : model.getArgumentsWithoutRockerBody()) {
+                if (i != 0) { w.append(", "); }
+                w.append(arg.getType()).append(" ").append(arg.getName());
+                i++;
+            }
+        }
+        w.append(") {").append(CRLF);
+        
+        tab(w, indent+1).append("return new ").append(model.getName()).append("()");
+        if (model.getArguments().size() > 0) {
+            int i = 0;
+            for (Argument arg : model.getArgumentsWithoutRockerBody()) {
+                w.append(CRLF);
+                tab(w, indent+2).append(".").append(arg.getName()).append("(").append(arg.getName()).append(")");
+                i++;
+            }
+        }
+        w.append(";").append(CRLF);
+        tab(w, indent).append("}").append(CRLF);
+        
+        //
+        // render of model
+        //
+        w.append(CRLF);
+        
+        // model "template" static builder
+        tab(w, indent).append("@Override").append(CRLF);
+        tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
+        tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
+        tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        tab(w, indent).append("}").append(CRLF);
+        
+        
+        //
+        // TEMPLATE CLASS
+        //
+        
+        w.append(CRLF);
+        
+        // class definition
+        tab(w, indent)
+            .append("static public class Template extends ")
+            .append(model.getOptions().getExtendsClass())
+            .append("<Template>");
+        
+        /**
+        if (model.getOptions().getImplementsInterface() != null) {
+            w.append(" implements ").append(model.getOptions().getImplementsInterface());
+        }
+        */
+                
+        w.append(" {").append(CRLF);
+        
+        indent++;
         
         
         // plain text -> map of chunks of text (Java only supports 2-byte length of string constant)
@@ -224,13 +343,13 @@ public class JavaGenerator {
             for (String plainText : plainTextMap.keySet()) {
                 
                 // include static text as comments in source (limit to 500)
-                tab(w, 1).append("// ")
+                tab(w, indent).append("// ")
                     .append(StringUtils.abbreviate(StringEscapeUtils.escapeJava(plainText), 500)).append(CRLF);
                 
                 for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
                 
                     if (this.plainTextStrategy == PlainTextStrategy.STATIC_STRINGS) {                   
-                        tab(w, 1).append("static private final String ")
+                        tab(w, indent).append("static private final String ")
                             .append(chunk.getKey())
                             .append(" = \"")
                             .append(StringEscapeUtils.escapeJava(chunk.getValue()))
@@ -238,7 +357,7 @@ public class JavaGenerator {
                             .append(CRLF);
                     }
                     else if (this.plainTextStrategy == PlainTextStrategy.STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS) {
-                        tab(w, 1).append("static private final byte[] ")
+                        tab(w, indent).append("static private final byte[] ")
                             .append(chunk.getKey())
                             .append(";")
                             .append(CRLF);
@@ -252,10 +371,10 @@ public class JavaGenerator {
                 
                 w.append(CRLF);
                 
-                tab(w, 1).append("static {").append(CRLF);
+                tab(w, indent).append("static {").append(CRLF);
                 
                 String loaderClassName = RockerUtil.unqualifiedClassName(PlainTextUnloadedClassLoader.class);
-                tab(w, 2).append(loaderClassName)
+                tab(w, indent+1).append(loaderClassName)
                         .append(" loader = ")
                         .append(loaderClassName)
                         .append(".tryLoad(")
@@ -271,7 +390,7 @@ public class JavaGenerator {
                     for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
 
                         if (this.plainTextStrategy == PlainTextStrategy.STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS) {
-                            tab(w, 2).append(chunk.getKey())
+                            tab(w, indent+1).append(chunk.getKey())
                                 .append(" = loader.tryGet(\"")
                                 .append(chunk.getKey())
                                 .append("\");")
@@ -282,36 +401,35 @@ public class JavaGenerator {
                     
                 }
                 
-                tab(w, 1).append("}").append(CRLF);
+                tab(w, indent).append("}").append(CRLF);
             }
             
         }
         
         
-        // arguments (including possible RockerBody)
-        if (model.getArguments().size() > 0) {
-            w.append(CRLF);
-            for (Argument arg : model.getArguments()) {
-                tab(w, 1).append("// argument ").append(sourceRef(arg)).append(CRLF);
-                // swap in normal content type in place of body
-                String type = arg.getType();
-                if (type.equals("RockerBody")) {
-                    type = "RockerContent";
-                }
-                tab(w, 1).append("protected ").append(type).append(" " + arg.getName()).append(";").append(CRLF);
-            }
-        }
+        // arguments as members of template class
+        appendArgumentMembers(model, w, "protected", true, indent);
         
         w.append(CRLF);
+
+        // constructor
+        tab(w, indent).append("public Template(").append(model.getName()).append(" model) {").append(CRLF);
         
-        tab(w, 1).append("public ").append(model.getName()).append("() {").append(CRLF);
-        tab(w, 2).append("super();").append(CRLF);
-        tab(w, 2).append("__internal.setCharset(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
-        tab(w, 2).append("__internal.setContentType(ContentType.").append(model.getContentType().toString()).append(");").append(CRLF);
-        tab(w, 2).append("__internal.setTemplateName(\"").append(model.getTemplateName()).append("\");").append(CRLF);
-        tab(w, 2).append("__internal.setTemplatePackageName(\"").append(model.getPackageName()).append("\");").append(CRLF);
-        tab(w, 1).append("}").append(CRLF);
+        tab(w, indent+1).append("super(model);").append(CRLF);
+        tab(w, indent+1).append("__internal.setCharset(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
+        tab(w, indent+1).append("__internal.setContentType(ContentType.").append(model.getContentType().toString()).append(");").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplateName(\"").append(model.getTemplateName()).append("\");").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplatePackageName(\"").append(model.getPackageName()).append("\");").append(CRLF);
         
+        // each model argument passed along as well
+        for (Argument arg : model.getArguments()) {
+            tab(w, indent+1).append("this.").append(arg.getName()).append(" = model.").append(arg.getExternalName()).append("();").append(CRLF);
+        }
+        
+        tab(w, indent).append("}").append(CRLF);
+        
+        
+        /**
         // setters with builder-style pattern
         if (model.getArguments().size() > 0) {
             for (Argument arg : model.getArgumentsWithoutRockerBody()) {
@@ -324,18 +442,24 @@ public class JavaGenerator {
                 tab(w, 1).append("}").append(CRLF);
             }
         }
+        */
         
+        /**
         // if RockerBody is supported then override the __body setter
-        Argument rockerBodyArgument = model.getRockerBodyArgument();
-        if (rockerBodyArgument != null) {
-            w.append(CRLF);
-                tab(w, 1).append("@Override").append(CRLF);
-                tab(w, 1).append("public ").append(model.getName()).append(" __body(RockerContent body) {").append(CRLF);
-                tab(w, 2).append("this.").append(rockerBodyArgument.getName()).append(" = body;").append(CRLF);
-                tab(w, 2).append("return this;").append(CRLF);
-                tab(w, 1).append("}").append(CRLF);
+        if (true) {
+            Argument rockerBodyArgument = model.getRockerBodyArgument();
+            if (rockerBodyArgument != null) {
+                w.append(CRLF);
+                    tab(w, indent).append("@Override").append(CRLF);
+                    tab(w, indent).append("public Template __body(RockerContent body) {").append(CRLF);
+                    tab(w, indent+1).append("this.").append(rockerBodyArgument.getName()).append(" = body;").append(CRLF);
+                    tab(w, indent+1).append("return this;").append(CRLF);
+                    tab(w, indent).append("}").append(CRLF);
+            }
         }
+        */
         
+        /**
         // static builder
         w.append(CRLF);
         tab(w, 1).append("static public ").append(model.getName()).append(" template(");
@@ -361,16 +485,18 @@ public class JavaGenerator {
         }
         w.append(";").append(CRLF);
         tab(w, 1).append("}").append(CRLF);
-        
+        */
         
         w.append(CRLF);
-        tab(w, 1).append("@Override").append(CRLF);
-        tab(w, 1).append("protected void __render() throws IOException, RenderingException {").append(CRLF);
+        
+        tab(w, indent).append("@Override").append(CRLF);
+        tab(w, indent).append("protected void __doRender() throws IOException, RenderingException {").append(CRLF);
+        
         
         // build rendering code
-        int indent = 2;
-        int depth = 0;
+        int depth = 1;
         Deque<String> blockEnd = new ArrayDeque<>();
+        
         for (TemplateUnit unit : model.getUnits()) {
             if (unit instanceof Comment) {
                 continue;
@@ -698,8 +824,14 @@ public class JavaGenerator {
             }
             //log.info(" src (@ {}): [{}]", unit.getSourceRef(), unit.getSourceRef().getConsoleFriendlyText());
         }
-        tab(w, 1).append("}").append(CRLF);
         
+        // end of render()
+        tab(w, indent).append("}").append(CRLF);
+        
+        indent--;
+        
+        // end of template class
+        tab(w, indent).append("}").append(CRLF);
         
         
         if (this.plainTextStrategy == PlainTextStrategy.STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS &&
@@ -707,26 +839,26 @@ public class JavaGenerator {
             
             w.append(CRLF);
             
-            tab(w, 1).append("private static class PlainText {").append(CRLF);
+            tab(w, indent).append("private static class PlainText {").append(CRLF);
             w.append(CRLF);
             
             for (String plainText : plainTextMap.keySet()) {
 
                 for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
 
-                    tab(w, 2).append("static private final String ")
+                    tab(w, indent+1).append("static private final String ")
                         .append(chunk.getKey())
                         .append(" = \"")
                         .append(StringEscapeUtils.escapeJava(chunk.getValue()))
                         .append("\";")
                         .append(CRLF);
-
+                    
                 }
 
             }
             
             w.append(CRLF);
-            tab(w, 1).append("}").append(CRLF);
+            tab(w, indent).append("}").append(CRLF);
         }
         
         

@@ -40,7 +40,8 @@ public class GeneratorMain {
         logModel(model);
         
         JavaGenerator generator = new JavaGenerator();
-        generator.setOutputDirectory(new File("target/generated-test-sources/rocker"));
+        
+        generator.setOutputDirectory(new File("compiler/target/generated-test-sources/rocker"));
         
         File sourceFile = generator.generate(model);
     }

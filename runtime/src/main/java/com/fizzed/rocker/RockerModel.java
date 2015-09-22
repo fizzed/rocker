@@ -15,14 +15,19 @@
  */
 package com.fizzed.rocker;
 
-import com.fizzed.rocker.runtime.DefaultRockerTemplate;
-
 /**
  *
  * @author joelauer
  */
-public interface RockerTemplate {
+public interface RockerModel {
 
-    // no public methods
+    /**
+     * Executes a template model and renders content to output. Single use only.
+     * @return The output of rendering process
+     * @throws RenderingException Thrown if any error encountered while rendering
+     *      template. Exception will include underlying cause as well as line
+     *      and position of original template source that triggered exception.
+     */
+    RockerOutput render() throws RenderingException;
     
 }

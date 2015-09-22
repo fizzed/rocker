@@ -17,6 +17,7 @@ package com.fizzed.test;
 
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
+import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 
 /**
@@ -29,25 +30,32 @@ public abstract class CustomRockerTemplate<T extends CustomRockerTemplate> exten
     // implicit variables/functions
     protected String implicit;
     
-    public T implicit(String s) {
-        this.implicit = s;
-        return (T)this;
-    }
-    
-    public Integer i() {
-        return 1;
-    }
-
-    @Override
-    protected <T> void __configure(T other) throws RenderingException {
-        super.__configure(other);
-        if (other instanceof CustomRockerTemplate) {
-            CustomRockerTemplate otherTemplate = (CustomRockerTemplate)other;
-            this.implicit = otherTemplate.implicit;
+    public CustomRockerTemplate(DefaultRockerModel model) {
+        super(model);
+        if (model instanceof CustomRockerModel) {
+            CustomRockerModel customModel = (CustomRockerModel)model;
+            this.implicit = customModel.implicit;
         }
         else {
-            throw new RenderingException("Unable to configure template (not an instance of " + this.getClass().getName() + ")");
+            throw new RenderingException("Unable to create template from model (not an instance of " + CustomRockerModel.class.getName() + ")");
         }
+    }
+    
+    @Override
+    protected void __associate(DefaultRockerTemplate context) throws RenderingException {
+        super.__associate(context);
+        if (context instanceof CustomRockerTemplate) {
+            CustomRockerTemplate customTemplate = (CustomRockerTemplate)context;
+            this.implicit = customTemplate.implicit;
+        }
+        else {
+            throw new RenderingException("Unable to associate template with other template (not an instance of " + CustomRockerTemplate.class.getName() + ")");
+        }
+    }
+    
+    // implicit method
+    public Integer i() {
+        return 1;
     }
 
     // example of render() providing its own output to tie into specific framework

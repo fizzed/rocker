@@ -30,7 +30,7 @@ public class Options {
     static public final String DISCARD_LOGIC_WHITESPACE = "discardLogicWhitespace";
     static public final String COMBINE_ADJACENT_PLAIN = "combineAdjacentPlain";
     static public final String EXTENDS_CLASS = "extendsClass";
-    static public final String IMPLEMENTS_INTERFACE = "implementsInterface";
+    static public final String EXTENDS_MODEL_CLASS = "extendsModelClass";
     static public final String TARGET_CHARSET = "targetCharset";
     
     // generated source compatiblity
@@ -42,8 +42,8 @@ public class Options {
     private Boolean combineAdjacentPlain;
     // parent class of template
     private String extendsClass;
-    // interface template implements
-    private String implementsInterface;
+    // parent class of template model
+    private String extendsModelClass;
     // target charset template will render with
     private String targetCharset;
     
@@ -52,7 +52,7 @@ public class Options {
         this.discardLogicWhitespace = null;                 // will default to default of content type
         this.combineAdjacentPlain = Boolean.TRUE;
         this.extendsClass = com.fizzed.rocker.runtime.DefaultRockerTemplate.class.getName();
-        this.implementsInterface = null;
+        this.extendsModelClass = com.fizzed.rocker.runtime.DefaultRockerModel.class.getName();
         this.targetCharset = "UTF-8";
     }
     
@@ -62,7 +62,7 @@ public class Options {
         options.discardLogicWhitespace = this.discardLogicWhitespace;
         options.combineAdjacentPlain = this.combineAdjacentPlain;
         options.extendsClass = this.extendsClass;
-        options.implementsInterface = this.implementsInterface;
+        options.extendsModelClass = this.extendsModelClass;
         options.targetCharset = this.targetCharset;
         return options;
     }
@@ -124,12 +124,12 @@ public class Options {
         this.extendsClass = extendsClass;
     }
 
-    public String getImplementsInterface() {
-        return implementsInterface;
+    public String getExtendsModelClass() {
+        return extendsModelClass;
     }
 
-    public void setImplementsInterface(String implementsInterface) {
-        this.implementsInterface = implementsInterface;
+    public void setExtendsModelClass(String extendsModelClass) {
+        this.extendsModelClass = extendsModelClass;
     }
 
     public String getTargetCharset() {
@@ -160,8 +160,8 @@ public class Options {
             case EXTENDS_CLASS:
                 this.setExtendsClass(optionValue);
                 break;
-            case IMPLEMENTS_INTERFACE:
-                this.setImplementsInterface(optionValue);
+            case EXTENDS_MODEL_CLASS:
+                this.setExtendsModelClass(optionValue);
                 break;
             case TARGET_CHARSET:
                 this.setTargetCharset(optionValue);

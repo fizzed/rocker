@@ -85,7 +85,8 @@ public class CompileMain {
             //List<File> javaFiles = compiler.generateJavaFiles(templateModels);
 
             List<File> javaFiles = Arrays.asList(
-                    new File("compiler/target/generated-test-sources/rocker/com/fizzed/rocker/compiler/Compile2.java")
+                    //new File("compiler/target/generated-test-sources/rocker/com/fizzed/rocker/compiler/Compile2.java")
+                    new File("compiler/src/test/java/com/fizzed/rocker/compiler/DynamicTemplate.java")
             );
 
             compiler.compileJavaFiles(javaFiles);
@@ -95,74 +96,27 @@ public class CompileMain {
 
 
 
-            Class<RockerTemplate> templateClass;
+            //Class<RockerTemplate> templateClass;
 
-            ReloadableClassLoader rcl = new ReloadableClassLoader(CompileMain.class.getClassLoader());
+            //ReloadableClassLoader rcl = new ReloadableClassLoader(CompileMain.class.getClassLoader());
 
-            templateClass = rcl.loadClass("com.fizzed.rocker.compiler.Compile2");
+            //templateClass = rcl.loadClass("com.fizzed.rocker.compiler.DynamicTemplate");
 
-            RockerTemplate template = templateClass.newInstance();
-
+            //DynamicTemplate template = DynamicTemplate.template("test");
+            /**
+            DynamicTemplate template = new DynamicTemplate().val("test");
+            
             String out = template.render().toString();
 
             System.out.println("render: " + out);
         
             System.out.println("waitng for input for next render...");
             System.in.read();
+            */
             
         }
         
         
-    }
-    
-    static public class ReloadableClassLoader extends ClassLoader{
-
-        public ReloadableClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public Class loadClass(String name) throws ClassNotFoundException {
-
-            if (name.startsWith("com.fizzed.rocker.compiler")) {
-                log.debug("loading class: {}", name);
-            }
-
-            if (!name.equals("com.fizzed.rocker.compiler.Compile2$Renderer")) {
-            //if (true)
-                return super.loadClass(name);
-            }
-
-            try {
-                URL myUrl = new File("compiler/target/test-classes/" + name.replace(".", "/") + ".class").toURI().toURL();
-                System.out.println("Loading: " + myUrl);
-                URLConnection connection = myUrl.openConnection();
-                
-                
-                InputStream input = connection.getInputStream();
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                int data = input.read();
-
-                while(data != -1){
-                    buffer.write(data);
-                    data = input.read();
-                }
-
-                input.close();
-
-                byte[] classData = buffer.toByteArray();
-
-                return defineClass(name, classData, 0, classData.length);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
     }
     
 }

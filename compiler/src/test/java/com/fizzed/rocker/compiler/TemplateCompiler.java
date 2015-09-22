@@ -137,6 +137,8 @@ public class TemplateCompiler {
         javacOptions.add("-d");
         javacOptions.add(outputDirectory.getAbsolutePath());
 
+        javacOptions.add("-Xlint:unchecked");
+        
         //
         // java -> class
         //
