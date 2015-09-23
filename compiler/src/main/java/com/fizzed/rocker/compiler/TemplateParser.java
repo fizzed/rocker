@@ -33,7 +33,6 @@ import com.fizzed.rocker.model.JavaImport;
 import com.fizzed.rocker.model.JavaVariable;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.Option;
-import com.fizzed.rocker.model.Options;
 import com.fizzed.rocker.model.PlainText;
 import com.fizzed.rocker.model.SourcePosition;
 import com.fizzed.rocker.model.SourceRef;
@@ -63,28 +62,16 @@ import org.slf4j.LoggerFactory;
 public class TemplateParser {
     static private final Logger log = LoggerFactory.getLogger(TemplateParser.class);
     
-    private File baseDirectory;
-    private Options defaultOptions;
+    final private RockerConfiguration configuration;
     
-    public TemplateParser() {
-        this.baseDirectory = RockerConfigurationKeys.getParserBaseDirectory();
-        this.defaultOptions = RockerConfigurationKeys.getParserOptions();
+    public TemplateParser(RockerConfiguration configuration) {
+        this.configuration = configuration;
+        //this.baseDirectory = RockerConfiguration.getTemplateDirectory();
+        //this.defaultOptions = RockerConfiguration.getOptions();
     }
 
-    public File getBaseDirectory() {
-        return baseDirectory;
-    }
-
-    public void setBaseDirectory(File baseDirectory) {
-        this.baseDirectory = baseDirectory;
-    }
-
-    public Options getDefaultOptions() {
-        return defaultOptions;
-    }
-
-    public void setDefaultOptions(Options defaultOptions) {
-        this.defaultOptions = defaultOptions;
+    public RockerConfiguration getConfiguration() {
+        return configuration;
     }
    
     static class TemplateIdentity {
@@ -103,10 +90,10 @@ public class TemplateParser {
         // deduce "package" of file by relativizing it to input directory
         identity.packageName = RockerUtil.pathToPackageName(templateFile.toPath());
         
-        Path p = templateFile.toPath();
+        Path p = templateFile.getAbsoluteFile().toPath();
         
         if (baseDirectory != null) {
-            Path bdp = baseDirectory.toPath();
+            Path bdp = baseDirectory.getAbsoluteFile().toPath();
             
             if (!RockerUtil.isRelativePath(bdp, p)) {
                 throw new IOException("Template file [" + templateFile + "] not relative to base dir [" + baseDirectory + "]");
@@ -130,45 +117,25 @@ public class TemplateParser {
             throw new IOException("File cannot read or does not exist [" + f + "]");
         }
         
-        TemplateIdentity identity = parseIdentity(this.baseDirectory, f);
+        TemplateIdentity identity = parseIdentity(this.configuration.getTemplateDirectory(), f);
         
         ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
-       
-        /**
-        // deduce "package" of file by relativizing it to input directory
-        String packageName = RockerUtil.pathToPackageName(f.toPath());
         
-        Path p = f.toPath();
-        
-        if (this.baseDirectory != null) {
-            Path bdp = baseDirectory.toPath();
-            
-            if (!RockerUtil.isRelativePath(bdp, p)) {
-                throw new IOException("Template file [" + f + "] not relative to base dir [" + baseDirectory + "]");
-            }
-            
-            Path relativePath = bdp.relativize(p);
-            
-            // new package name is the parent of this file
-            packageName = RockerUtil.pathToPackageName(relativePath.getParent());
-        }
-        */
-        
-        return parse(input, identity.packageName, identity.templateName);
+        return parse(input, identity.packageName, identity.templateName, f.lastModified());
     }
     
     public TemplateModel parse(File f, String packageName) throws IOException, ParserException {
         ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
-        return parse(input, packageName, f.getName());
+        return parse(input, packageName, f.getName(), f.lastModified());
     }
     
     public TemplateModel parse(String source, String qualifiedName) throws IOException, ParserException {
         ANTLRInputStream input = new ANTLRInputStream(source);
         input.name = qualifiedName;
-        return parse(input, "views", qualifiedName);
+        return parse(input, "views", qualifiedName, -1);
     }
     
-    private TemplateModel parse(ANTLRInputStream input, String packageName, String templateName) throws ParserException {
+    private TemplateModel parse(ANTLRInputStream input, String packageName, String templateName, long modifiedAt) throws ParserException {
         // construct path for more helpful error messages
         String templatePath = packageName.replace(".", File.separator) + "/" + templateName;
         
@@ -208,7 +175,7 @@ public class TemplateParser {
             parser.removeErrorListeners();
             parser.addErrorListener(new DescriptiveErrorListener());
             
-            TemplateModel model = new TemplateModel(packageName, templateName, defaultOptions.copy());
+            TemplateModel model = new TemplateModel(packageName, templateName, modifiedAt, configuration.getOptions().copy());
             
             // walk it and attach our listener
             TemplateParserListener listener = new TemplateParserListener(input, model, templatePath);

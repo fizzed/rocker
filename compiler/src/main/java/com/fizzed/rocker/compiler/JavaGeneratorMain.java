@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public class JavaGeneratorMain {
     private static final Logger log = LoggerFactory.getLogger(JavaGeneratorMain.class);
     
+    private final RockerConfiguration configuration;
     private final TemplateParser parser;
     private final JavaGenerator generator;
     private final List<File> templateFiles;
@@ -40,8 +41,9 @@ public class JavaGeneratorMain {
     private boolean failOnError;
     
     public JavaGeneratorMain() {
-        this.parser = new TemplateParser();
-        this.generator = new JavaGenerator();
+        this.configuration = new RockerConfiguration();
+        this.parser = new TemplateParser(this.configuration);
+        this.generator = new JavaGenerator(this.configuration);
         this.templateFiles = new ArrayList<>();
         this.suffixRegex = ".*\\.rocker\\.(raw|html)$";
         this.failOnError = true;
@@ -72,16 +74,16 @@ public class JavaGeneratorMain {
     }
     
     public void run() throws Exception {
-        if (parser.getBaseDirectory() == null) {
-            throw new Exception("Template/base directory was null");
+        if (this.configuration.getTemplateDirectory() == null) {
+            throw new Exception("Template directory was null");
         }
         
-        if (!parser.getBaseDirectory().exists() || !parser.getBaseDirectory().isDirectory()) {
-            throw new Exception("Template/base directory does not exist: " + parser.getBaseDirectory());
+        if (!this.configuration.getTemplateDirectory().exists() || !this.configuration.getTemplateDirectory().isDirectory()) {
+            throw new Exception("Template directory does not exist: " + this.configuration.getTemplateDirectory());
         }
         
         // loop thru template directory and match templates
-        Collection<File> allFiles = RockerUtil.listFileTree(parser.getBaseDirectory());
+        Collection<File> allFiles = RockerUtil.listFileTree(this.configuration.getTemplateDirectory());
         for (File f : allFiles) {
             if (f.getName().matches(suffixRegex)) {
                 templateFiles.add(f);
@@ -125,6 +127,13 @@ public class JavaGeneratorMain {
         if (errors > 0 && failOnError) {
             throw new Exception("Caught " + errors + " errors.");
         }
+        
+        // save configuration
+        this.configuration.getCompileDirectory().mkdirs();
+        File configFile = new File(this.configuration.getCompileDirectory(), "rocker.conf");
+        this.configuration.write(configFile);
+        
+        log.info("Generated rocker configuration " + configFile);
     }
     
     static public void main(String[] a) throws Exception {
@@ -145,10 +154,10 @@ public class JavaGeneratorMain {
             
             switch (n) {
                 case "-t":
-                    jgm.parser.setBaseDirectory(new File(v));
+                    jgm.parser.getConfiguration().setTemplateDirectory(new File(v));
                     break;
                 case "-o":
-                    jgm.generator.setOutputDirectory(new File(v));
+                    jgm.generator.getConfiguration().setOutputDirectory(new File(v));
                     break;
             }
         }

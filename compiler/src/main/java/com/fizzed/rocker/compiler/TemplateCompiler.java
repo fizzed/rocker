@@ -15,19 +15,20 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.compiler.JavaGenerator;
-import com.fizzed.rocker.compiler.TemplateParser;
 import com.fizzed.rocker.model.TemplateModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.tools.*;
+import javax.tools.Diagnostic.Kind;
 
 /**
  *
@@ -36,84 +37,65 @@ import javax.tools.*;
 public class TemplateCompiler {
     private static final Logger log = LoggerFactory.getLogger(TemplateCompiler.class);
 
-    // directory with templates
-    private File templateBaseDirectory;
+    private final RockerConfiguration configuration;
 
-    // directory compiled classes will be output to
-    private File javaGenerateDirectory;
+    public TemplateCompiler(RockerConfiguration configuration) {
+        this.configuration = configuration;
+    }
+    
+    static public class CompilationUnit {
+        // parse
+        private File templateFile;
+        private TemplateModel templateModel;
+        // generate
+        private File javaFile;
 
-    // directory compiled classes will be output to
-    private File outputDirectory;
+        public File getTemplateFile() {
+            return templateFile;
+        }
 
-    public TemplateCompiler() {
+        public TemplateModel getTemplateModel() {
+            return templateModel;
+        }
+
+        public File getJavaFile() {
+            return javaFile;
+        }
         
     }
 
-    public File getTemplateBaseDirectory() {
-        return templateBaseDirectory;
-    }
-
-    public TemplateCompiler setTemplateBaseDirectory(File templateBaseDirectory) {
-        this.templateBaseDirectory = templateBaseDirectory;
-        return this;
-    }
-
-    public File getJavaGenerateDirectory() {
-        return javaGenerateDirectory;
-    }
-
-    public TemplateCompiler setJavaGenerateDirectory(File javaGenerateDirectory) {
-        this.javaGenerateDirectory = javaGenerateDirectory;
-        return this;
-    }
-
-    public File getOutputDirectory() {
-        return outputDirectory;
-    }
-
-    public TemplateCompiler setOutputDirectory(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
-        return this;
-    }
-
-    public List<TemplateModel> parseTemplates(List<File> templateFiles) throws Exception {
+    public List<CompilationUnit> parse(List<File> templateFiles) throws ParserException, IOException {
         //
         // template -> model
         //
-        TemplateParser parser = new TemplateParser();
+        TemplateParser parser = new TemplateParser(this.configuration);
 
-        parser.setBaseDirectory(templateBaseDirectory);
-
-        List<TemplateModel> models = new ArrayList<>();
+        List<CompilationUnit> units = new ArrayList<>();
 
         for (File templateFile : templateFiles) {
             TemplateModel model = parser.parse(templateFile);
-            models.add(model);
+            CompilationUnit unit = new CompilationUnit();
+            unit.templateFile = templateFile;
+            unit.templateModel = model;
+            units.add(unit);
         }
 
-        return models;
+        return units;
     }
 
-    public List<File> generateJavaFiles(List<TemplateModel> models) throws Exception {
+    public void generate(List<CompilationUnit> units) throws GeneratorException, IOException {
         //
         // model -> java
         //
-        JavaGenerator generator = new JavaGenerator();
+        JavaGenerator generator = new JavaGenerator(this.configuration);
 
-        generator.setOutputDirectory(this.javaGenerateDirectory);
-
-        List<File> javaFiles = new ArrayList<>();
-
-        for (TemplateModel model : models) {
-            File javaFile = generator.generate(model);
-            javaFiles.add(javaFile);
+        for (CompilationUnit unit : units) {
+            unit.javaFile = generator.generate(unit.templateModel);
         }
-
-        return javaFiles;
     }
 
 
-    public void compileJavaFiles(List<File> javaFiles) throws Exception {
+    public void compile(List<CompilationUnit> units) throws CompileUnrecoverableException, CompileDiagnosticException {
         //
         // build javac options
         //
@@ -126,7 +108,12 @@ public class TemplateCompiler {
             if (classpath.length() > 0) {
                 classpath.append(File.pathSeparator);
             }
-            classpath.append(new File(url.toURI()).getAbsolutePath());
+            
+            try {
+                classpath.append(new File(url.toURI()).getAbsolutePath());
+            } catch (Exception e) {
+                throw new CompileUnrecoverableException("Unable to build javac classpath", e);
+            }
         }
 
         List<String> javacOptions = new ArrayList<>();
@@ -137,9 +124,10 @@ public class TemplateCompiler {
 
         // directory to output compiles classes
         javacOptions.add("-d");
-        javacOptions.add(outputDirectory.getAbsolutePath());
+        javacOptions.add(this.configuration.getCompileDirectory().getAbsolutePath());
 
         javacOptions.add("-Xlint:unchecked");
+        
         
         //
         // java -> class
@@ -150,27 +138,59 @@ public class TemplateCompiler {
 
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
+        Map<File,CompilationUnit> unitsByJavaFile = new HashMap<>();
+        for (CompilationUnit unit : units) {
+            unitsByJavaFile.put(unit.javaFile.getAbsoluteFile(), unit);
+        }
+        
         Iterable<? extends JavaFileObject> compilationUnits =
-                fileManager.getJavaFileObjectsFromFiles(javaFiles);
+                fileManager.getJavaFileObjectsFromFiles(unitsByJavaFile.keySet());
 
         JavaCompiler.CompilationTask task
                 = compiler.getTask(null, null, diagnostics, javacOptions, null, compilationUnits);
 
         boolean success = task.call();
 
+        int errors = 0;
+        
+        List<CompileDiagnostic> cds = new ArrayList<>();
+        
         for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            log.debug("code: {}", diagnostic.getCode());
-            log.debug("kind: {}", diagnostic.getKind());
+            // file:/home/joelauer/workspace/fizzed/java-rocker/reloadtest/target/generated-test-sources/rocker/views/index.java
+            JavaFileObject jfo = (JavaFileObject)diagnostic.getSource();
+            log.debug("java file: {}", jfo.toUri());
+            
+            log.debug("source: {}", diagnostic.getSource());
             log.debug("line num: {}", diagnostic.getLineNumber());
             log.debug("col num: {}", diagnostic.getColumnNumber());
+            
+            log.debug("code: {}", diagnostic.getCode());
+            log.debug("kind: {}", diagnostic.getKind());
             log.debug("pos: {}", diagnostic.getPosition());
             log.debug("start pos: {}", diagnostic.getStartPosition());
             log.debug("end pos: {}", diagnostic.getEndPosition());
-            log.debug("source: {}", diagnostic.getSource());
+            
             log.debug("message: {}", diagnostic.getMessage(null));
+            
+            if (diagnostic.getKind() == Kind.ERROR) {
+                File javaFile = new File(jfo.toUri()).getAbsoluteFile();
+                
+                CompilationUnit unit = unitsByJavaFile.get(javaFile);
+                
+                CompileDiagnostic cd = new CompileDiagnostic(
+                        unit.templateFile, javaFile,
+                        diagnostic.getLineNumber(), diagnostic.getColumnNumber(),
+                        diagnostic.getMessage(null));
+                
+                cds.add(cd);
+                
+                errors++;
+            }
         }
 
-        log.debug("Success: " + success);
+        if (!success || errors > 0) {
+            throw new CompileDiagnosticException("Unable to compile rocker template(s) with " + errors + " errors", cds);
+        }
     }
     
 }

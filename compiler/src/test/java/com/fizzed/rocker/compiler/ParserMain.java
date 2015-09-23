@@ -15,9 +15,6 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.compiler.RockerUtil;
-import com.fizzed.rocker.compiler.ParserException;
-import com.fizzed.rocker.compiler.TemplateParser;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
@@ -48,8 +45,10 @@ public class ParserMain {
         ch.qos.logback.classic.Logger rockerRootLogger = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("com.fizzed.rocker");
         rockerRootLogger.setLevel(Level.TRACE);
         
-        TemplateParser parser = new TemplateParser();
-        parser.setBaseDirectory(new File("compiler/src/test/resources"));
+        RockerConfiguration configuration = new RockerConfiguration();
+        configuration.setTemplateDirectory(new File("compiler/src/test/resources"));
+        
+        TemplateParser parser = new TemplateParser(configuration);
         
         File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");

@@ -8,3 +8,4 @@ accounts.json
 /maven-plugin/target/
 /java6test/target/
 /dynamic/target/
+/reloadtest/target/

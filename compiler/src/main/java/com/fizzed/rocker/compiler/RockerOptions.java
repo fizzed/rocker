@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.model;
+package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.compiler.ParserException;
-import com.fizzed.rocker.compiler.TokenException;
+import com.fizzed.rocker.model.JavaVersion;
+import com.fizzed.rocker.model.Option;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 /**
  *
  * @author joelauer
  */
-public class Options {
+public class RockerOptions {
     
     static public final String JAVA_VERSION = "javaVersion";
     static public final String DISCARD_LOGIC_WHITESPACE = "discardLogicWhitespace";
@@ -32,6 +33,7 @@ public class Options {
     static public final String EXTENDS_CLASS = "extendsClass";
     static public final String EXTENDS_MODEL_CLASS = "extendsModelClass";
     static public final String TARGET_CHARSET = "targetCharset";
+    static public final String RELOAD = "reload";
     
     // generated source compatiblity
     private JavaVersion javaVersion;
@@ -46,24 +48,28 @@ public class Options {
     private String extendsModelClass;
     // target charset template will render with
     private String targetCharset;
+    // templates prepped for reloading?
+    private Boolean reload;
     
-    public Options() {
+    public RockerOptions() {
         this.javaVersion = JavaVersion.v1_8;
         this.discardLogicWhitespace = null;                 // will default to default of content type
         this.combineAdjacentPlain = Boolean.TRUE;
         this.extendsClass = com.fizzed.rocker.runtime.DefaultRockerTemplate.class.getName();
         this.extendsModelClass = com.fizzed.rocker.runtime.DefaultRockerModel.class.getName();
         this.targetCharset = "UTF-8";
+        this.reload = Boolean.FALSE;
     }
     
-    public Options copy() {
-        Options options = new Options();
+    public RockerOptions copy() {
+        RockerOptions options = new RockerOptions();
         options.javaVersion = this.javaVersion;
         options.discardLogicWhitespace = this.discardLogicWhitespace;
         options.combineAdjacentPlain = this.combineAdjacentPlain;
         options.extendsClass = this.extendsClass;
         options.extendsModelClass = this.extendsModelClass;
         options.targetCharset = this.targetCharset;
+        options.reload = this.reload;
         return options;
     }
 
@@ -143,6 +149,14 @@ public class Options {
         this.targetCharset = targetCharset;
     }
 
+    public Boolean getReload() {
+        return reload;
+    }
+
+    public void setReload(Boolean reload) {
+        this.reload = reload;
+    }
+
     public void set(String name, String value) throws TokenException {
         String optionName = name.trim();
         String optionValue = value.trim();
@@ -166,9 +180,22 @@ public class Options {
             case TARGET_CHARSET:
                 this.setTargetCharset(optionValue);
                 break;
+            case RELOAD:
+                this.setReload(parseBoolean(optionValue));
+                break;
             default:
                 throw new TokenException("Invalid option (" + optionName + ") is not a property)");
         }
+    }
+    
+    public void write(Properties properties) {
+        properties.put(RockerConfiguration.OPTION_PREFIX + DISCARD_LOGIC_WHITESPACE, this.discardLogicWhitespace.toString());
+        properties.put(RockerConfiguration.OPTION_PREFIX + COMBINE_ADJACENT_PLAIN, this.combineAdjacentPlain.toString());
+        properties.put(RockerConfiguration.OPTION_PREFIX + JAVA_VERSION, this.javaVersion.getLabel());
+        properties.put(RockerConfiguration.OPTION_PREFIX + EXTENDS_CLASS, this.extendsClass);
+        properties.put(RockerConfiguration.OPTION_PREFIX + EXTENDS_MODEL_CLASS, this.extendsModelClass);
+        properties.put(RockerConfiguration.OPTION_PREFIX + TARGET_CHARSET, this.targetCharset);
+        properties.put(RockerConfiguration.OPTION_PREFIX + RELOAD, this.reload.toString());
     }
     
     public void parseOption(Option option) throws ParserException {

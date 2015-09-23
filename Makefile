@@ -10,8 +10,11 @@ compile:
 render:
 	mvn -pl java6test -am test -Pexec-java6test -DskipTests=true -Dexec.classpathScope="test" -Dexec.mainClass="com.fizzed.rocker.RenderMain"
 
-run-dynamic:
-	mvn -pl dynamic -am test -Pexec-dynamic -DskipTests=true -Dexec.classpathScope="test" -Dexec.mainClass="com.fizzed.rocker.DynamicMain"
+reload:
+	mvn -pl reloadtest -am test -Pexec-reloadtest -DskipTests=true -Dexec.classpathScope="test" -Dexec.mainClass="com.fizzed.rocker.reload.ReloadMain"
+
+reload-server:
+	mvn -pl reloadtest -am test -Pexec-reloadtest -DskipTests=true -Dexec.classpathScope="test" -Dexec.mainClass="com.fizzed.rocker.reload.ReloadServer"
 
 java8:
 	mvn -pl java6test -am test -Pexec-java6test -DskipTests=true -Dexec.classpathScope="test" -Dexec.mainClass="com.fizzed.rocker.Java8Main"

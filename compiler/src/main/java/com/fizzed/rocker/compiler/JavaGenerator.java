@@ -34,6 +34,7 @@ import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
+import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import com.fizzed.rocker.runtime.Java8Iterator;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
@@ -66,22 +67,22 @@ public class JavaGenerator {
     // that require lots of space (e.g. euro symbol) make sure chunk length can be expanded by 4
     static public final int PLAIN_TEXT_CHUNK_LENGTH = 16384;
     
-    private File outputDirectory;
+    private final RockerConfiguration configuration;
+    //private File outputDirectory;
     private PlainTextStrategy plainTextStrategy;
     
-    public JavaGenerator() {
-        this.outputDirectory = RockerConfigurationKeys.getGeneratorOutputDirectory();
+    public JavaGenerator(RockerConfiguration configuration) {
+        this.configuration = configuration;
+        //this.outputDirectory = RockerConfiguration.getInstance().getOutputDirectory();
         //this.plainTextStrategy = PlainTextStrategy.STATIC_FINAL_STRINGS;
         this.plainTextStrategy = PlainTextStrategy.STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS;
     }
 
-    public File getOutputDirectory() {
-        return outputDirectory;
+    public RockerConfiguration getConfiguration() {
+        return configuration;
     }
-
-    public void setOutputDirectory(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
-    }
+    
+    
 
     public PlainTextStrategy getPlainTextStrategy() {
         return plainTextStrategy;
@@ -92,7 +93,7 @@ public class JavaGenerator {
     }
     
     public File generate(TemplateModel model) throws GeneratorException, IOException {
-        if (this.outputDirectory == null) {
+        if (configuration.getOutputDirectory() == null) {
             throw new NullPointerException("Output dir was null");
         }
         
@@ -100,7 +101,7 @@ public class JavaGenerator {
             throw new NullPointerException("Model was null");
         }
         
-        Path outputPath = outputDirectory.toPath();
+        Path outputPath = configuration.getOutputDirectory().toPath();
         
         // append package path
         Path packagePath = RockerUtil.packageNameToPath(model.getPackageName());
@@ -232,29 +233,17 @@ public class JavaGenerator {
         tab(w, indent).append("static public final ContentType CONTENT_TYPE = ContentType.").append(model.getContentType().toString()).append(";").append(CRLF);
         tab(w, indent).append("static public final String TEMPLATE_NAME = \"").append(model.getTemplateName()).append("\";").append(CRLF);
         tab(w, indent).append("static public final String TEMPLATE_PACKAGE_NAME = \"").append(model.getPackageName()).append("\";").append(CRLF);
+        tab(w, indent).append("static public final long MODIFIED_AT = ").append(model.getModifiedAt()+"").append("L;").append(CRLF);
         
 
         // model arguments as members of model class
         appendArgumentMembers(model, w, "private", false, indent);
         
-        //w.append(CRLF);
 
         // model setters & getters with builder-style pattern
         // special case for the RockerBody argument which sorta "hides" its getter/setter
         if (model.getArguments().size() > 0) {
             for (Argument arg : model.getArguments()) {
-                
-                /**
-                String argName = arg.getName();
-                String argType = arg.getType();
-                
-                // RockerBody special case
-                if (arg.getType().equals("RockerBody")) {
-                    argName = "__body";
-                    argType = "RockerContent";
-                }
-                */
-                
                 // setter
                 w.append(CRLF);
                 tab(w, indent)
@@ -316,15 +305,18 @@ public class JavaGenerator {
         tab(w, indent).append("@Override").append(CRLF);
         tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
         
-        
-        /**
-        tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
-        tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-        */
-        
-        tab(w, indent+1).append("DefaultRockerTemplate template = com.fizzed.rocker.dynamic.RockerDynamicBootstrap.getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
-        tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-        
+        if (model.getOptions().getReload()) {
+            tab(w, indent+1)
+                .append(DefaultRockerTemplate.class.getName())
+                .append(" template = ")
+                .append(com.fizzed.rocker.reload.RockerReloadingBootstrap.class.getCanonicalName())
+                .append(".getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
+            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        } else {
+            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
+            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        }
+
         
         tab(w, indent).append("}").append(CRLF);
         
@@ -448,64 +440,6 @@ public class JavaGenerator {
         
         tab(w, indent).append("}").append(CRLF);
         
-        
-        /**
-        // setters with builder-style pattern
-        if (model.getArguments().size() > 0) {
-            for (Argument arg : model.getArgumentsWithoutRockerBody()) {
-                w.append(CRLF);
-                tab(w, 1).append("public ").append(model.getName()).append(" ").append(arg.getName())
-                        .append("(" + arg.getType()).append(" ").append(arg.getName())
-                        .append(") {").append(CRLF);
-                tab(w, 2).append("this.").append(arg.getName()).append(" = ").append(arg.getName()).append(";").append(CRLF);
-                tab(w, 2).append("return this;").append(CRLF);
-                tab(w, 1).append("}").append(CRLF);
-            }
-        }
-        */
-        
-        /**
-        // if RockerBody is supported then override the __body setter
-        if (true) {
-            Argument rockerBodyArgument = model.getRockerBodyArgument();
-            if (rockerBodyArgument != null) {
-                w.append(CRLF);
-                    tab(w, indent).append("@Override").append(CRLF);
-                    tab(w, indent).append("public Template __body(RockerContent body) {").append(CRLF);
-                    tab(w, indent+1).append("this.").append(rockerBodyArgument.getName()).append(" = body;").append(CRLF);
-                    tab(w, indent+1).append("return this;").append(CRLF);
-                    tab(w, indent).append("}").append(CRLF);
-            }
-        }
-        */
-        
-        /**
-        // static builder
-        w.append(CRLF);
-        tab(w, 1).append("static public ").append(model.getName()).append(" template(");
-        if (model.getArguments().size() > 0) {
-            int i = 0;
-            // RockerBody is NOT included (it is passed via a closure block in other templates)
-            // so we only care about the other arguments
-            for (Argument arg : model.getArgumentsWithoutRockerBody()) {
-                if (i != 0) { w.append(", "); }
-                w.append(arg.getType()).append(" ").append(arg.getName());
-                i++;
-            }
-        }
-        w.append(") {").append(CRLF);
-        tab(w, 2).append("return new ").append(model.getName()).append("()");
-        if (model.getArguments().size() > 0) {
-            int i = 0;
-            for (Argument arg : model.getArgumentsWithoutRockerBody()) {
-                w.append(CRLF);
-                tab(w, 3).append(".").append(arg.getName()).append("(").append(arg.getName()).append(")");
-                i++;
-            }
-        }
-        w.append(";").append(CRLF);
-        tab(w, 1).append("}").append(CRLF);
-        */
         
         w.append(CRLF);
         

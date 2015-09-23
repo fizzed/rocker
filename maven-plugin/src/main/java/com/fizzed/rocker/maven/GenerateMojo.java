@@ -46,6 +46,12 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "rocker.extendsClass")
     protected String extendsClass;
     
+    @Parameter(property = "rocker.extendsModelClass")
+    protected String extendsModelClass;
+    
+    @Parameter(property = "rocker.reload")
+    protected Boolean reload;
+    
     @Parameter(property = "rocker.discardLogicWhitespace")
     protected Boolean discardLogicWhitespace;
     
@@ -67,6 +73,12 @@ public class GenerateMojo extends AbstractMojo {
      */
     @Parameter(property = "rocker.outputDirectory", defaultValue = "${project.build.directory}/generated-sources/rocker", required = true)
     protected File outputDirectory;
+    
+    /**
+     * Directory to compile Java source files.
+     */
+    @Parameter(property = "rocker.compileDirectory", defaultValue = "${project.build.directory}/classes", required = true)
+    protected File compileDirectory;
 
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
@@ -86,6 +98,10 @@ public class GenerateMojo extends AbstractMojo {
             throw new MojoExecutionException("Property outputDirectory cannot be null/empty");
         }
         
+        if (this.compileDirectory == null) {
+            throw new MojoExecutionException("Property compileDirectory cannot be null/empty");
+        }
+        
         if (javaVersion == null || javaVersion.length() == 0) {
             // set to current jdk version
             javaVersion = System.getProperty("java.version").substring(0, 3);
@@ -97,8 +113,9 @@ public class GenerateMojo extends AbstractMojo {
         try {
             JavaGeneratorMain jgm = new JavaGeneratorMain();
             
-            jgm.getParser().setBaseDirectory(templateDirectory);
-            jgm.getGenerator().setOutputDirectory(outputDirectory);
+            jgm.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
+            jgm.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
+            jgm.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
             jgm.setFailOnError(failOnError);
             
             // passthru other config
@@ -106,16 +123,22 @@ public class GenerateMojo extends AbstractMojo {
                 jgm.setSuffixRegex(suffixRegex);
             }
             if (javaVersion != null) {
-                jgm.getParser().getDefaultOptions().setJavaVersion(javaVersion);
+                jgm.getParser().getConfiguration().getOptions().setJavaVersion(javaVersion);
             }
             if (extendsClass != null) {
-                jgm.getParser().getDefaultOptions().setExtendsClass(extendsClass);
+                jgm.getParser().getConfiguration().getOptions().setExtendsClass(extendsClass);
+            }
+            if (extendsModelClass != null) {
+                jgm.getParser().getConfiguration().getOptions().setExtendsModelClass(extendsModelClass);
             }
             if (discardLogicWhitespace != null) {
-                jgm.getParser().getDefaultOptions().setDiscardLogicWhitespace(discardLogicWhitespace);
+                jgm.getParser().getConfiguration().getOptions().setDiscardLogicWhitespace(discardLogicWhitespace);
             }
             if (targetCharset != null) {
-                jgm.getParser().getDefaultOptions().setTargetCharset(targetCharset);
+                jgm.getParser().getConfiguration().getOptions().setTargetCharset(targetCharset);
+            }
+            if (reload != null) {
+                jgm.getParser().getConfiguration().getOptions().setReload(reload);
             }
             
             jgm.run();

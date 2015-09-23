@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.dynamic;
+package com.fizzed.rocker.reload;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
-public class RockerDynamicClassLoader extends ClassLoader {
+public class RockerClassLoader extends ClassLoader {
+    static private final Logger log = LoggerFactory.getLogger(RockerClassLoader.class);
 
-    private final RockerDynamicBootstrap bootstrap;
+    private final RockerReloadingBootstrap bootstrap;
     
-    public RockerDynamicClassLoader(RockerDynamicBootstrap bootstrap, ClassLoader parent) {
+    public RockerClassLoader(RockerReloadingBootstrap bootstrap, ClassLoader parent) {
         super(parent);
         this.bootstrap = bootstrap;
     }
@@ -43,9 +43,8 @@ public class RockerDynamicClassLoader extends ClassLoader {
     
     @Override
     public Class loadClass(String className) throws ClassNotFoundException {
-        
         // only load classes registered with rocker dynamic bootstrap
-        if (!bootstrap.isDynamicTemplateClass(className)) {
+        if (!bootstrap.isTemplateClass(className)) {
             return super.loadClass(className);
         }
 
@@ -58,29 +57,25 @@ public class RockerDynamicClassLoader extends ClassLoader {
             if (url == null) {
                 throw new ClassNotFoundException("Class " + className + " not found");
             }
-
-            //URL myUrl = new File("java6test/target/test-classes/" + className.replace(".", "/") + ".class").toURI().toURL();
             
-            System.out.println("Loading: " + url);
+            log.debug("loadClass: " + url);
             
             URLConnection connection = url.openConnection();
 
-            InputStream input = connection.getInputStream();
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            int data = input.read();
-
-            while (data != -1) {
-                buffer.write(data);
-                data = input.read();
+            ByteArrayOutputStream buffer;
+            try (InputStream input = connection.getInputStream()) {
+                buffer = new ByteArrayOutputStream();
+                int data = input.read();
+                while (data != -1) {
+                    buffer.write(data);
+                    data = input.read();
+                }
             }
-
-            input.close();
 
             byte[] classData = buffer.toByteArray();
 
             return defineClass(className, classData, 0, classData.length);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ClassNotFoundException(e.getMessage(), e);
         }
     }

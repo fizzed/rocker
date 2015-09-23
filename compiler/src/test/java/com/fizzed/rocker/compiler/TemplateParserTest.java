@@ -49,12 +49,14 @@ public class TemplateParserTest {
     File baseDir = new File("src/test/resources"); 
    
     public TemplateParser createParser() {
-        TemplateParser templateParser = new TemplateParser();
-        templateParser.setBaseDirectory(baseDir);
+        RockerConfiguration configuration = new RockerConfiguration();
+        configuration.setTemplateDirectory(baseDir);
+        
         // set this globally since we really care about preciseness when validating
         // if the parser is doing its job as expected
-        templateParser.getDefaultOptions().setDiscardLogicWhitespace(Boolean.FALSE);
-        return templateParser;
+        configuration.getOptions().setDiscardLogicWhitespace(Boolean.FALSE);
+        
+        return new TemplateParser(configuration);
     }
     
     public File findTemplate(String name) {
@@ -484,7 +486,8 @@ public class TemplateParserTest {
     public void forBlockEnhancedUntyped() throws Exception {
         // requires java 1.8+ to parse
         TemplateParser parser = createParser();
-        parser.getDefaultOptions().setJavaVersion(JavaVersion.v1_8);
+        
+        parser.getConfiguration().getOptions().setJavaVersion(JavaVersion.v1_8);
         
         File f = findTemplate("rocker/parser/ForBlockEnhancedUntyped.rocker.html");
         
@@ -505,7 +508,8 @@ public class TemplateParserTest {
     public void forBlockEnhancedUntypedJava7ThrowsException() throws Exception {
         // requires java 1.8+ to parse
         TemplateParser parser = createParser();
-        parser.getDefaultOptions().setJavaVersion(JavaVersion.v1_7);
+        
+        parser.getConfiguration().getOptions().setJavaVersion(JavaVersion.v1_7);
         
         File f = findTemplate("rocker/parser/ForBlockEnhancedUntyped.rocker.html");
         
