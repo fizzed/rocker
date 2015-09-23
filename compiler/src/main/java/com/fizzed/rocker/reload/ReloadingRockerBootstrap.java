@@ -22,7 +22,7 @@ import com.fizzed.rocker.compiler.GeneratorException;
 import com.fizzed.rocker.compiler.ParserException;
 import com.fizzed.rocker.compiler.RockerConfiguration;
 import com.fizzed.rocker.compiler.TemplateCompiler;
-import com.fizzed.rocker.model.TemplateModel;
+import com.fizzed.rocker.runtime.DefaultRockerBootstrap;
 import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import java.io.File;
@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +41,8 @@ import org.slf4j.LoggerFactory;
  * @author joelauer
  */
 
-public class RockerReloadingBootstrap {
-    static private final Logger log = LoggerFactory.getLogger(RockerReloadingBootstrap.class);
+public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
+    static private final Logger log = LoggerFactory.getLogger(ReloadingRockerBootstrap.class);
     
     static public class LoadedTemplate {
         public File file;                           // resolved path to template file
@@ -54,36 +53,28 @@ public class RockerReloadingBootstrap {
         //private File javaClassFile;             // resolved path to compile java class
     }
     
-    static private RockerReloadingBootstrap INSTANCE = new RockerReloadingBootstrap(new RockerConfiguration());
+    static private ReloadingRockerBootstrap INSTANCE = new ReloadingRockerBootstrap();
     
     private final RockerConfiguration configuration;
     private RockerClassLoader classLoader;
     private ConcurrentHashMap<String,LoadedTemplate> templates;
     
-    public RockerReloadingBootstrap(RockerConfiguration configuration) {
+    public ReloadingRockerBootstrap() {
+        this(new RockerConfiguration());
+    }
+    
+    public ReloadingRockerBootstrap(RockerConfiguration configuration) {
         this.configuration = configuration;
         this.classLoader = buildClassLoader();
         this.templates = new ConcurrentHashMap<>();
     }
     
-    static public RockerReloadingBootstrap getInstance() {
+    static public ReloadingRockerBootstrap getInstance() {
         return INSTANCE;
     }
 
     private RockerClassLoader buildClassLoader() {
-        return new RockerClassLoader(this, RockerReloadingBootstrap.class.getClassLoader());
-    }
-    
-    private DefaultRockerTemplate buildTemplate(Class modelType, DefaultRockerModel model) throws RenderingException {
-        try {
-            Class<?> templateType = Class.forName(modelType.getName() + "$Template", false, this.classLoader);
-
-            Constructor<?> templateConstructor = templateType.getConstructor(modelType);
-
-            return (DefaultRockerTemplate)templateConstructor.newInstance(model);
-        } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RenderingException("Unable to load template class", e);
-        }
+        return new RockerClassLoader(this, ReloadingRockerBootstrap.class.getClassLoader());
     }
 
     // views.index$Template
@@ -116,25 +107,46 @@ public class RockerReloadingBootstrap {
         }
     }
     
+    private String getModelClassTemplatePackageName(Class modelType) throws RenderingException {
+        try {
+            Field f = modelType.getField("TEMPLATE_PACKAGE_NAME");
+            return (String)f.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RenderingException("Unable to read TEMPLATE_PACKAGE_NAME static field from class " + modelType.getName());
+        }
+    }
     
-    
-    public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model, String templatePackageName, String templateName) throws RenderingException {
+    private String getModelClassTemplateName(Class modelType) throws RenderingException {
+        try {
+            Field f = modelType.getField("TEMPLATE_NAME");
+            return (String)f.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RenderingException("Unable to read TEMPLATE_NAME static field from class " + modelType.getName());
+        }
+    }
+     
+    @Override
+    public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException {
         
         LoadedTemplate template = templates.get(modelType.getName());
         
         if (template == null) {
+            // read stored "metadata" compiled with template as static fields
+            String templatePackageName = this.getModelClassTemplatePackageName(modelType);
+            String templateName = this.getModelClassTemplateName(modelType);
+            long modifiedAt = this.getModelClassModifiedAt(modelType);
             
             File templateFile = getTemplateFile(templatePackageName, templateName);
             
             if (!templateFile.exists()) {
                 log.warn("Rocker template [{}] does not exist for model class [{}]", templateFile, modelType);
                 log.warn("Unable to check if recompile is needed, but still returning instance");
-                return buildTemplate(modelType, model);
+                return buildTemplate(modelType, model, this.classLoader);
             }
             
             template = new LoadedTemplate();
             template.file = templateFile;
-            template.modifiedAt = getModelClassModifiedAt(modelType);
+            template.modifiedAt = modifiedAt;
             
             templates.put(modelType.getName(), template);
             
@@ -143,7 +155,7 @@ public class RockerReloadingBootstrap {
             if (!template.file.exists()) {
                 log.warn("Rocker template [{}] no longer exists for model class [{}]", template.file, modelType);
                 log.warn("Did you delete it?");
-                return buildTemplate(modelType, model);
+                return buildTemplate(modelType, model, this.classLoader);
             }
             
         }
@@ -153,17 +165,24 @@ public class RockerReloadingBootstrap {
 
         if (modifiedAt != template.modifiedAt) {
 
-            log.debug("Rocker template change detected [{}] (recompiling)", template.file);
+            log.info("Rocker template change detected [{}]", template.file);
 
             TemplateCompiler compiler = new TemplateCompiler(this.configuration);
 
             try {
+                long start = System.currentTimeMillis();
+                
                 List<TemplateCompiler.CompilationUnit> units
                         = compiler.parse(Arrays.asList(template.file));
 
                 compiler.generate(units);
 
                 compiler.compile(units);
+                
+                long stop = System.currentTimeMillis();
+                
+                log.info("Rocker compiled " + units.size() + " templates in " + (stop - start) + " ms");
+                
             } catch (ParserException | IOException | GeneratorException | CompileUnrecoverableException | CompileDiagnosticException e) {
                 throw new RenderingException("Unable to compile rocker template [" + template.file + "]", e);
             }
@@ -175,6 +194,6 @@ public class RockerReloadingBootstrap {
             this.classLoader = buildClassLoader();
         }
         
-        return buildTemplate(modelType, model);
+        return buildTemplate(modelType, model, this.classLoader);
     }    
 }

@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
@@ -297,25 +298,23 @@ public class JavaGenerator {
         // render of model
         //
         w.append(CRLF);
-        
-        
-        
+              
         
         // model "template" static builder
         tab(w, indent).append("@Override").append(CRLF);
         tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
         
-        if (model.getOptions().getReload()) {
+//        if (model.getOptions().getReload()) {
             tab(w, indent+1)
                 .append(DefaultRockerTemplate.class.getName())
                 .append(" template = ")
-                .append(com.fizzed.rocker.reload.RockerReloadingBootstrap.class.getCanonicalName())
-                .append(".getInstance().template(this.getClass(), this, TEMPLATE_PACKAGE_NAME, TEMPLATE_NAME);").append(CRLF);
+                .append(RockerRuntime.class.getCanonicalName())
+                .append(".getInstance().getBootstrap().template(this.getClass(), this);").append(CRLF);
             tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-        } else {
-            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
-            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-        }
+//        } else {
+//            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
+//            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+//        }
 
         
         tab(w, indent).append("}").append(CRLF);

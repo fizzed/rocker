@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 public class RockerClassLoader extends ClassLoader {
     static private final Logger log = LoggerFactory.getLogger(RockerClassLoader.class);
 
-    private final RockerReloadingBootstrap bootstrap;
+    private final ReloadingRockerBootstrap bootstrap;
     
-    public RockerClassLoader(RockerReloadingBootstrap bootstrap, ClassLoader parent) {
+    public RockerClassLoader(ReloadingRockerBootstrap bootstrap, ClassLoader parent) {
         super(parent);
         this.bootstrap = bootstrap;
     }
@@ -58,7 +58,7 @@ public class RockerClassLoader extends ClassLoader {
                 throw new ClassNotFoundException("Class " + className + " not found");
             }
             
-            log.debug("loadClass: " + url);
+            log.trace("loading class: " + url);
             
             URLConnection connection = url.openConnection();
 

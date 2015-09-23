@@ -9,11 +9,11 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>rocker</artifactId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
     </parent>
     
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
     </properties>
     
     <build>
@@ -42,7 +42,6 @@
                             <compileDirectory>${basedir}/target/test-classes</compileDirectory>
                             <addAsTestSources>true</addAsTestSources>
                             <discardLogicWhitespace>true</discardLogicWhitespace>
-                            <reload>true</reload>
                         </configuration>
                     </execution>
                 </executions>

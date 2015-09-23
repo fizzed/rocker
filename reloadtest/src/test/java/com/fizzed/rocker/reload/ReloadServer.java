@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.reload;
 
+import com.fizzed.rocker.RockerRuntime;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -27,6 +28,9 @@ import io.undertow.util.Headers;
 public class ReloadServer {
 
     public static void main(final String[] args) {
+        // activate reloading @ runtime
+        RockerRuntime.getInstance().setReloading(true);
+        
         Undertow server = Undertow.builder()
                 .addHttpListener(8080, "localhost")
                 .setHandler(new HttpHandler() {
