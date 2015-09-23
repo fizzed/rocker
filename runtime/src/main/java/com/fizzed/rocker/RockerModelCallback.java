@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.test;
-
-import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.runtime.StringBuilderOutput;
+package com.fizzed.rocker;
 
 /**
  *
  * @author joelauer
  */
-public class CustomRockerOutput extends StringBuilderOutput {
+public interface RockerModelCallback {
     
-    public CustomRockerOutput(ContentType contentType) {
-        super(contentType, "UTF-8");
-    }
-    
-    public boolean hasCustomProperty() {
-        return true;
-    }
+    void onRender(RockerTemplate template);
     
 }

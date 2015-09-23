@@ -61,7 +61,7 @@ public abstract class CustomRockerTemplate<T extends CustomRockerTemplate> exten
     // example of render() providing its own output to tie into specific framework
     @Override
     protected RockerOutput __newOutput() {
-        return new CustomRockerOutput();
+        return new CustomRockerOutput(this.__internal.getContentType());
     }
     
 }

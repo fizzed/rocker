@@ -50,7 +50,7 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
     }
     
     protected RockerOutput __newOutput() {
-        return new ArrayOfByteArraysOutput(__internal.getCharset());
+        return new ArrayOfByteArraysOutput(__internal.getContentType(), __internal.getCharset());
         //return new StringBuilderOutput(__internal.getCharset());
     }
 

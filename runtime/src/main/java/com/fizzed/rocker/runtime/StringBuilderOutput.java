@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -29,23 +30,23 @@ public class StringBuilderOutput extends AbstractRockerOutput<StringBuilderOutpu
 
     private final StringBuilder buffer;
     
-    public StringBuilderOutput(String charsetName) {
-        super(charsetName, -1);
+    public StringBuilderOutput(ContentType contentType, String charsetName) {
+        super(contentType, charsetName, -1);
         this.buffer = new StringBuilder();
     }
     
-    public StringBuilderOutput(String charsetName, int intialSize) {
-        super(charsetName, -1);
+    public StringBuilderOutput(ContentType contentType, String charsetName, int intialSize) {
+        super(contentType, charsetName, -1);
         this.buffer = new StringBuilder(intialSize);
     }
     
-    public StringBuilderOutput(Charset charset) {
-        super(charset, -1);
+    public StringBuilderOutput(ContentType contentType, Charset charset) {
+        super(contentType, charset, -1);
         this.buffer = new StringBuilder();
     }
     
-    public StringBuilderOutput(Charset charset, int intialSize) {
-        super(charset, -1);
+    public StringBuilderOutput(ContentType contentType, Charset charset, int intialSize) {
+        super(contentType, charset, -1);
         this.buffer = new StringBuilder(intialSize);
     }
     

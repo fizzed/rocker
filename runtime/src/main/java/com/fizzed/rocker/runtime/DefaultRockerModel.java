@@ -18,10 +18,12 @@ package com.fizzed.rocker.runtime;
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.RockerModel;
+import com.fizzed.rocker.RockerModelCallback;
 
 public class DefaultRockerModel<T extends DefaultRockerModel> implements RockerModel {
     
     private boolean rendered;
+    private RockerModelCallback callback;
     
     /**
      * Renders model and template content to output. Single use only.
@@ -40,12 +42,24 @@ public class DefaultRockerModel<T extends DefaultRockerModel> implements RockerM
         if (this.rendered) {
             throw new RenderingException("Template already rendered (templates are single use only!");
         }
+        
+        DefaultRockerTemplate template = buildTemplate();
+        
+        if (this.callback != null) {
+            this.callback.onRender(template);
+        }
+        
         this.rendered = true;
-        return doRender(context);
+        
+        return template.__render(context);
     }
     
-    protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {
-        throw new RenderingException("Rocker model does not implement render(context). Did you forget to implement?");
+    protected DefaultRockerTemplate buildTemplate() throws RenderingException  {
+        throw new RenderingException("Rocker model does not implement buildTemplate(). Did you forget to implement?");
+    }
+    
+    public void __callback(RockerModelCallback callback) {
+        this.callback = callback;
     }
     
     @Override

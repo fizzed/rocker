@@ -304,22 +304,21 @@ public class JavaGenerator {
               
         
         tab(w, indent).append("@Override").append(CRLF);
-        tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
+        tab(w, indent).append("protected DefaultRockerTemplate buildTemplate() throws RenderingException {").append(CRLF);
         
         if (model.getOptions().getOptimize()) {
             // model "template" static builder (not reloading support, fastest performance)
             tab(w, indent+1).append("// optimized for performance (via rocker.optimize flag; no auto reloading)").append(CRLF);
-            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
-            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+            tab(w, indent+1).append("return new Template(this);").append(CRLF);
+            //tab(w, indent+1).append("return template.__render(context);").append(CRLF);
         } else {
             tab(w, indent+1).append("// optimized for convenience (runtime auto reloading enabled if rocker.reloading=true)").append(CRLF);
             // use bootstrap to create underlying template
             tab(w, indent+1)
-                .append(DefaultRockerTemplate.class.getName())
-                .append(" template = ")
+                .append("return ")
                 .append(RockerRuntime.class.getCanonicalName())
                 .append(".getInstance().getBootstrap().template(this.getClass(), this);").append(CRLF);
-            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+            //tab(w, indent+1).append("return template.__render(context);").append(CRLF);
         }
 
         

@@ -25,6 +25,8 @@ import java.nio.charset.Charset;
  */
 public interface RockerOutput<T extends RockerOutput> {
     
+    public ContentType getContentType();
+    
     public Charset getCharset();
     
     /**
