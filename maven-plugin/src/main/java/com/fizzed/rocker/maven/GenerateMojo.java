@@ -49,8 +49,8 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "rocker.extendsModelClass")
     protected String extendsModelClass;
     
-    @Parameter(property = "rocker.reload")
-    protected Boolean reload;
+    @Parameter(property = "rocker.optimize")
+    protected Boolean optimize;
     
     @Parameter(property = "rocker.discardLogicWhitespace")
     protected Boolean discardLogicWhitespace;
@@ -137,8 +137,8 @@ public class GenerateMojo extends AbstractMojo {
             if (targetCharset != null) {
                 jgm.getParser().getConfiguration().getOptions().setTargetCharset(targetCharset);
             }
-            if (reload != null) {
-                jgm.getParser().getConfiguration().getOptions().setReload(reload);
+            if (optimize != null) {
+                jgm.getParser().getConfiguration().getOptions().setOptimize(optimize);
             }
             
             jgm.run();

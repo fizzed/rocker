@@ -44,7 +44,7 @@ public class RockerClassLoader extends ClassLoader {
     @Override
     public Class loadClass(String className) throws ClassNotFoundException {
         // only load classes registered with rocker dynamic bootstrap
-        if (!bootstrap.isTemplateClass(className)) {
+        if (!bootstrap.isReloadableClass(className)) {
             return super.loadClass(className);
         }
 

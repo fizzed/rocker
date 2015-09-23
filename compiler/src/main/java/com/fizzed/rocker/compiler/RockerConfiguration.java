@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.RockerRuntime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class RockerConfiguration {
     }
     
     final public void mergeFromClassPath() {
-        InputStream is = this.getClass().getResourceAsStream("/rocker.conf");
+        InputStream is = this.getClass().getResourceAsStream(RockerRuntime.CONF_RESOURCE_NAME);
         if (is != null) {
             Properties properties = new Properties();
             try {
@@ -68,14 +69,17 @@ public class RockerConfiguration {
     final public void merge(Properties properties) {
         if (properties.containsKey(TEMPLATE_DIR)) {
             this.templateDirectory = new File(properties.getProperty(TEMPLATE_DIR));
+            log.debug("templateDirectory = " + this.templateDirectory);
         }
         
         if (properties.containsKey(OUTPUT_DIR)) {
             this.outputDirectory = new File(properties.getProperty(OUTPUT_DIR));
+            log.debug("outputDirectory = " + this.outputDirectory);
         }
         
         if (properties.containsKey(COMPILE_DIR)) {
             this.compileDirectory = new File(properties.getProperty(COMPILE_DIR));
+            log.debug("compileDirectory = " + this.compileDirectory);
         }
         
         // find all keys starting with rocker.options prefix and process them as strings
@@ -87,7 +91,7 @@ public class RockerConfiguration {
                 String optionValue = properties.getProperty(name);
                 if (optionValue != null) {
                     try {
-                        log.info("Rocker parser option: " + optionName + "=" + optionValue);
+                        log.debug("option " + optionName + " = " + optionValue);
                         options.set(optionName, optionValue);
                     } catch (Exception e) {
                         throw new IllegalArgumentException("Property " + name + " invalid: " + e.getMessage(), e);

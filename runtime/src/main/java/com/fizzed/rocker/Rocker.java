@@ -21,6 +21,14 @@ package com.fizzed.rocker;
  */
 public class Rocker {
     
-    // intended for totally dynamic usage of templates (interfaces & template)
+    // intended for dynamic usage of templates (interfaces & template)
+    static public BindableRockerModel template(String templatePath) {
+        
+        // load model from bootstrap (which may recompile if needed)
+        RockerModel model = RockerRuntime.getInstance().getBootstrap().model(templatePath);
+        
+        return new BindableRockerModel(templatePath, model.getClass().getCanonicalName(), model);
+        
+    }
     
 }

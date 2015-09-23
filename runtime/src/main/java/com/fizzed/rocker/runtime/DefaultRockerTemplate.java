@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.BindableRockerModel;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
@@ -248,6 +249,12 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
         public void renderValue(DefaultRockerModel model) throws RenderingException, IOException {
             // delegating rendering this model to itself BUT under a context
             model.render(DefaultRockerTemplate.this);
+        }
+        
+        public void renderValue(BindableRockerModel model) throws RenderingException, IOException {
+            // delegating rendering this model to itself BUT under a context
+            DefaultRockerModel underlyingModel = (DefaultRockerModel)model.getModel();
+            renderValue(underlyingModel);
         }
         
         public void renderValue(String s) throws IOException {

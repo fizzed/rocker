@@ -15,7 +15,12 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.BindableRockerModel;
 import com.fizzed.rocker.RenderingException;
+import com.fizzed.rocker.RockerModel;
+import com.fizzed.rocker.RockerTemplate;
+import com.fizzed.rocker.TemplateBindException;
+import com.fizzed.rocker.TemplateNotFoundException;
 import java.lang.reflect.Constructor;
 
 /**
@@ -46,5 +51,42 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
         
         return buildTemplate(modelType, model, DefaultRockerBootstrap.class.getClassLoader());
 
-    }    
+    }
+    
+    static public String templatePathToClassName(String templateName) {
+        // views/app/index.rocker.html
+        int pos = templateName.indexOf('.');
+        if (pos < 0) {
+            throw new IllegalArgumentException("Invalid template name. Expecting something like 'views/app/index.rocker.html')");
+        }
+        
+        String templateNameNoExt = templateName.substring(0, pos);
+        
+        return templateNameNoExt.replace('/', '.');
+    }
+
+    public RockerModel buildModel(String templatePath, ClassLoader classLoader) {
+        // views/app/index.rocker.html -> views.app.index
+        String modelClassName = templatePathToClassName(templatePath);
+        
+        Class<?> modelType = null;
+        try {
+            modelType = Class.forName(modelClassName, false, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new TemplateNotFoundException("Compiled template " + templatePath + " not found", e);
+        }
+        
+        try {
+            return (RockerModel)modelType.newInstance();
+        } catch (Exception e) {
+            throw new TemplateBindException(templatePath, modelClassName, "Unable to create model for template " + templatePath, e);
+        }
+    }
+    
+    @Override
+    public RockerModel model(String templatePath) throws TemplateNotFoundException, TemplateBindException {
+        
+        return buildModel(templatePath, DefaultRockerBootstrap.class.getClassLoader());
+
+    }
 }

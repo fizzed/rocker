@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.reload;
 
+import com.fizzed.rocker.Rocker;
 import com.fizzed.rocker.RockerRuntime;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -36,7 +37,18 @@ public class ReloadServer {
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {
+                        
+                        /**
+                        // static, compile-time checked template interface
                         String out = views.index.template("Home", "Joe")
+                            .render()
+                            .toString();
+                        */
+                        
+                        // dynamic, runtime-time checked template interface
+                        String out = Rocker.template("views/index.rocker.html")
+                            .bind("title", "Home")
+                            .bind("name", "Joe")
                             .render()
                             .toString();
                         

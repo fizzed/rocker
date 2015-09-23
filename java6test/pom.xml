@@ -41,6 +41,7 @@
                             <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
                             <discardLogicWhitespace>false</discardLogicWhitespace>
                             <addAsTestSources>true</addAsTestSources>
+                            <optimize>true</optimize>
                         </configuration>
                     </execution>
                 </executions>

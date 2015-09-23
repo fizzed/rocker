@@ -1,4 +1,10 @@
+@import java.util.Optional
 @args (String title, String name)
 @views.common.main.template(title) -> {
 Hi, @name!
 }
+@com.fizzed.rocker.Rocker.template("views/common/main2.rocker.html").bind("title", "Home2") -> {
+Hi, @name!
+}
+@com.fizzed.rocker.Rocker.template("views/common/section.rocker.html")
+@com.fizzed.rocker.Rocker.template("views/common/section2.rocker.html")

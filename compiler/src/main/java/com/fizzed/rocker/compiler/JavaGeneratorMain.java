@@ -128,12 +128,15 @@ public class JavaGeneratorMain {
             throw new Exception("Caught " + errors + " errors.");
         }
         
-        // save configuration
-        this.configuration.getCompileDirectory().mkdirs();
-        File configFile = new File(this.configuration.getCompileDirectory(), "rocker.conf");
-        this.configuration.write(configFile);
-        
-        log.info("Generated rocker configuration " + configFile);
+        if (!configuration.getOptions().getOptimize()) {
+            // save configuration
+            this.configuration.getCompileDirectory().mkdirs();
+            File configFile = new File(this.configuration.getCompileDirectory(), "rocker.conf");
+            this.configuration.write(configFile);
+            log.info("Generated rocker configuration " + configFile);
+        } else {
+            log.info("Optimize flag off. Did not generate rocker configuration file");
+        }
     }
     
     static public void main(String[] a) throws Exception {

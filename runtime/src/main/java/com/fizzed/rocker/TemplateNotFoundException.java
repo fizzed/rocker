@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.runtime;
-
-import com.fizzed.rocker.RenderingException;
-import com.fizzed.rocker.RockerModel;
-import com.fizzed.rocker.RockerTemplate;
-import com.fizzed.rocker.TemplateBindException;
-import com.fizzed.rocker.TemplateNotFoundException;
+package com.fizzed.rocker;
 
 /**
- *
+ * Runtime exception while binding values to a RockerTemplate.
+ * 
  * @author joelauer
  */
+public class TemplateNotFoundException extends RuntimeException {
 
-public interface RockerBootstrap {
-    
-    RockerModel model(String templatePath) throws TemplateNotFoundException, TemplateBindException;
-    
-    DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException;
+    public TemplateNotFoundException(String message) {
+        super(message, null);
+    }
+
+    public TemplateNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
     
 }

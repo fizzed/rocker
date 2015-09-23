@@ -16,20 +16,26 @@
 package com.fizzed.rocker;
 
 import com.fizzed.rocker.runtime.DefaultRockerBootstrap;
-import com.fizzed.rocker.runtime.RockerBootstrap;
+import com.fizzed.rocker.runtime.RockerBootstrap;;
+import javax.tools.ToolProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
-public class RockerRuntime {    
+public class RockerRuntime {
+    private final static Logger log = LoggerFactory.getLogger(RockerRuntime.class.getName());
+    
     static public final String KEY_RELOADING = "rocker.reloading";
+    static public final String CONF_RESOURCE_NAME = "/rocker.conf";
     
     private static class Holder {
         static final RockerRuntime INSTANCE = new RockerRuntime();
     }
     
-    private boolean reloading;
+    private Boolean reloading;
     private RockerBootstrap bootstrap;
     
     private RockerRuntime() {
@@ -43,6 +49,8 @@ public class RockerRuntime {
             throw new IllegalArgumentException("Illegal value [" + reloadingProperty + "] for rocker.reloading sytem property");
         }
         
+        log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
+        
     }
     
     static public RockerRuntime getInstance() {
@@ -54,12 +62,21 @@ public class RockerRuntime {
     }
     
     final public void setReloading(boolean reloading) {
+        if (this.reloading != null && this.reloading == reloading) {
+            // noop
+            return;
+        }
+        
         if (reloading) {
             // build instance using reflection (so if its missing we can provide a better exception message)
             this.bootstrap = buildReloadingRockerBootstrap();
+            log.info("Rocker template reloading activated");
         } else {
             this.bootstrap = new DefaultRockerBootstrap();
+            log.info("Rocker template reloading not activated");
         }
+        
+        this.reloading = reloading;
     }
 
     public RockerBootstrap getBootstrap() {
@@ -67,14 +84,24 @@ public class RockerRuntime {
     }
     
     private RockerBootstrap buildReloadingRockerBootstrap() {
+        // is a java compiler available?
+        if (ToolProvider.getSystemJavaCompiler() == null) {
+            throw new RuntimeException("Unable to activate Rocker template reloading. No system java compiler available. Are you running with a JRE instead of a JDK?");
+        }
+        
+        // is the /rocker.conf file on classpath so we can find templates?
+        if (getClass().getResource(CONF_RESOURCE_NAME) == null) {
+            throw new RuntimeException("Unable to activate Rocker template reloading. Unable to find " + CONF_RESOURCE_NAME + " on classpath. Did one get generated during the build?");
+        }
+        
         try {
             // can reloading successfully be executed in this runtime?
             Class<?> bootstrapType = Class.forName("com.fizzed.rocker.reload.ReloadingRockerBootstrap");
             return (RockerBootstrap)bootstrapType.newInstance();
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Unable to activate Rocker template reloading. Did you forget to include 'rocker-compiler' as an optional dependency?");
+            throw new RuntimeException("Unable to activate Rocker template reloading. Did you forget to include 'rocker-compiler' as an optional dependency?");
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to activate Rocker template reloading. Unable to create ReloadingRockerBootstrap instance", e);
+            throw new RuntimeException("Unable to activate Rocker template reloading. Unable to create ReloadingRockerBootstrap instance", e);
         }
     }
     

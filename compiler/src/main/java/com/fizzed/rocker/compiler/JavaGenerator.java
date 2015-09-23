@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
@@ -188,7 +189,6 @@ public class JavaGenerator {
         // imports regardless of template
         w.append(CRLF);
         w.append("import ").append(java.io.IOException.class.getName()).append(";").append(CRLF);
-        w.append("import ").append(com.fizzed.rocker.ContentType.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.ForIterator.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.RenderingException.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.RockerContent.class.getName()).append(";").append(CRLF);
@@ -231,9 +231,12 @@ public class JavaGenerator {
         w.append(CRLF);
         
         // static info about this template
-        tab(w, indent).append("static public final ContentType CONTENT_TYPE = ContentType.").append(model.getContentType().toString()).append(";").append(CRLF);
+        tab(w, indent).append("static public final ")
+                .append(ContentType.class.getCanonicalName()).append(" CONTENT_TYPE = ")
+                .append(ContentType.class.getCanonicalName()).append(".").append(model.getContentType().toString()).append(";").append(CRLF);
         tab(w, indent).append("static public final String TEMPLATE_NAME = \"").append(model.getTemplateName()).append("\";").append(CRLF);
         tab(w, indent).append("static public final String TEMPLATE_PACKAGE_NAME = \"").append(model.getPackageName()).append("\";").append(CRLF);
+        tab(w, indent).append("static public final String HEADER_HASH = \"").append(model.createHeaderHash()+"").append("\";").append(CRLF);
         tab(w, indent).append("static public final long MODIFIED_AT = ").append(model.getModifiedAt()+"").append("L;").append(CRLF);
         
 
@@ -300,21 +303,24 @@ public class JavaGenerator {
         w.append(CRLF);
               
         
-        // model "template" static builder
         tab(w, indent).append("@Override").append(CRLF);
         tab(w, indent).append("protected RockerOutput doRender(DefaultRockerTemplate context) throws RenderingException {").append(CRLF);
         
-//        if (model.getOptions().getReload()) {
+        if (model.getOptions().getOptimize()) {
+            // model "template" static builder (not reloading support, fastest performance)
+            tab(w, indent+1).append("// optimized for performance (via rocker.optimize flag; no auto reloading)").append(CRLF);
+            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
+            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
+        } else {
+            tab(w, indent+1).append("// optimized for convenience (runtime auto reloading enabled if rocker.reloading=true)").append(CRLF);
+            // use bootstrap to create underlying template
             tab(w, indent+1)
                 .append(DefaultRockerTemplate.class.getName())
                 .append(" template = ")
                 .append(RockerRuntime.class.getCanonicalName())
                 .append(".getInstance().getBootstrap().template(this.getClass(), this);").append(CRLF);
             tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-//        } else {
-//            tab(w, indent+1).append("Template template = new Template(this);").append(CRLF);
-//            tab(w, indent+1).append("return template.__render(context);").append(CRLF);
-//        }
+        }
 
         
         tab(w, indent).append("}").append(CRLF);
@@ -331,12 +337,6 @@ public class JavaGenerator {
             .append("static public class Template extends ")
             .append(model.getOptions().getExtendsClass())
             .append("<Template>");
-        
-        /**
-        if (model.getOptions().getImplementsInterface() != null) {
-            w.append(" implements ").append(model.getOptions().getImplementsInterface());
-        }
-        */
                 
         w.append(" {").append(CRLF);
         

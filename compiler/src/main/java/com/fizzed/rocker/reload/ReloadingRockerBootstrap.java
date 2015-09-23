@@ -16,6 +16,10 @@
 package com.fizzed.rocker.reload;
 
 import com.fizzed.rocker.RenderingException;
+import com.fizzed.rocker.RockerModel;
+import com.fizzed.rocker.RockerTemplate;
+import com.fizzed.rocker.TemplateBindException;
+import com.fizzed.rocker.TemplateNotFoundException;
 import com.fizzed.rocker.compiler.CompileDiagnosticException;
 import com.fizzed.rocker.compiler.CompileUnrecoverableException;
 import com.fizzed.rocker.compiler.GeneratorException;
@@ -27,9 +31,7 @@ import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,30 +49,19 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
     static public class LoadedTemplate {
         public File file;                           // resolved path to template file
         public long modifiedAt;                     // modified date of version loaded
-        //public String hash;
-        //private String interfaceHash;
-        //private File javaFile;                  // resolved path to generated java file
-        //private File javaClassFile;             // resolved path to compile java class
+        public String headerHash;                   // hash of header (interface)
     }
-    
-    static private ReloadingRockerBootstrap INSTANCE = new ReloadingRockerBootstrap();
     
     private final RockerConfiguration configuration;
+    private final ConcurrentHashMap<String,String> models;
+    private final ConcurrentHashMap<String,LoadedTemplate> templates;
     private RockerClassLoader classLoader;
-    private ConcurrentHashMap<String,LoadedTemplate> templates;
     
     public ReloadingRockerBootstrap() {
-        this(new RockerConfiguration());
-    }
-    
-    public ReloadingRockerBootstrap(RockerConfiguration configuration) {
-        this.configuration = configuration;
-        this.classLoader = buildClassLoader();
+        this.configuration = new RockerConfiguration();
+        this.models = new ConcurrentHashMap<>();
         this.templates = new ConcurrentHashMap<>();
-    }
-    
-    static public ReloadingRockerBootstrap getInstance() {
-        return INSTANCE;
+        this.classLoader = buildClassLoader();
     }
 
     private RockerClassLoader buildClassLoader() {
@@ -79,8 +70,11 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
 
     // views.index$Template
     // views.index$Template$1 (if something like an inner class)
-    public boolean isTemplateClass(String className) {
-        //log.debug("isDynamicTemplateClass: " + className);
+    public boolean isReloadableClass(String className) {
+        
+        if (this.models.containsKey(className)) {
+            return true;
+        }
         
         // find first occurrence of $
         int pos = className.indexOf('$');
@@ -107,6 +101,15 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
         }
     }
     
+    private String getModelClassHeaderHash(Class modelType) throws RenderingException {
+        try {
+            Field f = modelType.getField("HEADER_HASH");
+            return (String)f.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RenderingException("Unable to read HEADER_HASH static field from class " + modelType.getName());
+        }
+    }
+    
     private String getModelClassTemplatePackageName(Class modelType) throws RenderingException {
         try {
             Field f = modelType.getField("TEMPLATE_PACKAGE_NAME");
@@ -124,7 +127,8 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
             throw new RenderingException("Unable to read TEMPLATE_NAME static field from class " + modelType.getName());
         }
     }
-     
+    
+    
     @Override
     public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException {
         
@@ -135,31 +139,91 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
             String templatePackageName = this.getModelClassTemplatePackageName(modelType);
             String templateName = this.getModelClassTemplateName(modelType);
             long modifiedAt = this.getModelClassModifiedAt(modelType);
+            String headerHash = this.getModelClassHeaderHash(modelType);
             
             File templateFile = getTemplateFile(templatePackageName, templateName);
             
             if (!templateFile.exists()) {
-                log.warn("Rocker template [{}] does not exist for model class [{}]", templateFile, modelType);
-                log.warn("Unable to check if recompile is needed, but still returning instance");
+                log.warn("{}: does not exist for model {}. Unable to check if reload required", templateFile, modelType.getCanonicalName());
                 return buildTemplate(modelType, model, this.classLoader);
             }
             
             template = new LoadedTemplate();
             template.file = templateFile;
             template.modifiedAt = modifiedAt;
+            template.headerHash = headerHash;
             
             templates.put(modelType.getName(), template);
             
         } else {
             
             if (!template.file.exists()) {
-                log.warn("Rocker template [{}] no longer exists for model class [{}]", template.file, modelType);
-                log.warn("Did you delete it?");
+                log.warn("{}: no longer exists for model {} (did you delete it?)", template.file, modelType.getCanonicalName());
                 return buildTemplate(modelType, model, this.classLoader);
             }
             
         }
 
+        compileIfNeeded(template, true);
+        
+        return buildTemplate(modelType, model, this.classLoader);
+    }
+    
+    @Override
+    public RockerModel model(String templatePath) throws TemplateNotFoundException, TemplateBindException {
+        
+        String modelClassName = DefaultRockerBootstrap.templatePathToClassName(templatePath);
+        
+        LoadedTemplate template = templates.get(modelClassName);
+        
+        RockerModel initialModel = null;
+        
+        if (template == null) {
+            File templateFile = new File(this.configuration.getTemplateDirectory(), templatePath);
+            
+            if (!templateFile.exists()) {
+                log.warn("{}: does not exist. Unable to check if reload required", templateFile);
+                return buildModel(templatePath, this.classLoader);
+            }
+            
+            // load initial model so we can grab the metadata
+            template = new LoadedTemplate();
+            template.file = templateFile;
+            template.modifiedAt = -1;           // maybe its not even compiled yet
+            templates.put(modelClassName, template);
+            
+            // also add to models so that classloader knows to load it
+            this.models.put(modelClassName, "");
+            
+            try {
+                // update the template with the initially loaded modifed_at value
+                initialModel = buildModel(templatePath, this.classLoader);
+                template.modifiedAt = this.getModelClassModifiedAt(initialModel.getClass());
+                template.headerHash = this.getModelClassHeaderHash(initialModel.getClass());
+            } catch (Exception e) {
+                // ignore exceptions here...
+            }
+            
+        } else {
+            
+            if (!template.file.exists()) {
+                log.warn("{}: no longer exists for model {} (did you delete it?)", template.file, modelClassName);
+                return buildModel(templatePath, this.classLoader);
+            }
+            
+        }
+        
+        boolean recompiled = compileIfNeeded(template, false);
+
+        if (initialModel != null && !recompiled) {
+            return initialModel;
+        } else {
+            // build a new one since it was recompiled
+            return buildModel(templatePath, this.classLoader);
+        }
+    }
+    
+    public boolean compileIfNeeded(LoadedTemplate template, boolean verifyHeaderHash) {
         // recompile needed?
         long modifiedAt = template.file.lastModified();
 
@@ -175,6 +239,17 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
                 List<TemplateCompiler.CompilationUnit> units
                         = compiler.parse(Arrays.asList(template.file));
 
+                // did the interface change?
+                TemplateCompiler.CompilationUnit unit = units.get(0);
+                String newHeaderHash = unit.getTemplateModel().createHeaderHash()+"";
+                
+                if (verifyHeaderHash) {
+                    if (!newHeaderHash.equals(template.headerHash)) {
+                        log.debug("current header hash " + template.headerHash + "; new header hash " + newHeaderHash);
+                        throw new RenderingException("Interface (e.g. arguments) were modified. New project build and JVM restart required to reload.");
+                    }
+                }
+                
                 compiler.generate(units);
 
                 compiler.compile(units);
@@ -183,17 +258,20 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
                 
                 log.info("Rocker compiled " + units.size() + " templates in " + (stop - start) + " ms");
                 
+                // save current modifiedAt & header hash
+                template.modifiedAt = modifiedAt;
+                template.headerHash = newHeaderHash;
+                
             } catch (ParserException | IOException | GeneratorException | CompileUnrecoverableException | CompileDiagnosticException e) {
-                throw new RenderingException("Unable to compile rocker template [" + template.file + "]", e);
+                throw new RenderingException("Unable to compile rocker template", e);
             }
-
-            // save current modifiedAt!
-            template.modifiedAt = modifiedAt;
 
             // create new classloader to force a new class load
             this.classLoader = buildClassLoader();
+            
+            return true;
         }
         
-        return buildTemplate(modelType, model, this.classLoader);
-    }    
+        return false;
+    }
 }

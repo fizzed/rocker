@@ -150,5 +150,34 @@ public class TemplateModel {
 
         return plainTextMap;
     }
+ 
+    /**
+     * Build hash value representing all components from the "header" that would
+     * break an "interface" (used for reloading).
+     * @return 
+     */
+    public int createHeaderHash() {
+        StringBuilder s = new StringBuilder();
+        
+        /**
+        // append each java import
+        for (JavaImport ji : imports) {
+            s.append(ji.getStatement());
+            s.append(";");
+        }
+        */
+        
+        s.append(this.contentType);
+        s.append(";");
+        
+        for (Argument arg : arguments) {
+            s.append(arg.getType());
+            s.append(" ");
+            s.append(arg.getName());
+            s.append(";");
+        }
+        
+        return s.toString().hashCode();
+    }
     
 }
