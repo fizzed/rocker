@@ -16,7 +16,7 @@
 package com.fizzed.rocker.reload;
 
 import com.fizzed.rocker.Rocker;
-import com.fizzed.rocker.RockerRuntime;
+import com.fizzed.rocker.runtime.RockerRuntime;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;

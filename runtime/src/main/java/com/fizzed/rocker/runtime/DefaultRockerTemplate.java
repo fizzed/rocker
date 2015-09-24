@@ -22,33 +22,35 @@ import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.RockerStringify;
 import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.RockerContent;
+import com.fizzed.rocker.RockerModel;
 import java.io.IOException;
 
 /**
  *
- * @param <T>
  * @author joelauer
  */
-public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> implements RockerTemplate {
+public abstract class DefaultRockerTemplate extends RockerTemplate {
     
-    // var name not likely to conflict with normal ones
     protected Internal __internal;
     
-    public DefaultRockerTemplate(DefaultRockerModel model) {
+    public DefaultRockerTemplate(RockerModel model) {
+        super(model);
         this.__internal = new Internal();
     }
     
-    //
-    // internal methods for rendering process
-    //
-    
-    protected void __associate(DefaultRockerTemplate context) throws RenderingException {
+    @Override
+    protected void __associate(RockerTemplate context) {
+        // safe to assume its a default instance
+        // subclasses should verify what type is supplied though
+        DefaultRockerTemplate otherContext = (DefaultRockerTemplate)context;
+        
         // configure this template from another template
         // internally the out, content type, and stringify are all shared
-        __internal.setOut(context.__internal.getOut());
-        __internal.setContentType(context.__internal.getContentType(), context.__internal.getStringify());
+        __internal.setOut(otherContext.__internal.getOut());
+        __internal.setContentType(otherContext.__internal.getContentType(), otherContext.__internal.getStringify());
     }
     
+    @Override
     protected RockerOutput __newOutput() {
         return new ArrayOfByteArraysOutput(__internal.getContentType(), __internal.getCharset());
         //return new StringBuilderOutput(__internal.getCharset());
@@ -62,7 +64,7 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
      *      template. Exception will include underlying cause as well as line
      *      and position of original template source that triggered exception.
      */
-    public RockerOutput __render(DefaultRockerTemplate context) throws RenderingException {
+    final public RockerOutput __render(DefaultRockerTemplate context) throws RenderingException {
         // associate with a context of another template
         if (context != null) {
             this.__associate(context);
@@ -93,6 +95,9 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
 
         try {
             this.__doRender();
+        } catch (CompileDiagnosticException e) {
+            // do not wrap the underlying exception
+            throw e;
         } catch (Throwable t) {
             // include info on source line + pos where execution failed
             String templatePath = __internal.templatePackageName.replace('.', '/');
@@ -122,15 +127,11 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
         return Raw.of(s);
     }
 
-    @Override
-    public String toString() {
-        throw new UnsupportedOperationException("toString() not permitted on DefaultRockerTemplate. User render() method.");
-    }
-    
     /**
      * Internal state of a template.
      * 
-     * Simple way to hide internal variables from template.
+     * Simple way to hide internal variables from template (which of course
+     * are subclasses of this class).
      * 
      * This is an internal API and it may radically change over time.  Using
      * this for workaround, etc. is not recommended.

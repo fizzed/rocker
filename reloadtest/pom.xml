@@ -39,7 +39,7 @@
                             <javaVersion>${java.version}</javaVersion>
                             <templateDirectory>${basedir}/src/test/java</templateDirectory>
                             <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
-                            <compileDirectory>${basedir}/target/test-classes</compileDirectory>
+                            <classDirectory>${basedir}/target/test-classes</classDirectory>
                             <addAsTestSources>true</addAsTestSources>
                             <discardLogicWhitespace>true</discardLogicWhitespace>
                         </configuration>

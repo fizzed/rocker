@@ -75,9 +75,15 @@ public class GenerateMojo extends AbstractMojo {
     protected File outputDirectory;
     
     /**
-     * Directory to compile Java source files.
+     * Directory where classes are compiled to (for placing rocker config file).
      */
-    @Parameter(property = "rocker.compileDirectory", defaultValue = "${project.build.directory}/classes", required = true)
+    @Parameter(property = "rocker.classDirectory", defaultValue = "${project.build.directory}/classes", required = true)
+    protected File classDirectory;
+
+    /**
+     * Directory to use for (re)compiling classes for auto reloading.
+     */
+    @Parameter(property = "rocker.compileDirectory", defaultValue = "${project.build.directory}/rocker-classes", required = true)
     protected File compileDirectory;
 
     @Parameter( defaultValue = "${project}", readonly = true )
@@ -98,9 +104,15 @@ public class GenerateMojo extends AbstractMojo {
             throw new MojoExecutionException("Property outputDirectory cannot be null/empty");
         }
         
+        if (this.classDirectory == null) {
+            throw new MojoExecutionException("Property classDirectory cannot be null/empty");
+        }
+        
+        /**
         if (this.compileDirectory == null) {
             throw new MojoExecutionException("Property compileDirectory cannot be null/empty");
         }
+        */
         
         if (javaVersion == null || javaVersion.length() == 0) {
             // set to current jdk version
@@ -115,7 +127,8 @@ public class GenerateMojo extends AbstractMojo {
             
             jgm.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
             jgm.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
-            jgm.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
+            jgm.getGenerator().getConfiguration().setClassDirectory(classDirectory);
+            //jgm.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
             jgm.setFailOnError(failOnError);
             
             // passthru other config

@@ -15,7 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.RockerRuntime;
+import com.fizzed.rocker.runtime.RockerRuntime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,23 +34,26 @@ public class RockerConfiguration {
     
     static public final String TEMPLATE_DIR = "rocker.template.dir";
     static public final String OUTPUT_DIR = "rocker.output.dir";
-    static public final String COMPILE_DIR = "rocker.class.dir";
+    static public final String CLASS_DIR = "rocker.class.dir";
+    //static public final String COMPILE_DIR = "rocker.compile.dir";
     static public final String OPTION_PREFIX = "rocker.option.";
     
     private File templateDirectory;
     private File outputDirectory;
-    private File compileDirectory;
+    private File classDirectory;
+    //private File compileDirectory;
     private RockerOptions options;
     
     public RockerConfiguration() {
         this.templateDirectory = new File("src/main/resources/rocker");
         this.outputDirectory = new File("target/generated-sources/rocker");
-        this.compileDirectory = new File("target/classes");
+        this.classDirectory = new File("target/classes");
+        //this.compileDirectory = null;
         this.options = new RockerOptions();
-        // merge in system properties
-        merge(System.getProperties());
         // merge in rocker.conf from classpath
         mergeFromClassPath();
+        // merge in system properties
+        merge(System.getProperties());
     }
     
     final public void mergeFromClassPath() {
@@ -61,7 +64,7 @@ public class RockerConfiguration {
                 properties.load(is);
                 merge(properties);
             } catch (Exception e) {
-                log.warn("Unable to load rocker.conf from classpath", e);
+                log.warn("Unable to load " + RockerRuntime.CONF_RESOURCE_NAME + " from classpath", e);
             }
         }
     }
@@ -77,10 +80,17 @@ public class RockerConfiguration {
             log.debug("outputDirectory = " + this.outputDirectory);
         }
         
+        if (properties.containsKey(CLASS_DIR)) {
+            this.classDirectory = new File(properties.getProperty(CLASS_DIR));
+            log.debug("classDirectory = " + this.classDirectory);
+        }
+        
+        /**
         if (properties.containsKey(COMPILE_DIR)) {
             this.compileDirectory = new File(properties.getProperty(COMPILE_DIR));
             log.debug("compileDirectory = " + this.compileDirectory);
         }
+        */
         
         // find all keys starting with rocker.options prefix and process them as strings
         Enumeration propertyNames = properties.propertyNames();
@@ -105,7 +115,8 @@ public class RockerConfiguration {
         Properties properties = new Properties();
         properties.put(TEMPLATE_DIR, this.templateDirectory.getPath());
         properties.put(OUTPUT_DIR, this.outputDirectory.getPath());
-        properties.put(COMPILE_DIR, this.compileDirectory.getPath());
+        properties.put(CLASS_DIR, this.classDirectory.getPath());
+        //properties.put(COMPILE_DIR, this.compileDirectory.getPath());
         this.options.write(properties);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             properties.store(fos, OUTPUT_DIR);
@@ -128,13 +139,26 @@ public class RockerConfiguration {
         this.outputDirectory = outputDirectory;
     }
 
+    public File getClassDirectory() {
+        return classDirectory;
+    }
+
+    public void setClassDirectory(File classDirectory) {
+        this.classDirectory = classDirectory;
+    }
+
+    /**
     public File getCompileDirectory() {
+        if (this.compileDirectory == null) {
+            return getClassDirectory();
+        }
         return compileDirectory;
     }
 
     public void setCompileDirectory(File compileDirectory) {
         this.compileDirectory = compileDirectory;
     }
+    */
 
     public RockerOptions getOptions() {
         return options;

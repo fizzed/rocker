@@ -17,11 +17,10 @@ package com.fizzed.rocker.reload;
 
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerModel;
-import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.TemplateBindException;
 import com.fizzed.rocker.TemplateNotFoundException;
-import com.fizzed.rocker.compiler.CompileDiagnosticException;
-import com.fizzed.rocker.compiler.CompileUnrecoverableException;
+import com.fizzed.rocker.runtime.CompileDiagnosticException;
+import com.fizzed.rocker.runtime.CompileUnrecoverableException;
 import com.fizzed.rocker.compiler.GeneratorException;
 import com.fizzed.rocker.compiler.ParserException;
 import com.fizzed.rocker.compiler.RockerConfiguration;
@@ -64,11 +63,16 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
         this.classLoader = buildClassLoader();
     }
 
+    public RockerConfiguration getConfiguration() {
+        return configuration;
+    }
+    
     private RockerClassLoader buildClassLoader() {
         return new RockerClassLoader(this, ReloadingRockerBootstrap.class.getClassLoader());
     }
 
     // views.index$Template
+    // views.index$PlainText
     // views.index$Template$1 (if something like an inner class)
     public boolean isReloadableClass(String className) {
         
@@ -127,7 +131,6 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
             throw new RenderingException("Unable to read TEMPLATE_NAME static field from class " + modelType.getName());
         }
     }
-    
     
     @Override
     public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException {
@@ -246,7 +249,11 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
                 if (verifyHeaderHash) {
                     if (!newHeaderHash.equals(template.headerHash)) {
                         log.debug("current header hash " + template.headerHash + "; new header hash " + newHeaderHash);
-                        throw new RenderingException("Interface (e.g. arguments) were modified. New project build and JVM restart required to reload.");
+                        
+                        // build proper template exception
+                        String templatePath = unit.getTemplateModel().getPackageName().replace('.', '/');
+                        throw new RenderingException(1, 1, unit.getTemplateModel().getTemplateName(), templatePath, 
+                                "Interface (e.g. arguments/imports) were modified. Unable to safely hot reload. Do a fresh project build and JVM restart.", null);
                     }
                 }
                 
@@ -260,9 +267,10 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
                 
                 // save current modifiedAt & header hash
                 template.modifiedAt = modifiedAt;
-                template.headerHash = newHeaderHash;
-                
-            } catch (ParserException | IOException | GeneratorException | CompileUnrecoverableException | CompileDiagnosticException e) {
+                template.headerHash = newHeaderHash;   
+            } catch (ParserException | CompileDiagnosticException | CompileUnrecoverableException e) {
+                throw e;
+            } catch (IOException | GeneratorException e) {
                 throw new RenderingException("Unable to compile rocker template", e);
             }
 

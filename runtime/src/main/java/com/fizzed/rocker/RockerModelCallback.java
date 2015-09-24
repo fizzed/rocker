@@ -16,11 +16,19 @@
 package com.fizzed.rocker;
 
 /**
- *
+ * Callbacks for a RockerModel.
+ * 
  * @author joelauer
  */
 public interface RockerModelCallback {
     
+    /**
+     * Called after model creates underlying Template it will render to and
+     * immediately before it calls Template.render().  Offers one last chance
+     * to inject variables into Template before it executes rendering.
+     * 
+     * @param template The template that will be rendered by the model.
+     */
     void onRender(RockerTemplate template);
     
 }

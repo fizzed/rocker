@@ -16,7 +16,7 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.RockerRuntime;
+import com.fizzed.rocker.runtime.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
@@ -36,7 +36,6 @@ import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
-import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import com.fizzed.rocker.runtime.Java8Iterator;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
@@ -150,7 +149,7 @@ public class JavaGenerator {
     public void appendCommentAndSourcePositionUpdate(Writer w, int tab, TemplateUnit unit) throws IOException {
         String unitName = RockerUtil.unqualifiedClassName(unit);
         //tab(w, tab).append("// ").append(unitName).append(sourceRef(unit)).append(CRLF);
-        tab(w, tab).append("// ").append(unitName).append(CRLF);
+        tab(w, tab).append("// ").append(unitName).append(" ").append(sourceRef(unit)).append(CRLF);
         tab(w, tab)
             .append("__internal.aboutToExecutePosInTemplate(")
             .append(sourceRefLineCommaPosInLine(unit))
@@ -334,8 +333,7 @@ public class JavaGenerator {
         // class definition
         tab(w, indent)
             .append("static public class Template extends ")
-            .append(model.getOptions().getExtendsClass())
-            .append("<Template>");
+            .append(model.getOptions().getExtendsClass());
                 
         w.append(" {").append(CRLF);
         

@@ -15,6 +15,8 @@
  */
 package com.fizzed.rocker;
 
+import com.fizzed.rocker.runtime.RockerRuntime;
+
 /**
  *
  * @author joelauer
@@ -22,6 +24,16 @@ package com.fizzed.rocker;
 public class Rocker {
     
     // intended for dynamic usage of templates (interfaces & template)
+    /**
+     * Creates a template at runtime with properties that can be set (bindable)
+     * dynamically at runtime via Java reflection.
+     * 
+     * @param templatePath The path to the template such as "views/app/index.rocker.html".
+     *      The value is converted to a Java package name such as "views.app.index"
+     *      which is then loaded from the classpath.  If hot reloading is turned on
+     *      then the template is checked if it needs (re)compiled as well.
+     * @return A template model with bindable properties.
+     */
     static public BindableRockerModel template(String templatePath) {
         
         // load model from bootstrap (which may recompile if needed)

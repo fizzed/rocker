@@ -16,6 +16,7 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.model.TemplateModel;
+import com.fizzed.rocker.runtime.RockerRuntime;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -130,8 +131,11 @@ public class JavaGeneratorMain {
         
         if (!configuration.getOptions().getOptimize()) {
             // save configuration
-            this.configuration.getCompileDirectory().mkdirs();
-            File configFile = new File(this.configuration.getCompileDirectory(), "rocker.conf");
+            this.configuration.getClassDirectory().mkdirs();
+            
+            // use resource name, but strip leading slash
+            // place it into the classes directory (not the compile directory)
+            File configFile = new File(this.configuration.getClassDirectory(), RockerRuntime.CONF_RESOURCE_NAME.substring(1));
             this.configuration.write(configFile);
             log.info("Generated rocker configuration " + configFile);
         } else {

@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker;
+package com.fizzed.rocker.runtime;
 
-import com.fizzed.rocker.runtime.DefaultRockerBootstrap;
-import com.fizzed.rocker.runtime.RockerBootstrap;;
 import javax.tools.ToolProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +27,7 @@ public class RockerRuntime {
     private final static Logger log = LoggerFactory.getLogger(RockerRuntime.class.getName());
     
     static public final String KEY_RELOADING = "rocker.reloading";
-    static public final String CONF_RESOURCE_NAME = "/rocker.conf";
+    static public final String CONF_RESOURCE_NAME = "/rocker-compiler.conf";
     
     private static class Holder {
         static final RockerRuntime INSTANCE = new RockerRuntime();
@@ -40,6 +38,8 @@ public class RockerRuntime {
     
     private RockerRuntime() {
     
+        log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
+        
         String reloadingProperty = System.getProperty(KEY_RELOADING, "false");
         if (reloadingProperty.equalsIgnoreCase("true")) {
             setReloading(true);
@@ -48,9 +48,7 @@ public class RockerRuntime {
         } else {
             throw new IllegalArgumentException("Illegal value [" + reloadingProperty + "] for rocker.reloading sytem property");
         }
-        
-        log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
-        
+    
     }
     
     static public RockerRuntime getInstance() {

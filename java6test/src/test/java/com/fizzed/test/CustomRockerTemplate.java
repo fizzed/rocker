@@ -17,39 +17,41 @@ package com.fizzed.test;
 
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
+import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 
 /**
  *
- * @param <T>
  * @author joelauer
  */
-public abstract class CustomRockerTemplate<T extends CustomRockerTemplate> extends DefaultRockerTemplate<T> {
+public abstract class CustomRockerTemplate extends DefaultRockerTemplate {
 
     // implicit variables/functions
     protected String implicit;
     
     public CustomRockerTemplate(DefaultRockerModel model) {
         super(model);
+        
         if (model instanceof CustomRockerModel) {
             CustomRockerModel customModel = (CustomRockerModel)model;
             this.implicit = customModel.implicit;
         }
         else {
-            throw new RenderingException("Unable to create template from model (not an instance of " + CustomRockerModel.class.getName() + ")");
+            throw new IllegalArgumentException("Unable to create template (model was not an instance of " + CustomRockerModel.class.getName() + ")");
         }
     }
     
     @Override
-    protected void __associate(DefaultRockerTemplate context) throws RenderingException {
+    protected void __associate(RockerTemplate context) {
         super.__associate(context);
+        
         if (context instanceof CustomRockerTemplate) {
-            CustomRockerTemplate customTemplate = (CustomRockerTemplate)context;
-            this.implicit = customTemplate.implicit;
+            CustomRockerTemplate ninjaContext = (CustomRockerTemplate)context;
+            this.implicit = ninjaContext.implicit;
         }
         else {
-            throw new RenderingException("Unable to associate template with other template (not an instance of " + CustomRockerTemplate.class.getName() + ")");
+            throw new IllegalArgumentException("Unable to associate (context was not an instance of " + CustomRockerTemplate.class.getCanonicalName() + ")");
         }
     }
     

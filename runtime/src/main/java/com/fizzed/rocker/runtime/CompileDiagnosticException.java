@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.compiler;
+package com.fizzed.rocker.runtime;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author joelauer
  */
-public class CompileDiagnosticException extends Exception {
+public class CompileDiagnosticException extends RuntimeException {
 
     private final List<CompileDiagnostic> diagnostics;
     

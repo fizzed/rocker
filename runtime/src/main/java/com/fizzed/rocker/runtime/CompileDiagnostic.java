@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.compiler;
+package com.fizzed.rocker.runtime;
 
 import java.io.File;
 
@@ -25,15 +25,19 @@ public class CompileDiagnostic {
     
     private final File templateFile;
     private final File javaFile;
-    private final long lineNumber;
-    private final long columnNumber;
+    private final long templateLineNumber;
+    private final long templateColumnNumber;
+    private final long javaLineNumber;
+    private final long javaColumnNumber;
     private final String message;
 
-    public CompileDiagnostic(File templateFile, File javaFile, long lineNumber, long columnNumber, String message) {
+    public CompileDiagnostic(File templateFile, File javaFile, long templateLineNumber, long templateColumnNumber, long javaLineNumber, long javaColumnNumber, String message) {
         this.templateFile = templateFile;
         this.javaFile = javaFile;
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
+        this.templateLineNumber = templateLineNumber;
+        this.templateColumnNumber = templateColumnNumber;
+        this.javaLineNumber = javaLineNumber;
+        this.javaColumnNumber = javaColumnNumber;
         this.message = message;
     }
 
@@ -45,12 +49,20 @@ public class CompileDiagnostic {
         return javaFile;
     }
 
-    public long getLineNumber() {
-        return lineNumber;
+    public long getTemplateLineNumber() {
+        return templateLineNumber;
     }
 
-    public long getColumnNumber() {
-        return columnNumber;
+    public long getTemplateColumnNumber() {
+        return templateColumnNumber;
+    }
+
+    public long getJavaLineNumber() {
+        return javaLineNumber;
+    }
+
+    public long getJavaColumnNumber() {
+        return javaColumnNumber;
     }
 
     public String getMessage() {

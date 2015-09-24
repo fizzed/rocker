@@ -15,6 +15,10 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.model.SourcePosition;
+import com.fizzed.rocker.runtime.CompileDiagnostic;
+import com.fizzed.rocker.runtime.CompileDiagnosticException;
+import com.fizzed.rocker.runtime.CompileUnrecoverableException;
 import com.fizzed.rocker.model.TemplateModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,6 +119,10 @@ public class TemplateCompiler {
                 throw new CompileUnrecoverableException("Unable to build javac classpath", e);
             }
         }
+        
+        // make sure compile directory exists
+        this.configuration.getClassDirectory().mkdirs();
+        
 
         List<String> javacOptions = new ArrayList<>();
 
@@ -124,7 +132,7 @@ public class TemplateCompiler {
 
         // directory to output compiles classes
         javacOptions.add("-d");
-        javacOptions.add(this.configuration.getCompileDirectory().getAbsolutePath());
+        javacOptions.add(this.configuration.getClassDirectory().getAbsolutePath());
 
         javacOptions.add("-Xlint:unchecked");
         
@@ -158,27 +166,45 @@ public class TemplateCompiler {
         for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
             // file:/home/joelauer/workspace/fizzed/java-rocker/reloadtest/target/generated-test-sources/rocker/views/index.java
             JavaFileObject jfo = (JavaFileObject)diagnostic.getSource();
-            log.debug("java file: {}", jfo.toUri());
-            
-            log.debug("source: {}", diagnostic.getSource());
-            log.debug("line num: {}", diagnostic.getLineNumber());
-            log.debug("col num: {}", diagnostic.getColumnNumber());
-            
-            log.debug("code: {}", diagnostic.getCode());
-            log.debug("kind: {}", diagnostic.getKind());
-            log.debug("pos: {}", diagnostic.getPosition());
-            log.debug("start pos: {}", diagnostic.getStartPosition());
-            log.debug("end pos: {}", diagnostic.getEndPosition());
-            
-            log.debug("message: {}", diagnostic.getMessage(null));
+            //log.debug("java file: {}", jfo.toUri());
+            //log.debug("source: {}", diagnostic.getSource());
+            //log.debug("line num: {}", diagnostic.getLineNumber());
+            //log.debug("col num: {}", diagnostic.getColumnNumber());
+            //log.debug("code: {}", diagnostic.getCode());
+            //log.debug("kind: {}", diagnostic.getKind());
+            //log.debug("pos: {}", diagnostic.getPosition());
+            //log.debug("start pos: {}", diagnostic.getStartPosition());
+            //log.debug("end pos: {}", diagnostic.getEndPosition());
+            //log.debug("message: {}", diagnostic.getMessage(null));
             
             if (diagnostic.getKind() == Kind.ERROR) {
                 File javaFile = new File(jfo.toUri()).getAbsoluteFile();
                 
                 CompilationUnit unit = unitsByJavaFile.get(javaFile);
                 
+                int templateLineNumber = -1;
+                int templateColumnNumber = -1;
+                
+                try {
+                    // check if we can find the correlating template line & col
+                    SourcePosition sourcePos = JavaSourceUtil.findSourcePosition(
+                                                        javaFile,
+                                                        (int)diagnostic.getLineNumber(),
+                                                        (int)diagnostic.getColumnNumber());
+
+
+
+                    if (sourcePos != null) {
+                        templateLineNumber = sourcePos.getLineNumber();
+                        templateColumnNumber = sourcePos.getPosInLine();
+                    }
+                } catch (IOException e) {
+                    // do nothing
+                }
+                
                 CompileDiagnostic cd = new CompileDiagnostic(
                         unit.templateFile, javaFile,
+                        templateLineNumber, templateColumnNumber,
                         diagnostic.getLineNumber(), diagnostic.getColumnNumber(),
                         diagnostic.getMessage(null));
                 
@@ -187,9 +213,36 @@ public class TemplateCompiler {
                 errors++;
             }
         }
-
+        
+        /**
+         [ERROR] /home/joelauer/workspace/fizzed/java-ninja-rocker/demo/target/generated-sources/rocker/views/index.java:[87,40] method template in class views.main cannot be applied to given types;
+  required: java.lang.String,java.lang.String
+  found: java.lang.String
+  reason: actual and formal argument lists differ in length
+         */
+        
         if (!success || errors > 0) {
-            throw new CompileDiagnosticException("Unable to compile rocker template(s) with " + errors + " errors", cds);
+            // build large message of the errors
+            StringBuilder sb = new StringBuilder();
+        
+            sb.append("Unable to compile rocker template(s) with ").append(errors).append(" errors.");
+            
+            for (CompileDiagnostic cd : cds) {
+                sb.append("\r\n");
+                
+                sb.append("[ERROR] ").append(cd.getTemplateFile());
+                if (cd.getTemplateLineNumber() >= 0) {
+                    sb.append(":[").append(cd.getTemplateLineNumber()).append(",").append(cd.getTemplateColumnNumber()).append("] ");
+                }
+                sb.append("\r\n");
+                
+                sb.append("  java: ").append(cd.getJavaFile()).append(":[").append(cd.getJavaLineNumber()).append(",").append(cd.getJavaColumnNumber()).append("] ");
+                sb.append(cd.getMessage().trim());
+            }
+            
+            log.warn("{}", sb);
+        
+            throw new CompileDiagnosticException(sb.toString(), cds);
         }
     }
     

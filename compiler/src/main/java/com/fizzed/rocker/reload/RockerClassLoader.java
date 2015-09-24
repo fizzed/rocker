@@ -16,6 +16,7 @@
 package com.fizzed.rocker.reload;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -50,10 +51,29 @@ public class RockerClassLoader extends ClassLoader {
 
         // load as though class was a resource
         try {
+            // views.index -> views/index
             String resourceName = className.replace(".", "/") + ".class";
-
+            
+            /**
+            URL url = null;
+            
+            // attempt to load from rocker "compile" directory first
+            File recompiledFile = new File(this.bootstrap.getConfiguration().getCompileDirectory(), resourceName);
+            
+            if (!recompiledFile.exists()) {
+                log.debug("Unable to find class in compileDirectory: {}", recompiledFile);
+                
+                // fallback to resource
+                url = this.getResource(resourceName);
+            } else {
+                
+                url = recompiledFile.toURI().toURL();
+                
+            }
+            */
+            
             URL url = this.getResource(resourceName);
-
+            
             if (url == null) {
                 throw new ClassNotFoundException("Class " + className + " not found");
             }
