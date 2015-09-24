@@ -77,7 +77,7 @@ public class GenerateMojo extends AbstractMojo {
     /**
      * Directory where classes are compiled to (for placing rocker config file).
      */
-    @Parameter(property = "rocker.classDirectory", defaultValue = "${project.build.outputDirectory", required = true)
+    @Parameter(property = "rocker.classDirectory", defaultValue = "${project.build.outputDirectory}", required = true)
     protected File classDirectory;
 
     @Parameter(defaultValue = "${project}", readonly = true )
