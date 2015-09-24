@@ -83,7 +83,7 @@
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-compiler</artifactId>
             <version>${project.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         
         <!-- testing via http -->
@@ -91,14 +91,8 @@
             <groupId>io.undertow</groupId>
             <artifactId>undertow-core</artifactId>
             <version>1.2.12.Final</version>
+            <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.7</version>
-        </dependency>
-
         
         <!-- test -->
         <dependency>
