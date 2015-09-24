@@ -54,6 +54,10 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
     }
     
     static public String templatePathToClassName(String templateName) {
+        if (templateName == null) {
+            throw new NullPointerException("Template name was null");
+        }
+        
         // views/app/index.rocker.html
         int pos = templateName.indexOf('.');
         if (pos < 0) {

@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.TemplateModel;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import java.io.File;
@@ -105,7 +106,7 @@ public class JavaGeneratorMain {
             } catch (IOException | ParserException e) {
                 if (e instanceof ParserException) {
                     ParserException pe = (ParserException)e;
-                    log.error("Parsing failed for " + f + ":[" + pe.getLine() + "," + pe.getPosInLine() + "] " + pe.getMessage());
+                    log.error("Parsing failed for " + f + ":[" + pe.getLineNumber() + "," + pe.getColumnNumber() + "] " + pe.getMessage());
                 } else {
                     log.error("Unable to parse template", e);
                 }

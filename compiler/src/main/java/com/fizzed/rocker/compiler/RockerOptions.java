@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.Option;
@@ -210,18 +211,18 @@ public class RockerOptions {
     public void parseOption(Option option) throws ParserException {
         String statement = option.getStatement();
         if (!statement.contains("=")) {
-            throw new ParserException(option.getSourceRef(), null, "Invalid option (missing = token; format name=value)");
+            throw TemplateParser.buildParserException(option.getSourceRef(), null, "Invalid option (missing = token; format name=value)");
         }
         
         String[] nameValuePair = statement.split("=");
         if (nameValuePair == null || nameValuePair.length != 2) {
-            throw new ParserException(option.getSourceRef(), null, "Invalid option (must have only a single = token)");
+            throw TemplateParser.buildParserException(option.getSourceRef(), null, "Invalid option (must have only a single = token)");
         }
         
         try {
             set(nameValuePair[0], nameValuePair[1]);
         } catch (TokenException e) {
-            throw new ParserException(option.getSourceRef(), null, e.getMessage(), e);
+            throw TemplateParser.buildParserException(option.getSourceRef(), null, e.getMessage(), e);
         }
     }
     

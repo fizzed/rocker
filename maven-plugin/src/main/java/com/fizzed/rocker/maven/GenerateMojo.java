@@ -65,7 +65,7 @@ public class GenerateMojo extends AbstractMojo {
      * Directory containing templates. The base directory to search -- which is
      * also how their "package" name is determined.
      */
-    @Parameter(property = "rocker.templateDirectory", defaultValue = "${basedir}/src/main/java")
+    @Parameter(property = "rocker.templateDirectory", defaultValue = "${project.build.sourceDirectory}")
     protected File templateDirectory;
     
     /**
@@ -77,16 +77,10 @@ public class GenerateMojo extends AbstractMojo {
     /**
      * Directory where classes are compiled to (for placing rocker config file).
      */
-    @Parameter(property = "rocker.classDirectory", defaultValue = "${project.build.directory}/classes", required = true)
+    @Parameter(property = "rocker.classDirectory", defaultValue = "${project.build.outputDirectory", required = true)
     protected File classDirectory;
 
-    /**
-     * Directory to use for (re)compiling classes for auto reloading.
-     */
-    @Parameter(property = "rocker.compileDirectory", defaultValue = "${project.build.directory}/rocker-classes", required = true)
-    protected File compileDirectory;
-
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true )
     protected MavenProject project;
     
     @Override

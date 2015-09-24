@@ -81,13 +81,22 @@ public class RockerRuntime {
         return bootstrap;
     }
     
+    public boolean isReloadingPossible() {
+        try {
+            buildReloadingRockerBootstrap();
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+    
     private RockerBootstrap buildReloadingRockerBootstrap() {
         // is a java compiler available?
         if (ToolProvider.getSystemJavaCompiler() == null) {
             throw new RuntimeException("Unable to activate Rocker template reloading. No system java compiler available. Are you running with a JRE instead of a JDK?");
         }
         
-        // is the /rocker.conf file on classpath so we can find templates?
+        // is the /rocker.conf file on classpath so we can find & (re)compile templates
         if (getClass().getResource(CONF_RESOURCE_NAME) == null) {
             throw new RuntimeException("Unable to activate Rocker template reloading. Unable to find " + CONF_RESOURCE_NAME + " on classpath. Did one get generated during the build?");
         }
@@ -97,7 +106,7 @@ public class RockerRuntime {
             Class<?> bootstrapType = Class.forName("com.fizzed.rocker.reload.ReloadingRockerBootstrap");
             return (RockerBootstrap)bootstrapType.newInstance();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Unable to activate Rocker template reloading. Did you forget to include 'rocker-compiler' as an optional dependency?");
+            throw new RuntimeException("Unable to activate Rocker template reloading. Did you forget to include 'rocker-compiler' as an optional/provided dependency?");
         } catch (Exception e) {
             throw new RuntimeException("Unable to activate Rocker template reloading. Unable to create ReloadingRockerBootstrap instance", e);
         }

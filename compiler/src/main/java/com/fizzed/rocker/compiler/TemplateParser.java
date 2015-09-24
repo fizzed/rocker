@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
@@ -133,6 +134,14 @@ public class TemplateParser {
         ANTLRInputStream input = new ANTLRInputStream(source);
         input.name = qualifiedName;
         return parse(input, "views", qualifiedName, -1);
+    }
+    
+    static public ParserException buildParserException(SourceRef sourceRef, String templatePath, String msg) {
+        return new ParserException(sourceRef.getBegin().getLineNumber(), sourceRef.getBegin().getPosInLine(), templatePath, msg, null);
+    }
+    
+    static public ParserException buildParserException(SourceRef sourceRef, String templatePath, String msg, Throwable cause) {
+        return new ParserException(sourceRef.getBegin().getLineNumber(), sourceRef.getBegin().getPosInLine(), templatePath, msg, cause);
     }
     
     private TemplateModel parse(ANTLRInputStream input, String packageName, String templateName, long modifiedAt) throws ParserException {
@@ -479,7 +488,7 @@ public class TemplateParser {
             String statement = ctx.getText().trim();
             
             if (!statement.startsWith("(") || !statement.endsWith(")")) {
-               throw new ParserException(sourceRef, templatePath, "Arguments for @args must be enclosed with parentheses");
+               throw TemplateParser.buildParserException(sourceRef, templatePath, "Arguments for @args must be enclosed with parentheses");
             }
             
             // chomp off parenthese
@@ -497,7 +506,7 @@ public class TemplateParser {
                     model.getArguments().add(new Argument(sourceRef, arg));
                 }
             } catch (TokenException e) {
-                throw new ParserException(sourceRef, templatePath, e.getMessage(), e);
+                throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
             
             // special handling for argument of "RockerBody"
@@ -506,7 +515,7 @@ public class TemplateParser {
                 if (arg.getType().equals("RockerBody")) {
                     // only permitted as the LAST argument
                     if (i != (model.getArguments().size() - 1)) {
-                        throw new ParserException(sourceRef, templatePath, "RockerBody type only allowed as last argument");
+                        throw TemplateParser.buildParserException(sourceRef, templatePath, "RockerBody type only allowed as last argument");
                     }
                 }
             }
@@ -629,7 +638,7 @@ public class TemplateParser {
                 
                 model.getUnits().add(new ForBlockBegin(sourceRef, expression, statement));
             } catch (TokenException e) {
-                throw new ParserException(sourceRef, templatePath, e.getMessage(), e);
+                throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
         }
 

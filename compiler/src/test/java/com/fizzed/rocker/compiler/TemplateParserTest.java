@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
@@ -210,8 +211,8 @@ public class TemplateParserTest {
         } catch (ParserException e) {
             //log.error("", e);
             // confirm position of error
-            Assert.assertEquals(5, e.getLine());
-            Assert.assertEquals(0, e.getPosInLine());
+            Assert.assertEquals(5, e.getLineNumber());
+            Assert.assertEquals(0, e.getColumnNumber());
         }
     }
     

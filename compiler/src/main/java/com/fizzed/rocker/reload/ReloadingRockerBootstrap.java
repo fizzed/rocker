@@ -22,7 +22,7 @@ import com.fizzed.rocker.TemplateNotFoundException;
 import com.fizzed.rocker.runtime.CompileDiagnosticException;
 import com.fizzed.rocker.runtime.CompileUnrecoverableException;
 import com.fizzed.rocker.compiler.GeneratorException;
-import com.fizzed.rocker.compiler.ParserException;
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.compiler.RockerConfiguration;
 import com.fizzed.rocker.compiler.TemplateCompiler;
 import com.fizzed.rocker.runtime.DefaultRockerBootstrap;

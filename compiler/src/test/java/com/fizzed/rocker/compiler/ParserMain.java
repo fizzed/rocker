@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
@@ -69,7 +70,7 @@ public class ParserMain {
         } catch (IOException | ParserException e) {
             if (e instanceof ParserException) {
                 ParserException pe = (ParserException)e;
-                log.error("{}:[{},{}] {}", f, pe.getLine(), pe.getPosInLine(), pe.getMessage());
+                log.error("{}:[{},{}] {}", f, pe.getLineNumber(), pe.getColumnNumber(), pe.getMessage());
             } else {
                 log.error("Unable to cleanly parse template", e);
             }

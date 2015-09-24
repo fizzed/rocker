@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.SourcePosition;
 import com.fizzed.rocker.runtime.CompileDiagnostic;
 import com.fizzed.rocker.runtime.CompileDiagnosticException;
