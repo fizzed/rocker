@@ -16,25 +16,12 @@ curly brackets -- which are used to indicate the start and end of blocks. As lon
 as you make sure a left curly has a matching right curly, the only character
 you will need to escape in your plain text is the @ char.
 
-## Escaping @, }, and {
+## Using literals @, }, and {
 
 Since the ```@``` character indicates the start of dynamic code, to include it in your
 plain text, simply escape it using ```@@```. If you find the need to escape the ```{``` or ```}```
 characters, escape them using ```@{``` and ```@}```.  However, as long as you make sure your
 left curly has a matching right curly, you will rarely ever need to escape them.
-
-## Raw output
-
-Rocker will automatically escape any of your dynamic content based on the
-template content type. If your template is named `index.rocker.html` then 
-HTML escaping will be in effect. For the cases where you'd like to bypass these
-rules and directly render your content, use the `@raw` method.
-
-```html
-@args ()
-
-@raw("<html>")
-```
 
 ## Template Preamble
 
@@ -109,6 +96,42 @@ The value expression ```@user.getName().substring(0, 4)``` will return ```John``
 since Rocker inferred the entire chained call was all part of the same expression.
 All sorts of value expressions will work exactly as you would expect. You can
 call static or instance methods, chained methods, and pass arguments.
+
+### Automatic escaping
+
+Rocker will automatically escape any of your dynamic content based on the
+template content type. Rocker determines the content type of a template by the
+file extension of the template.  A template named `index.rocker.html` will have
+a content type of HTML and HTML escaping will be used for any value expression.
+Let's say you supply a string of `"<html>"` as the `element` value to the following
+template.
+
+```html
+@args (String element)
+
+@element
+```
+
+Since HTML escaping is in effect the actual rendered output is
+
+```html
+&lt;html&gt;
+```
+
+For the cases where you'd like to bypass these rules and directly render your
+content, use the `@raw` method.
+
+```html
+@args (String element)
+
+@raw(element)
+```
+
+The rendered output is
+
+```html
+<html>
+```
 
 ### If-else blocks
 
@@ -210,6 +233,10 @@ And for Java 6/7
 
 ### Calling other templates
 
+Templates can include other templates during its rendering process similar to
+how you use them from Java. Other templates are resolved as normal classes
+(e.g. packageName.className syntax).
+
 A template can include another template
 
     @views.MyOther.template()
@@ -224,6 +251,12 @@ you can include it using a closure syntax after the template value expression
     @views.MyOther.template(myArg1, "Another arg") -> {
         i will be rendered in MyOther
     }
+
+Or as of v0.10.0 call another template dynamically (by name, not class)
+
+    @import com.fizzed.rocker.Rocker
+
+    @Rocker("views/MyOther.rocker.html", "myArg1", "Another arg")
 
 ### Content blocks
 

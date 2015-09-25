@@ -16,6 +16,7 @@
 package com.fizzed.rocker;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
+import java.lang.reflect.Field;
 
 /**
  *
@@ -41,6 +42,39 @@ public class Rocker {
         
         return new BindableRockerModel(templatePath, model.getClass().getCanonicalName(), model);
         
+    }
+    
+    static public BindableRockerModel template(String templatePath, Object ... arguments) {
+        
+        // load model from bootstrap (which may recompile if needed)
+        RockerModel model = RockerRuntime.getInstance().getBootstrap().model(templatePath);
+        
+        BindableRockerModel bindableModel = new BindableRockerModel(templatePath, model.getClass().getCanonicalName(), model);
+        
+        if (arguments != null && arguments.length > 0) {
+            String[] argumentNames = getModelArgumentNames(templatePath, model);
+            
+            if (arguments.length != argumentNames.length) {
+                throw new TemplateBindException(templatePath, model.getClass().getCanonicalName(), "Template requires " + argumentNames.length + " arguments but " + arguments.length + " provided");
+            }
+            
+            for (int i = 0; i < arguments.length; i++) {
+                String name = argumentNames[i];
+                Object value = arguments[i];
+                bindableModel.bind(name, value);
+            }
+        }
+        
+        return bindableModel;
+    }
+    
+    static private String[] getModelArgumentNames(String templatePath, RockerModel model) {
+        try {
+            Field f = model.getClass().getField("ARGUMENT_NAMES");
+            return (String[])f.get(null);
+        } catch (Exception e) {
+            throw new TemplateBindException(templatePath, model.getClass().getCanonicalName(), "Unable to read ARGUMENT_NAMES static field from template");
+        }
     }
     
 }

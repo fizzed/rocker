@@ -44,10 +44,17 @@ public class ReloadServer {
                             .toString();
                         */
                         
-                        // dynamic, runtime-time checked template interface
+                        /**
+                        // dynamic, runtime-time checked template interface, builder-style
                         String out = Rocker.template("views/index.rocker.html")
                             .bind("title", "Home")
                             .bind("name", "Joe")
+                            .render()
+                            .toString();
+                        */
+                        
+                        // dynamic, runtime-time checked template interface, with arguments
+                        String out = Rocker.template("views/index.rocker.html", "Home", "Joe", 1)
                             .render()
                             .toString();
                         
