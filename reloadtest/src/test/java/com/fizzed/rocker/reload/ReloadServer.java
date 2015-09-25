@@ -37,7 +37,6 @@ public class ReloadServer {
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {
-                        
                         /**
                         // static, compile-time checked template interface
                         String out = views.index.template("Home", "Joe")

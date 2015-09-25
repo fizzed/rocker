@@ -265,8 +265,20 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         public void renderValue(Object obj) throws IOException {
             out.w(stringify.s(obj));
         }
+        
+        public void renderValue(byte v) throws IOException {
+            out.w(stringify.s(v));
+        }
+        
+        public void renderValue(short v) throws IOException {
+            out.w(stringify.s(v));
+        }
 
         public void renderValue(int v) throws IOException {
+            out.w(stringify.s(v));
+        }
+        
+        public void renderValue(long v) throws IOException {
             out.w(stringify.s(v));
         }
 
@@ -275,10 +287,6 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         }
 
         public void renderValue(double v) throws IOException {
-            out.w(stringify.s(v));
-        }
-
-        public void renderValue(byte v) throws IOException {
             out.w(stringify.s(v));
         }
 

@@ -589,6 +589,28 @@ public class CompiledTemplateTest {
         // newlines don't really matter - just verify what it did
         Assert.assertEquals("a\ninside-b-closure\n\nhello\ninside-c-closure\n\n1", html.trim().replace(" ", ""));
     }
+    
+    @Test
+    public void types() throws Exception {
+        // normally these chars would be escaped, but with raw feature they
+        // will skip the content type escape mechanism
+        String html = new rocker.Types()
+            .str("Joe")
+            .b((byte)127)
+            .s((short)32767)
+            .i(2147483647)
+            .l(21474836471234L)
+            .f(2.147483647f)
+            .d(2.1474836471234d)
+            .bool(true)
+            .c('C')
+            .render()
+            .toString()
+            .trim();
+        
+        // expected values confirmed by doing a System.out.println(value+"")
+        Assert.assertEquals("Joe\n127\n32767\n2147483647\n21474836471234\n2.1474836\n2.1474836471234\ntrue\nC", html);
+    }
 
     /**
     @Test
