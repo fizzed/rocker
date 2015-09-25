@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -30,13 +31,13 @@ public class OutputStreamOutput extends AbstractRockerOutput<OutputStreamOutput>
     
     private final OutputStream stream;
 
-    public OutputStreamOutput(OutputStream stream, String charsetName) {
-        super(charsetName, 0);
+    public OutputStreamOutput(ContentType contentType, OutputStream stream, String charsetName) {
+        super(contentType, charsetName, 0);
         this.stream = stream;
     }
     
-    public OutputStreamOutput(OutputStream stream, Charset charset) {
-        super(charset, 0);
+    public OutputStreamOutput(ContentType contentType, OutputStream stream, Charset charset) {
+        super(contentType, charset, 0);
         this.stream = stream;
     }
 

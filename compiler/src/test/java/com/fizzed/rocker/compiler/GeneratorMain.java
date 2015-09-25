@@ -30,8 +30,11 @@ public class GeneratorMain {
     static private final Logger log = LoggerFactory.getLogger(GeneratorMain.class);
     
     static public void main(String[] args) throws Exception {
-        TemplateParser parser = new TemplateParser();
-        parser.setBaseDirectory(new File("compiler/src/test/resources"));
+        RockerConfiguration configuration = new RockerConfiguration();
+        configuration.setTemplateDirectory(new File("compiler/src/test/resources"));
+        configuration.setOutputDirectory(new File("compiler/target/generated-test-sources/rocker"));
+        
+        TemplateParser parser = new TemplateParser(configuration);
         
         File f = new File("compiler/src/test/resources/rocker/parser/LauerMain.rocker.html");
         
@@ -39,8 +42,7 @@ public class GeneratorMain {
         
         logModel(model);
         
-        JavaGenerator generator = new JavaGenerator();
-        generator.setOutputDirectory(new File("target/generated-test-sources/rocker"));
+        JavaGenerator generator = new JavaGenerator(configuration);
         
         File sourceFile = generator.generate(model);
     }

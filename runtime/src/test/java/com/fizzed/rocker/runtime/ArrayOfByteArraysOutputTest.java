@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class ArrayOfByteArraysOutputTest {
     
     @Test
     public void toStringTest() throws Exception {
-        ArrayOfByteArraysOutput out = new ArrayOfByteArraysOutput("UTF-8");
+        ArrayOfByteArraysOutput out = new ArrayOfByteArraysOutput(ContentType.HTML, "UTF-8");
         out.w("T");
         out.w("E");
         
@@ -38,7 +39,7 @@ public class ArrayOfByteArraysOutputTest {
     @Test
     public void asReadableByteChannel() throws Exception {
         
-        ArrayOfByteArraysOutput out = new ArrayOfByteArraysOutput("UTF-8");
+        ArrayOfByteArraysOutput out = new ArrayOfByteArraysOutput(ContentType.HTML, "UTF-8");
         out.w("T");
         out.w("E");
         

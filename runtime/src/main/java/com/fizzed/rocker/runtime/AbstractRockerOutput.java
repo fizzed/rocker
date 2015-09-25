@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerOutput;
 import java.nio.charset.Charset;
 
@@ -28,16 +29,24 @@ import java.nio.charset.Charset;
  */
 public abstract class AbstractRockerOutput<T extends AbstractRockerOutput> implements RockerOutput<AbstractRockerOutput> {
     
+    protected final ContentType contentType;
     protected final Charset charset;
     // this may not be set if the output is not optimized for bytes (e.g. StringBuilderOutput)
     protected int byteLength;
 
-    public AbstractRockerOutput(String charsetName, int byteLength) {
+    public AbstractRockerOutput(ContentType contentType, String charsetName, int byteLength) {
+        this.contentType = contentType;
         this.charset = Charset.forName(charsetName);
     }
     
-    public AbstractRockerOutput(Charset charset, int byteLength) {
+    public AbstractRockerOutput(ContentType contentType, Charset charset, int byteLength) {
+        this.contentType = contentType;
         this.charset = charset;
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return contentType;
     }
     
     @Override

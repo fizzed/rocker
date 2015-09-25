@@ -17,43 +17,53 @@ package com.fizzed.test;
 
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
+import com.fizzed.rocker.RockerTemplate;
+import com.fizzed.rocker.runtime.DefaultRockerModel;
 import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 
 /**
  *
- * @param <T>
  * @author joelauer
  */
-public abstract class CustomRockerTemplate<T extends CustomRockerTemplate> extends DefaultRockerTemplate<T> {
+public abstract class CustomRockerTemplate extends DefaultRockerTemplate {
 
     // implicit variables/functions
     protected String implicit;
     
-    public T implicit(String s) {
-        this.implicit = s;
-        return (T)this;
-    }
-    
-    public Integer i() {
-        return 1;
-    }
-
-    @Override
-    protected <T> void __configure(T other) throws RenderingException {
-        super.__configure(other);
-        if (other instanceof CustomRockerTemplate) {
-            CustomRockerTemplate otherTemplate = (CustomRockerTemplate)other;
-            this.implicit = otherTemplate.implicit;
+    public CustomRockerTemplate(DefaultRockerModel model) {
+        super(model);
+        
+        if (model instanceof CustomRockerModel) {
+            CustomRockerModel customModel = (CustomRockerModel)model;
+            this.implicit = customModel.implicit;
         }
         else {
-            throw new RenderingException("Unable to configure template (not an instance of " + this.getClass().getName() + ")");
+            throw new IllegalArgumentException("Unable to create template (model was not an instance of " + CustomRockerModel.class.getName() + ")");
         }
+    }
+    
+    @Override
+    protected void __associate(RockerTemplate context) {
+        super.__associate(context);
+        
+        if (context instanceof CustomRockerTemplate) {
+            CustomRockerTemplate ninjaContext = (CustomRockerTemplate)context;
+            this.implicit = ninjaContext.implicit;
+        }
+        else {
+            throw new IllegalArgumentException("Unable to associate (context was not an instance of " + CustomRockerTemplate.class.getCanonicalName() + ")");
+        }
+    }
+    
+    // implicit method
+    public Integer i() {
+        return 1;
     }
 
     // example of render() providing its own output to tie into specific framework
     @Override
     protected RockerOutput __newOutput() {
-        return new CustomRockerOutput();
+        return new CustomRockerOutput(this.__internal.getContentType());
     }
     
 }

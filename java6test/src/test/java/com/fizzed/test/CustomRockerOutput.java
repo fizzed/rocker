@@ -15,6 +15,7 @@
  */
 package com.fizzed.test;
 
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.runtime.StringBuilderOutput;
 
 /**
@@ -23,8 +24,8 @@ import com.fizzed.rocker.runtime.StringBuilderOutput;
  */
 public class CustomRockerOutput extends StringBuilderOutput {
     
-    public CustomRockerOutput() {
-        super("UTF-8");
+    public CustomRockerOutput(ContentType contentType) {
+        super(contentType, "UTF-8");
     }
     
     public boolean hasCustomProperty() {

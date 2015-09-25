@@ -15,59 +15,64 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.BindableRockerModel;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.RockerStringify;
 import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.RockerContent;
+import com.fizzed.rocker.RockerModel;
 import java.io.IOException;
 
 /**
  *
- * @param <T>
  * @author joelauer
  */
-public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> implements RockerTemplate {
+public abstract class DefaultRockerTemplate extends RockerTemplate {
     
-    // var name not likely to conflict with normal ones
     protected Internal __internal;
     
-    public DefaultRockerTemplate() {
+    public DefaultRockerTemplate(RockerModel model) {
+        super(model);
         this.__internal = new Internal();
     }
-
-    // do not stringify a value
     
-    protected Raw raw(Object obj) throws IOException {
-        if (obj == null) {
-            throw new NullPointerException("Value was null");
-        }
-        return Raw.of(obj.toString());
+    @Override
+    protected void __associate(RockerTemplate context) {
+        // safe to assume its a default instance
+        // subclasses should verify what type is supplied though
+        DefaultRockerTemplate otherContext = (DefaultRockerTemplate)context;
+        
+        // configure this template from another template
+        // internally the out, content type, and stringify are all shared
+        __internal.setOut(otherContext.__internal.getOut());
+        __internal.setContentType(otherContext.__internal.getContentType(), otherContext.__internal.getStringify());
     }
     
-    protected Raw raw(String s) throws IOException {
-        if (s == null) {
-            throw new NullPointerException("Value was null");
-        }
-        return Raw.of(s);
-    }
-    
-    public T __body(RockerContent body) {
-        throw new RenderingException("Template does not support a body. Forgot to declare RockerBody as a template argument?");
+    @Override
+    protected RockerOutput __newOutput() {
+        return new ArrayOfByteArraysOutput(__internal.getContentType(), __internal.getCharset());
+        //return new StringBuilderOutput(__internal.getCharset());
     }
 
     /**
      * Executes template and renders content to output.
+     * @param context The optional context if this template is being rendered within another template
      * @return The output of rendering process
      * @throws RenderingException Thrown if any error encountered while rendering
      *      template. Exception will include underlying cause as well as line
      *      and position of original template source that triggered exception.
      */
-    @Override
-    public RockerOutput render() throws RenderingException {
-        // verify things are setup correctly
+    final public RockerOutput __render(DefaultRockerTemplate context) throws RenderingException {
+        // associate with a context of another template
+        if (context != null) {
+            this.__associate(context);
+        }
         
+        //
+        // verify things are setup correctly
+        //
         if (this.__internal.charset == null) {
             throw new RenderingException("Template charset must be initialized before render");
         }
@@ -89,7 +94,10 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
         __internal.verifyOkToBeginRendering();
 
         try {
-            this.__render();
+            this.__doRender();
+        } catch (CompileDiagnosticException e) {
+            // do not wrap the underlying exception
+            throw e;
         } catch (Throwable t) {
             // include info on source line + pos where execution failed
             String templatePath = __internal.templatePackageName.replace('.', '/');
@@ -99,36 +107,31 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
         return __internal.out;
     }
     
-    abstract protected void __render() throws IOException, RenderingException;
+    abstract protected void __doRender() throws IOException, RenderingException;
     
-    protected <T> void __configure(T other) throws RenderingException {
-        if (other instanceof DefaultRockerTemplate) {
-            DefaultRockerTemplate otherTemplate = (DefaultRockerTemplate)other;
-            // configure this template from another template
-            // internally the out, content type, and stringify are all shared
-            __internal.setOut(otherTemplate.__internal.getOut());
-            __internal.setContentType(otherTemplate.__internal.getContentType(),
-                                        otherTemplate.__internal.getStringify());
+    //
+    // implicits to rocker templates
+    //
+    
+    public Raw raw(Object obj) throws IOException {
+        if (obj == null) {
+            throw new NullPointerException("Value was null");
         }
-        else {
-            throw new RenderingException("Unable to configure template (not an instance of " + this.getClass().getName() + ")");
-        }
+        return Raw.of(obj.toString());
     }
     
-    protected RockerOutput __newOutput() {
-        return new ArrayOfByteArraysOutput(__internal.getCharset());
-        //return new StringBuilderOutput(__internal.getCharset());
+    public Raw raw(String s) throws IOException {
+        if (s == null) {
+            throw new NullPointerException("Value was null");
+        }
+        return Raw.of(s);
     }
 
-    @Override
-    public String toString() {
-        throw new UnsupportedOperationException("toString() not permitted on RockerTemplate. User render() method.");
-    }
-    
     /**
      * Internal state of a template.
      * 
-     * Simple way to hide internal variables from template.
+     * Simple way to hide internal variables from template (which of course
+     * are subclasses of this class).
      * 
      * This is an internal API and it may radically change over time.  Using
      * this for workaround, etc. is not recommended.
@@ -244,11 +247,15 @@ public abstract class DefaultRockerTemplate<T extends DefaultRockerTemplate> imp
             c.render();
         }
         
-        public void renderValue(DefaultRockerTemplate otherTemplate) throws RenderingException, IOException {
-            // configure template within this template's context
-            otherTemplate.__configure(DefaultRockerTemplate.this);            
-            // render new template
-            otherTemplate.render();
+        public void renderValue(DefaultRockerModel model) throws RenderingException, IOException {
+            // delegating rendering this model to itself BUT under a context
+            model.render(DefaultRockerTemplate.this);
+        }
+        
+        public void renderValue(BindableRockerModel model) throws RenderingException, IOException {
+            // delegating rendering this model to itself BUT under a context
+            DefaultRockerModel underlyingModel = (DefaultRockerModel)model.getModel();
+            renderValue(underlyingModel);
         }
         
         public void renderValue(String s) throws IOException {

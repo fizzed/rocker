@@ -17,9 +17,13 @@ package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  *
@@ -252,6 +257,16 @@ public class RockerUtil {
         } else {
             // cast needed
             sb.append("(byte)0x").append(javax.xml.bind.DatatypeConverter.printHexBinary(new byte[] { b }));
+        }
+    }
+    
+    static public String md5(File f) throws IOException {
+        try {
+            byte[] b = Files.readAllBytes(f.toPath());
+            byte[] hash = MessageDigest.getInstance("MD5").digest(b);
+            return DatatypeConverter.printHexBinary(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e.getMessage(), e);
         }
     }
     

@@ -51,7 +51,7 @@ public class RenderingException extends RuntimeException {
     
     private static String buildMessage(int sourceLine, int sourcePosInLine, String templateName, String templatePath, String message, Throwable cause) {
         StringBuilder s = new StringBuilder();
-        s.append("Failure with ");
+        
         if (templatePath != null) {
             s.append(templatePath);
             s.append("/");

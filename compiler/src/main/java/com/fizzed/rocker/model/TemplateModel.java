@@ -15,15 +15,12 @@
  */
 package com.fizzed.rocker.model;
 
+import com.fizzed.rocker.compiler.RockerOptions;
 import com.fizzed.rocker.ContentType;
-import static com.fizzed.rocker.compiler.JavaGenerator.CRLF;
 import com.fizzed.rocker.compiler.RockerUtil;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -36,18 +33,20 @@ public class TemplateModel {
     // e.g. "index.rocker.html"
     private final String templateName;
     private final ContentType contentType;
+    private final long modifiedAt;
     // e.g. "index"
     private final String name;
     private final List<JavaImport> imports;
     private final List<Argument> arguments;
     private final List<TemplateUnit> units;
-    private final Options options;
+    private final RockerOptions options;
     
-    public TemplateModel(String packageName, String templateName, Options defaultOptions) {
+    public TemplateModel(String packageName, String templateName, long modifiedAt, RockerOptions defaultOptions) {
         this.packageName = packageName;
         this.templateName = templateName;
         this.name = RockerUtil.templateNameToName(templateName);
         this.contentType = RockerUtil.templateNameToContentType(templateName);
+        this.modifiedAt = modifiedAt;
         this.imports = new ArrayList<>();
         this.arguments = new ArrayList<>();
         this.units = new ArrayList<>();
@@ -70,6 +69,10 @@ public class TemplateModel {
         return name;
     }
 
+    public long getModifiedAt() {
+        return modifiedAt;
+    }
+    
     public List<JavaImport> getImports() {
         return imports;
     }
@@ -102,7 +105,7 @@ public class TemplateModel {
         }
     }
 
-    public Options getOptions() {
+    public RockerOptions getOptions() {
         return options;
     }
 
@@ -114,13 +117,10 @@ public class TemplateModel {
         return (T)units.get(index);
     }
     
-    public LinkedHashMap<String,LinkedHashMap<String,String>> createPlainTextMap(int chunkSize) {
-        
-        LinkedHashMap<String, LinkedHashMap<String,String>> plainTextMap = new LinkedHashMap<>();
-        
+    public LinkedHashMap<String,LinkedHashMap<String,String>> createPlainTextMap(int chunkSize) {        
         // optimize static plain text constants
         int index = 0;
-        plainTextMap = new LinkedHashMap<>();
+        LinkedHashMap<String, LinkedHashMap<String,String>> plainTextMap = new LinkedHashMap<>();
 
         for (TemplateUnit unit : getUnits()) {
             if (unit instanceof PlainText) {
@@ -149,6 +149,35 @@ public class TemplateModel {
         }
 
         return plainTextMap;
+    }
+ 
+    /**
+     * Build hash value representing all components from the "header" that would
+     * break an "interface" (used for reloading).
+     * @return 
+     */
+    public int createHeaderHash() {
+        StringBuilder s = new StringBuilder();
+        
+        /**
+        // append each java import
+        for (JavaImport ji : imports) {
+            s.append(ji.getStatement());
+            s.append(";");
+        }
+        */
+        
+        s.append(this.contentType);
+        s.append(";");
+        
+        for (Argument arg : arguments) {
+            s.append(arg.getType());
+            s.append(" ");
+            s.append(arg.getName());
+            s.append(";");
+        }
+        
+        return s.toString().hashCode();
     }
     
 }

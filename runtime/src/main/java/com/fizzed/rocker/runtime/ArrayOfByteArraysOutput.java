@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -38,13 +39,13 @@ public class ArrayOfByteArraysOutput extends AbstractRockerOutput<ArrayOfByteArr
     
     private final List<byte[]> arrays;
 
-    public ArrayOfByteArraysOutput(String charsetName) {
-        super(charsetName, 0);
+    public ArrayOfByteArraysOutput(ContentType contentType, String charsetName) {
+        super(contentType, charsetName, 0);
         this.arrays = new ArrayList<byte[]>();
     }
     
-    public ArrayOfByteArraysOutput(Charset charset) {
-        super(charset, 0);
+    public ArrayOfByteArraysOutput(ContentType contentType, Charset charset) {
+        super(contentType, charset, 0);
         this.arrays = new ArrayList<byte[]>();
     }
 

@@ -15,19 +15,41 @@
  */
 package com.fizzed.rocker;
 
+import com.fizzed.rocker.runtime.DefaultRockerTemplate;
+
 /**
- *
+ * 
  * @author joelauer
  */
-public interface RockerTemplate {
+public abstract class RockerTemplate {
 
     /**
-     * Executes template and renders content to output.
-     * @return The output of rendering process
-     * @throws RenderingException Thrown if any error encountered while rendering
-     *      template. Exception will include underlying cause as well as line
-     *      and position of original template source that triggered exception.
+     * Create a new RockerTemplate for the model.
+     * @param model The model to create the template with
      */
-    RockerOutput render() throws RenderingException;
+    public RockerTemplate(RockerModel model) {
+        // do nothing
+    }
     
+    /**
+     * Associates this template for processing within the context of another
+     * template.  This happens when TemplateA calls/includes TemplateB.
+     * TemplateB needs to share variables from TemplateA before itself is
+     * rendered.
+     * 
+     * @param context The template calling this template during a render
+     */
+    abstract protected void __associate(RockerTemplate context);
+    
+    /**
+     * Creates a new RockerOutput that the template will render to.
+     * @return A new RockerOutput
+     */
+    abstract protected RockerOutput __newOutput();
+    
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("toString() not permitted on a RockerTemplate. Use render() method.");
+    }
+            
 }

@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>rocker</artifactId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
     </parent>
     
     <properties>
@@ -41,6 +41,7 @@
                             <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
                             <discardLogicWhitespace>false</discardLogicWhitespace>
                             <addAsTestSources>true</addAsTestSources>
+                            <optimize>true</optimize>
                         </configuration>
                     </execution>
                 </executions>

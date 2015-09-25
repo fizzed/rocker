@@ -15,6 +15,8 @@
  */
 package com.fizzed.rocker.compiler;
 
+import com.fizzed.rocker.runtime.ParserException;
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
 import com.fizzed.rocker.antlr4.RockerParserBaseListener;
@@ -32,7 +34,6 @@ import com.fizzed.rocker.model.JavaImport;
 import com.fizzed.rocker.model.JavaVariable;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.Option;
-import com.fizzed.rocker.model.Options;
 import com.fizzed.rocker.model.PlainText;
 import com.fizzed.rocker.model.SourcePosition;
 import com.fizzed.rocker.model.SourceRef;
@@ -62,70 +63,88 @@ import org.slf4j.LoggerFactory;
 public class TemplateParser {
     static private final Logger log = LoggerFactory.getLogger(TemplateParser.class);
     
-    private File baseDirectory;
-    private Options defaultOptions;
+    final private RockerConfiguration configuration;
     
-    public TemplateParser() {
-        this.baseDirectory = RockerConfigurationKeys.getParserBaseDirectory();
-        this.defaultOptions = RockerConfigurationKeys.getParserOptions();
+    public TemplateParser(RockerConfiguration configuration) {
+        this.configuration = configuration;
+        //this.baseDirectory = RockerConfiguration.getTemplateDirectory();
+        //this.defaultOptions = RockerConfiguration.getOptions();
     }
 
-    public File getBaseDirectory() {
-        return baseDirectory;
-    }
-
-    public void setBaseDirectory(File baseDirectory) {
-        this.baseDirectory = baseDirectory;
-    }
-
-    public Options getDefaultOptions() {
-        return defaultOptions;
-    }
-
-    public void setDefaultOptions(Options defaultOptions) {
-        this.defaultOptions = defaultOptions;
+    public RockerConfiguration getConfiguration() {
+        return configuration;
     }
    
-    public TemplateModel parse(File f) throws IOException, ParserException {
-        if (!f.exists() || !f.canRead()) {
-            throw new IOException("File cannot read or does not exist [" + f + "]");
-        }
+    static class TemplateIdentity {
+        public File templateFile;           // e.g. src/main/java/views/index.rocker.html
+        public String packageName;          // e.g. views
+        public String templateName;         // e.g. index.rocker.html
+        public String name;                 // e.g. index
+        public ContentType contentType;     // e.g. HTML
+    }
+    
+    static TemplateIdentity parseIdentity(File baseDirectory, File templateFile) throws IOException {
+        TemplateIdentity identity = new TemplateIdentity();
         
-        ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
-       
+        identity.templateFile = templateFile;
+        
         // deduce "package" of file by relativizing it to input directory
-        String packageName = RockerUtil.pathToPackageName(f.toPath());
+        identity.packageName = RockerUtil.pathToPackageName(templateFile.toPath());
         
-        Path p = f.toPath();
+        Path p = templateFile.getAbsoluteFile().toPath();
         
-        if (this.baseDirectory != null) {
-            Path bdp = baseDirectory.toPath();
+        if (baseDirectory != null) {
+            Path bdp = baseDirectory.getAbsoluteFile().toPath();
             
             if (!RockerUtil.isRelativePath(bdp, p)) {
-                throw new IOException("Template file [" + f + "] not relative to base dir [" + baseDirectory + "]");
+                throw new IOException("Template file [" + templateFile + "] not relative to base dir [" + baseDirectory + "]");
             }
             
             Path relativePath = bdp.relativize(p);
             
             // new package name is the parent of this file
-            packageName = RockerUtil.pathToPackageName(relativePath.getParent());
+            identity.packageName = RockerUtil.pathToPackageName(relativePath.getParent());
         }
         
-        return parse(input, packageName, f.getName());
+        identity.templateName = templateFile.getName();
+        identity.name = RockerUtil.templateNameToName(identity.templateName);
+        identity.contentType = RockerUtil.templateNameToContentType(identity.templateName);
+        
+        return identity;
+    }
+    
+    public TemplateModel parse(File f) throws IOException, ParserException {
+        if (!f.exists() || !f.canRead()) {
+            throw new IOException("File cannot read or does not exist [" + f + "]");
+        }
+        
+        TemplateIdentity identity = parseIdentity(this.configuration.getTemplateDirectory(), f);
+        
+        ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
+        
+        return parse(input, identity.packageName, identity.templateName, f.lastModified());
     }
     
     public TemplateModel parse(File f, String packageName) throws IOException, ParserException {
         ANTLRFileStream input = new ANTLRFileStream(f.getPath(), "UTF-8");
-        return parse(input, packageName, f.getName());
+        return parse(input, packageName, f.getName(), f.lastModified());
     }
     
     public TemplateModel parse(String source, String qualifiedName) throws IOException, ParserException {
         ANTLRInputStream input = new ANTLRInputStream(source);
         input.name = qualifiedName;
-        return parse(input, "views", qualifiedName);
+        return parse(input, "views", qualifiedName, -1);
     }
     
-    private TemplateModel parse(ANTLRInputStream input, String packageName, String templateName) throws ParserException {
+    static public ParserException buildParserException(SourceRef sourceRef, String templatePath, String msg) {
+        return new ParserException(sourceRef.getBegin().getLineNumber(), sourceRef.getBegin().getPosInLine(), templatePath, msg, null);
+    }
+    
+    static public ParserException buildParserException(SourceRef sourceRef, String templatePath, String msg, Throwable cause) {
+        return new ParserException(sourceRef.getBegin().getLineNumber(), sourceRef.getBegin().getPosInLine(), templatePath, msg, cause);
+    }
+    
+    private TemplateModel parse(ANTLRInputStream input, String packageName, String templateName, long modifiedAt) throws ParserException {
         // construct path for more helpful error messages
         String templatePath = packageName.replace(".", File.separator) + "/" + templateName;
         
@@ -165,7 +184,7 @@ public class TemplateParser {
             parser.removeErrorListeners();
             parser.addErrorListener(new DescriptiveErrorListener());
             
-            TemplateModel model = new TemplateModel(packageName, templateName, defaultOptions.copy());
+            TemplateModel model = new TemplateModel(packageName, templateName, modifiedAt, configuration.getOptions().copy());
             
             // walk it and attach our listener
             TemplateParserListener listener = new TemplateParserListener(input, model, templatePath);
@@ -469,7 +488,7 @@ public class TemplateParser {
             String statement = ctx.getText().trim();
             
             if (!statement.startsWith("(") || !statement.endsWith(")")) {
-               throw new ParserException(sourceRef, templatePath, "Arguments for @args must be enclosed with parentheses");
+               throw TemplateParser.buildParserException(sourceRef, templatePath, "Arguments for @args must be enclosed with parentheses");
             }
             
             // chomp off parenthese
@@ -487,7 +506,7 @@ public class TemplateParser {
                     model.getArguments().add(new Argument(sourceRef, arg));
                 }
             } catch (TokenException e) {
-                throw new ParserException(sourceRef, templatePath, e.getMessage(), e);
+                throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
             
             // special handling for argument of "RockerBody"
@@ -496,7 +515,7 @@ public class TemplateParser {
                 if (arg.getType().equals("RockerBody")) {
                     // only permitted as the LAST argument
                     if (i != (model.getArguments().size() - 1)) {
-                        throw new ParserException(sourceRef, templatePath, "RockerBody type only allowed as last argument");
+                        throw TemplateParser.buildParserException(sourceRef, templatePath, "RockerBody type only allowed as last argument");
                     }
                 }
             }
@@ -619,7 +638,7 @@ public class TemplateParser {
                 
                 model.getUnits().add(new ForBlockBegin(sourceRef, expression, statement));
             } catch (TokenException e) {
-                throw new ParserException(sourceRef, templatePath, e.getMessage(), e);
+                throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
         }
 
