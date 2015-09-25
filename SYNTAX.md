@@ -252,7 +252,7 @@ you can include it using a closure syntax after the template value expression
         i will be rendered in MyOther
     }
 
-Or as of v0.10.0 call another template dynamically (by name, not class)
+Or as of v0.10.1 call another template dynamically (by name, not class)
 
     @import com.fizzed.rocker.Rocker
 
