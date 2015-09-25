@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.10.1 - Not yet released
+
+ - Added support for calling templates dynamically with list of required arguments
+ - Fixed output issue of large primitive long values
+ - Numerous doc enhancements
+
 #### 0.10.0 - 2015-09-24
 
  - Hot reloading of templates at runtime with two different methods supported.
