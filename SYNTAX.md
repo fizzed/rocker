@@ -384,16 +384,32 @@ that is supported by Java's standard charsetName.
 
 We suggest using the ```Optional``` class either via Google Gauva for Java 6/7
 or the standard class in Java 8.  With Rocker's syntax for value expressions,
-the Java 8 optional prevents a NullPointerException as well as being quite
-readable.
+the Java 8 optional prevents a NullPointerException as well as being readable.
 
     @Optional.ofNullable(myVar).orElse("None")
 
-And if you don't like to type Optional -- consider using it in your 
-objects as the return value.  If your object returns the value, then syntax
+And if you don't like to type `Optional.ofNullable` -- consider using it in your 
+objects as the return value.  If your object returns an `Optional`, then the syntax
 is even more simplified
 
     @myVar.orElse("None")
+
+## More functions please!
+
+Rocker supports standard or wildcard Java imports via the `@import` declaration.
+It also supports Java's static import -- which can be carefully used to make
+other functions look like Rocker functions.  The following template makes
+`java.lang.System.currentTimeMillis()` look like a Rocker template function
+
+```html
+@import static java.lang.System.currentTimeMillis
+
+Current time in millis is @currentTimeMillis()
+```
+
+Use this technique sparingly since naming collisions of current or future
+Rocker built-in features could occur. However, its a handy feature in some
+circumstances.
 
 ## Building complex templates
 
