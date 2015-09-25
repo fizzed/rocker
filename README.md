@@ -97,7 +97,7 @@ context/implicit state).
 
  * Optimizations enabled when targeting Java 8+ -- using Lambdas and type inference under-the-hood
 
- * Near zero-copy rendering (see below for details)
+ * [Near zero-copy rendering](#near-zero-copy-rendering)
 
  * Hot-reload support during development in two flavors (see below for details)
 
@@ -155,13 +155,10 @@ standard Java and compiled.  No reflection used.
 Version 0.10.0 introduced support for hot reloading templates during
 development. Hot reloading allows you to modify the template source code,
 save it, and have the changes active on the next request -- without
-having to restart your JVM.
+having to restart your JVM. Rocker offers two different flavors of hot
+reloading for flexibility.
 
-Since one of the major features of Rocker is that its generated
-Java code provides compile-time checking of your templates, Rocker offers two
-different modes for hot reloading.
-
-### Method 1: static interface, dynamic rendering
+### Flavor 1: static interface, dynamic rendering
 
 The major feature of Rocker templates is that your templates are compile-time
 checked for usage, arguments, logic, etc. by the Java compiler.
@@ -172,18 +169,19 @@ template generates two underlying classes.  Each template generates a model clas
 only interact directly with the model, therefore allowing Rocker to dynamically
 recompile and reload the implementation class.
 
-The major benefit of this approach is that your controller code remains the same,
-is compile-time checked, while the template content can be modified and automatically
-reloaded at runtime.  Only in the case where you actually change the template
-arguments, will you need to restart your application.
+The major benefit of flavor one is that your application code remains the same
+and is compile-time checked by the Java compiler, while the template content can
+be modified and automatically reloaded at runtime.  Only in the case where you
+actually change the template arguments, will you need to restart your application.
 
-### Method 2: dynamic interface, dynamic rendering
+### Flavor 2: dynamic interface, dynamic rendering
 
-If you prefer the convenience of fully dynamic templates, version 0.10.0 added
-support for finding templates and binding properties at runtime. It offers both
-the feature of method 1 as well as letting you change the template interface at
-runtime as well.  This feature will hot reload both your model and implementation
-classes.
+If you prefer the convenience of fully dynamic templates, flavor two supports
+hot reloading of both the template model class (its interface) as well as the
+implementation class (its renderer).  Your application will lose some of the
+compile-time checking and a small performance hit, but gain the convenience of
+everything being reloadable. The way your application will use templates is
+different as well.
 
 ```java
 import com.fizzed.rocker.Rocker
@@ -202,23 +200,15 @@ bindable value must match the name and type declared in your template.
 
 ### Activating hot reloading
 
-1. The configuration property <code>rocker.optimize</code> must be set to
-false when compiling your templates.  As of version 0.10.0, this flag is set
-to false by default.  The flag effects how template model classes create new
-instances of their implementing classes at runtime.  When the flag is true,
-all hot reloading code is removed from the generated templates. When the flag
-is false, hot reloding code is added for support, but still needs to be
-activated when you actually run your application. In our testing, this extra
-bit of code to enable hot reloading adds about ~3% of overhead during a 
-template render.  We suggest simply adding a <code>-Drocker.optimize=true</code>
-flag when doing your final production build -- since you won't need hot
-reloading in production. 
+Support for hot reloading is added to your generated templates by default in
+version 0.10.0.  If you'd like to disable support, set the configuration/system
+property <code>rocker.optimize</code> to true during your build.  Activating
+hot reloading at runtime requires two steps:
 
-2. The <code>rocker-compiler</code> dependency needs to be added to
-your build, in order for template compiling and reloading to function.
-This dependency only needs to be present during development and can 
-safely be removed in production. In Maven, this can be accomplished by
-adding the <code>rocker-compiler</code> dependency in the 'provided' scope.
+1. The <code>rocker-compiler</code> dependency needs to be added to your build. 
+This dependency only needs to be present during development and can be removed
+in production. In Maven, this means you'll want to add the dependency in the
+<code>provided</code> scope.
 
     <dependency>
         <groupId>com.fizzed</groupId>
