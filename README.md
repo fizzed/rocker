@@ -230,7 +230,7 @@ hot reloading with a system property in maven.
 mvn -Drocker.reload=true ...rest of args...
 ```
 
-Alternatively, you can activate hot reloading at runtime.
+Alternatively, you can activate hot reloading programmatically.
 
 ```java
 import com.fizzed.rocker.runtime.RockerRuntime
