@@ -1,5 +1,15 @@
 @import java.util.Optional
+
 @args (String title, RockerBody content)
-@Optional.ofNullable(title).orElse("title if null")<br/>
-@content<br/>
-End!
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+        <title>@title</title>
+    </head>
+    <body>
+        @content
+    </body>
+</html>

@@ -99,7 +99,7 @@ context/implicit state).
 
  * [Near zero-copy rendering](#near-zero-copy-rendering)
 
- * Hot-reload support during development in two flavors (see below for details)
+ * [Hot reload support in two flavors](#hot-reloading)
 
  * [Elegant, intuitive, tagless syntax](SYNTAX.md) that infers when your logic ends for control / dynamic
    content.  All dynamic / control code uses standard Java syntax.
@@ -198,44 +198,58 @@ String rendered = Rocker("views/index.rocker.html")
 The template path and arguments will be runtime-checked. Please note that each
 bindable value must match the name and type declared in your template.
 
-### Activating hot reloading
+### Activate hot reloading
 
 Support for hot reloading is added to your generated templates by default in
 version 0.10.0.  If you'd like to disable support, set the configuration/system
-property <code>rocker.optimize</code> to true during your build.  Activating
-hot reloading at runtime requires two steps:
+property <code>rocker.optimize</code> to true during your build.  Since the code
+is present in your templates by default, you merely need to turn it on at runtime.
 
 1. The <code>rocker-compiler</code> dependency needs to be added to your build. 
 This dependency only needs to be present during development and can be removed
 in production. In Maven, this means you'll want to add the dependency in the
 <code>provided</code> scope.
 
-    <dependency>
-        <groupId>com.fizzed</groupId>
-        <artifactId>rocker-compiler</artifactId>
-        <version>version-here</version>
-        <scope>provided</scope>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rocker-compiler</artifactId>
+    <version>version-here</version>
+    <scope>provided</scope>
+</dependency>
+```
 
-3. Activate hot reloading at runtime. You can activate hot reloading
+2. Activate hot reloading at runtime. You can activate hot reloading
 either with a system property or programmatically.  For activating
-hot reloading with a system property in maven:
+hot reloading with a system property in maven.
 
-    mvn -Drocker.reload=true ...rest of args...
+```
+mvn -Drocker.reload=true ...rest of args...
+```
 
-Alternatively, you can activate hot reloading at runtime:
+Alternatively, you can activate hot reloading at runtime.
 
 ```java
-import com.fizzed.rocker.RockerRuntime
+import com.fizzed.rocker.runtime.RockerRuntime
 
 ...
 
 RockerRuntime.setReloading(true);
 ```
+### Trying out hot reloading
+
+There is a simple example demonstrating hot reload in action.  From a shell:
+
+    make reload-server
+
+Point your browser to http://localhost:8080
+
+Then modify & save <code>reloadtest/src/test/java/views/index.rocker.html</code>
+and refresh your browser.
 
 ## Getting started
 
-Rocker consists of 2 components - the parser/generator and the runtime.  To
+Rocker consists of two components - the parser/generator and the runtime.  To
 use Rocker in your project, add the runtime dependency to your application,
 then enable the parser in your build tool followed by creating your first template.
 
@@ -247,7 +261,15 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
+</dependency>
+
+<!-- for hot-reloading support only during development -->
+<dependency>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rocker-compiler</artifactId>
+    <version>0.10.0</version>
+    <scope>provided</scope>
 </dependency>
 ```
 
@@ -264,7 +286,7 @@ Java main methods.
 
 #### Maven
 
-For maven, add the following to your pom:
+Add the following to your pom
 
 ```xml
 <build>
@@ -292,21 +314,24 @@ By default, Rocker will recursively process any template files ending with
 template is saved will become the standard Java package the
 generated Java classes will be placed into.  The generated Java source files
 will be saved to `target/generated-sources/rocker`.  The plugin
-will take care of adding this generated directory to your sources root -- thus
-no need to use maven-buildhelper plugin.
+will take care of adding this generated directory to your sources root.
 
-To customize, the following properties are supported:
+The following properties are supported:
 
  * `templateDirectory` is the base directory to recursively start from
     when locating and parsing template files.  The Java `package`
     a template will be generated to will use this directory as its base.  So
     if you have `${templateDirectory}/views/mytemplate.rocker.html`
     then Rocker will generate `${outputDirectory}/views/mytemplate.java`.
-    Defaults to `src/main/java`.
+    Defaults to `${project.build.sourceDirectory}`.
 
  * `outputDirectory` is the directory the parser will generate sources
     for templates.
     Defaults to `${project.build.directory}/generated-sources/rocker`
+
+ * `classDirectory` is the directory the hot reload feature will (re)compile
+    classes to at runtime.
+    Defaults to `${project.build.outputDirectory}`
 
  * `failOnError` determines whether any parsing/generating errors cause Maven
     to fail.
@@ -338,10 +363,18 @@ to Rocker's default value.
  * `javaVersion` is the Java version you'd like your templates 
     compile & runtime compatible with.  Defaults to the Java version of the
     JVM executing maven (e.g. "1.8").
+
+ * `optimize` determines if hot reloading support will be removed from the
+    generated templates.  False by default.
  
- * `extendsClass` is the class that all templates should extend.
+ * `extendsClass` is the class that all template implementations should extend.
     Useful for application-specific intermediate classes that you'd like all
     templates to extend.
+    Defaults to Rocker's default.
+
+ * `extendsModelClass` is the class that all template models should extend.
+    Useful for application-specific intermediate classes that you'd like all
+    template models to extend.
     Defaults to Rocker's default.
     
  * `discardLogicWhitespace` determines whether whitespace in templates that is
@@ -385,7 +418,7 @@ static public void main(String[] args) {
 }
 ```
 
-## Ninja framework integration
+## Ninja framework integration (or other third party frameworks)
 
 Looking to integrate Rocker into your own application/framework?  Check out
 [Rocker's integration into the Ninja web framework](https://github.com/fizzed/ninja-rocker) for ideas.
