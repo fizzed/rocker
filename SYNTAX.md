@@ -361,3 +361,57 @@ objects as the return value.  If your object returns the value, then syntax
 is even more simplified
 
     @myVar.orElse("None")
+
+## Building complex templates
+
+Combining content chunks along with a RockerBody allow building complex templates
+for rendering advanced content.  Here is an example demonstrating how a master
+`main` template can be used to construct various sections.  Create a `views/main.rocker.html`
+template.
+
+```
+@args (String title, RockerContent extracss, RockerContent extrajs, RockerBody content)
+
+<html>
+<head>
+    <title>@title</title>
+    <link rel="stylesheet" href='/assets/css/bootstrap.min.css' >
+    @extracss
+    <body>
+       @content
+    <script type="text/javascript" src='/assets/js/jquery-1.10.2.min.js'></script>
+    @extrajs
+</body>
+</html>
+```
+
+This master template can be used in a calling template. Create a `views/index.rocker.html`
+template.
+    
+```
+@args ()
+
+@extracss -> {
+    <link rel="stylesheet" href='/assets/css/main.css' >
+}
+
+@views.main.template("Home", extracss, RockerContent.NONE) -> {
+    <h1>Hello!</h1>
+}
+```
+
+This will result in rendering
+
+```html
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href='/assets/css/bootstrap.min.css' >
+    <link rel="stylesheet" href='/assets/css/main.css' >
+    <body>
+       <h1>Hello!</h1>
+    <script type="text/javascript" src='/assets/js/jquery-1.10.2.min.js'></script>
+   
+</body>
+</html>
+```
