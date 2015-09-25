@@ -205,7 +205,9 @@ version 0.10.0.  If you'd like to disable support, set the configuration/system
 property <code>rocker.optimize</code> to true during your build.  Since the code
 is present in your templates by default, you merely need to turn it on at runtime.
 
-1. The <code>rocker-compiler</code> dependency needs to be added to your build. 
+#### Add dependency
+
+The <code>rocker-compiler</code> dependency needs to be added to your build. 
 This dependency only needs to be present during development and can be removed
 in production. In Maven, this means you'll want to add the dependency in the
 <code>provided</code> scope.
@@ -218,14 +220,18 @@ in production. In Maven, this means you'll want to add the dependency in the
 </dependency>
 ```
 
-2. Activate hot reloading at runtime. You can activate hot reloading
+#### Enable at runtime
+
+Activate hot reloading at runtime. You can activate hot reloading
 either with a system property or programmatically.  For activating
 hot reloading with a system property in maven.
+
 ```
 mvn -Drocker.reload=true ...rest of args...
 ```
 
 Alternatively, you can activate hot reloading at runtime.
+
 ```java
 import com.fizzed.rocker.runtime.RockerRuntime
 
@@ -233,6 +239,7 @@ import com.fizzed.rocker.runtime.RockerRuntime
 
 RockerRuntime.setReloading(true);
 ```
+
 ### Trying out hot reloading
 
 There is a simple example demonstrating hot reload in action.  From a shell:
