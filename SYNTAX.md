@@ -369,7 +369,7 @@ for rendering advanced content.  Here is an example demonstrating how a master
 `main` template can be used to construct various sections.  Create a `views/main.rocker.html`
 template.
 
-```
+```html
 @args (String title, RockerContent extracss, RockerContent extrajs, RockerBody content)
 
 <html>
@@ -388,7 +388,7 @@ template.
 This master template can be used in a calling template. Create a `views/index.rocker.html`
 template.
     
-```
+```html
 @args ()
 
 @extracss -> {
