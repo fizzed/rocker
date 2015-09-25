@@ -298,7 +298,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.9.0</version>
+            <version>0.10.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
