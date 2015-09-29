@@ -61,7 +61,7 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
         // views/app/index.rocker.html
         int pos = templateName.indexOf('.');
         if (pos < 0) {
-            throw new IllegalArgumentException("Invalid template name. Expecting something like 'views/app/index.rocker.html')");
+            throw new IllegalArgumentException("Invalid template name '" + templateName + "'. Expecting something like 'views/app/index.rocker.html')");
         }
         
         String templateNameNoExt = templateName.substring(0, pos);
@@ -69,7 +69,7 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
         String templateExt = templateName.substring(pos);
         
         if (!templateExt.startsWith(".rocker.")) {
-            throw new IllegalArgumentException("Invalid template extension. Expecting something like 'views/app/index.rocker.html')");
+            throw new IllegalArgumentException("Invalid template extension '" + templateExt + "'. Expecting something like 'views/app/index.rocker.html')");
         }
         
         return templateNameNoExt.replace('/', '.');
