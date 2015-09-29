@@ -66,6 +66,12 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
         
         String templateNameNoExt = templateName.substring(0, pos);
         
+        String templateExt = templateName.substring(pos);
+        
+        if (!templateExt.startsWith(".rocker.")) {
+            throw new IllegalArgumentException("Invalid template extension. Expecting something like 'views/app/index.rocker.html')");
+        }
+        
         return templateNameNoExt.replace('/', '.');
     }
 
