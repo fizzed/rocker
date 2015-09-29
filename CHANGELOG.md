@@ -1,11 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
-#### 0.10.1 - Not yet released
+#### 0.10.1 - 2015-09-28
 
  - Added support for calling templates dynamically with list of required arguments
  - Fixed output issue of large primitive long values
  - Added check of valid file extension on dynamic template paths
+ - Improved error codes during dynamic template load
  - Numerous doc enhancements
 
 #### 0.10.0 - 2015-09-24
