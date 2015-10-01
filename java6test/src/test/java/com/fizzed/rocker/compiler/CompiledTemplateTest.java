@@ -611,6 +611,26 @@ public class CompiledTemplateTest {
         // expected values confirmed by doing a System.out.println(value+"")
         Assert.assertEquals("Joe\n127\n32767\n2147483647\n21474836471234\n2.1474836\n2.1474836471234\ntrue\nC", html);
     }
+    
+    @Test
+    public void breakStatement() throws Exception {
+        String out = rocker.BreakStatement.template()
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("012", out);
+    }
+    
+    @Test
+    public void continueStatement() throws Exception {
+        String out = rocker.ContinueStatement.template()
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("013", out);
+    }
 
     /**
     @Test

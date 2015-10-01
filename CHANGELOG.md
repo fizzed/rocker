@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.10.2 - 2015-10-01
+
+ - Added support for @break and @continue in loops
+ - Fixed antlr grammar to allow value names to start with reserved names (e.g.
+   a variable named 'format' used to conflict with 'for' reserved name)
+
 #### 0.10.1 - 2015-09-28
 
  - Added support for calling templates dynamically with list of required arguments

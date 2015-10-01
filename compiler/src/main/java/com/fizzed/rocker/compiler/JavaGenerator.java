@@ -18,9 +18,11 @@ package com.fizzed.rocker.compiler;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
+import com.fizzed.rocker.model.BreakStatement;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
+import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -36,6 +38,8 @@ import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
+import com.fizzed.rocker.runtime.BreakException;
+import com.fizzed.rocker.runtime.ContinueException;
 import com.fizzed.rocker.runtime.Java8Iterator;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
@@ -642,6 +646,12 @@ public class JavaGenerator {
                 ForBlockBegin block = (ForBlockBegin)unit;
                 ForStatement stmt = block.getStatement();
                 
+                // break support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("try {").append(CRLF);
+                
+                depth++;
+                
                 if (stmt.getForm() == ForStatement.Form.GENERAL) {
                     // print out raw statement including parentheses
                     tab(w, depth+indent)
@@ -771,13 +781,56 @@ public class JavaGenerator {
                 }
                 
                 depth++;
+                
+                // continue support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("try {").append(CRLF);
+                
+                 depth++;
+                
             }
             else if (unit instanceof ForBlockEnd) {
+                depth--;
+                
+                // continue support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("} catch (").append(ContinueException.class.getCanonicalName()).append(" e) {") .append(CRLF);
+                
+                tab(w, depth+indent+1)
+                    .append("// support for continuing for loops").append(CRLF);
+
+                tab(w, depth+indent)
+                    .append("}").append(CRLF);
+                
+                
+                
                 depth--;
                 
                 tab(w, depth+indent)
                         .append(blockEnd.pop())
                         .append(" // for end ").append(sourceRef(unit)).append(CRLF);
+                
+                
+                
+                depth--;
+                
+                // break support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("} catch (").append(BreakException.class.getCanonicalName()).append(" e) {") .append(CRLF);
+                
+                tab(w, depth+indent+1)
+                    .append("// support for breaking for loops").append(CRLF);
+
+                tab(w, depth+indent)
+                    .append("}").append(CRLF);
+            }
+            else if (unit instanceof BreakStatement) {
+                tab(w, depth+indent)
+                        .append("__internal.throwBreakException();").append(CRLF);
+            }
+            else if (unit instanceof ContinueStatement) {
+                tab(w, depth+indent)
+                        .append("__internal.throwContinueException();").append(CRLF);
             }
             //log.info(" src (@ {}): [{}]", unit.getSourceRef(), unit.getSourceRef().getConsoleFriendlyText());
         }

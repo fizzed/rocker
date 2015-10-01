@@ -172,7 +172,7 @@ If the item is the last
 #### Standard for-loop
 
     @for (int i = 0; i < items.size(); i++) {
-        Item: @items.get(i)
+        @items.get(i)
     }
 
 #### Enhanced for-loop with Collection
@@ -180,13 +180,13 @@ If the item is the last
 For Java 8 (note this is statically typed and checked at compile time)
 
     @for (item : items) {
-        Item: @item
+        @item
     }
 
 And for Java 6/7
 
     @for (String item : items) {
-        Item: @item
+        @item
     }
 
 #### Enhanced for-loop with Collection and Rocker iterator support
@@ -194,13 +194,13 @@ And for Java 6/7
 For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((i, item) : items) {
-        Item @i.index() = @item
+        @i.index(): @item
     }
 
 And for Java 6/7
 
     @for ((ForIterator i, String item) : items) {
-        Item @i.index() = @item
+        @i.index(): @item
     }
 
 #### Enhanced for-loop with Map
@@ -208,13 +208,13 @@ And for Java 6/7
 For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((key, item) : itemMap) {
-        @key = @item
+        @key: @item
     }
 
 And for Java 6/7
 
     @for ((String key, String item) : itemMap) {
-        @key = @item
+        @key: @item
     }
 
 #### Enhanced for-loop with Map and Rocker iterator support
@@ -222,13 +222,31 @@ And for Java 6/7
 For Java 8 (note this is statically typed and checked at compile time)
 
     @for ((i, key, item) : itemMap) {
-        @key = @item (at index @i.index())
+        @key: @item (at index @i.index())
     }
 
 And for Java 6/7
 
     @for ((ForIterator i, String key, String item) : itemMap) {
-        @key = @item (at index @i.index())
+        @key: @item (at index @i.index())
+    }
+
+#### Break and continue
+
+As of v0.10.2, iterations can break early with `@break` support
+
+    @for ((i, item) : items) {
+        @if (i == 2) {
+            @break
+        }
+    }
+
+As of v0.10.2, iterations can continue with `@continue` support
+
+    @for ((i, item) : items) {
+        @if (i == 2) {
+            @continue
+        }
     }
 
 ### Calling other templates

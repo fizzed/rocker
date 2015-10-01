@@ -597,4 +597,32 @@ public class TemplateParserTest {
         value = model.getUnit(10, ValueExpression.class);
         Assert.assertEquals("format", value.getExpression());
     }
+    
+    @Test
+    public void breakStatementNotInLoop() throws Exception {
+        TemplateParser parser = createParser();
+        
+        File f = findTemplate("rocker/parser/BreakStatementNotInLoop.rocker.html");
+        
+        try {
+            TemplateModel model = parser.parse(f);
+            Assert.fail();
+        } catch (ParserException e) {
+            Assert.assertEquals(2, e.getLineNumber());
+        }
+    }
+    
+    @Test
+    public void breakStatementNotInLoop2() throws Exception {
+        TemplateParser parser = createParser();
+        
+        File f = findTemplate("rocker/parser/BreakStatementNotInLoop2.rocker.html");
+        
+        try {
+            TemplateModel model = parser.parse(f);
+            Assert.fail();
+        } catch (ParserException e) {
+            Assert.assertEquals(1, e.getLineNumber());
+        }
+    }
 }

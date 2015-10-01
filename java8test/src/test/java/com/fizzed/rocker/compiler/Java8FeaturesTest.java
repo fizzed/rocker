@@ -114,4 +114,24 @@ public class Java8FeaturesTest {
         
     }
     
+    @Test
+    public void breakStatement() throws Exception {
+        String out = rocker.BreakStatement.template()
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("012", out);
+    }
+    
+    @Test
+    public void continueStatement() throws Exception {
+        String out = rocker.ContinueStatement.template()
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("013", out);
+    }
+    
 }

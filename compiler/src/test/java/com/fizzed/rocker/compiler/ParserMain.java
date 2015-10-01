@@ -32,6 +32,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
+import com.fizzed.rocker.model.BreakStatement;
 
 /**
  *
@@ -52,7 +53,8 @@ public class ParserMain {
         TemplateParser parser = new TemplateParser(configuration);
         
         //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
-        File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
+        //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
+        File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
         
         //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
@@ -110,6 +112,9 @@ public class ParserMain {
             } else if (unit instanceof ValueExpression) {
                 ValueExpression valueExpr = (ValueExpression)unit;
                 log.info("value: {}", valueExpr.getExpression());
+            } else if (unit instanceof BreakStatement) {
+                BreakStatement breakExpr = (BreakStatement)unit;
+                log.info("break");
             } else if (unit instanceof ForBlockBegin) {
                 ForBlockBegin block = (ForBlockBegin)unit;
                 log.info("for begin: {}", block.getExpression());
@@ -122,6 +127,8 @@ public class ParserMain {
                 log.info("else begin:");
             } else if (unit instanceof IfBlockEnd) {
                 log.info("if end:");
+            } else {
+                log.error("UH OH ARE YOU MISSING A MODEL TYPE???");
             }
             log.info(" src (@ {}): [{}]", unit.getSourceRef(), unit.getSourceRef().getConsoleFriendlyText());
         }

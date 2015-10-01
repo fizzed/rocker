@@ -21,9 +21,11 @@ import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
 import com.fizzed.rocker.antlr4.RockerParserBaseListener;
 import com.fizzed.rocker.model.Argument;
+import com.fizzed.rocker.model.BreakStatement;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
+import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -433,6 +435,26 @@ public class TemplateParser {
                 }
             }
         }
+        
+        public boolean areWeCurrentlyInAForLoop() {
+            int depth = 0;
+            
+            // start from where we are and search backwards
+            for (int i = this.model.getUnits().size() - 1; i >= 0; i--) {
+                TemplateUnit unit = this.model.getUnits().get(i);
+                if (unit instanceof ForBlockBegin) {
+                    if (depth == 0) {
+                        return true;         // we are good!
+                    } else {
+                        depth--;
+                    }
+                } else if (unit instanceof ForBlockEnd) {
+                    depth++;
+                }
+            }
+            
+            return false;
+        }
 
         @Override
         public void enterComment(RockerParser.CommentContext ctx) {
@@ -618,7 +640,23 @@ public class TemplateParser {
             
             String expr = expressionCtx.getText();
             
-            model.getUnits().add(new ValueExpression(sourceRef, expr));
+            // speak handling for specific values which actually are commands
+            // break, continue
+            
+            if (expr.equals("break")) {
+                // verify we're in a "for" loop that hasn't ended yet...
+                if (!areWeCurrentlyInAForLoop()) {
+                    throw new ParserRuntimeException(sourceRef, "@break used outside @for loop", null);
+                }
+                model.getUnits().add(new BreakStatement(sourceRef));
+            } else if (expr.equals("continue")) {
+                if (!areWeCurrentlyInAForLoop()) {
+                    throw new ParserRuntimeException(sourceRef, "@continue used outside @for loop", null);
+                }
+                model.getUnits().add(new ContinueStatement(sourceRef));
+            } else {
+                model.getUnits().add(new ValueExpression(sourceRef, expr));
+            }
         }
 
         @Override

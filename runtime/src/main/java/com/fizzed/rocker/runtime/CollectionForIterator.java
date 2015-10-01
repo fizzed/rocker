@@ -76,4 +76,6 @@ public class CollectionForIterator<T> implements ForIterator {
         return index == (size - 1);
     }
 
+    
+    
 }

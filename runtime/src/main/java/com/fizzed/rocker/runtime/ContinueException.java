@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker;
-
-import com.fizzed.rocker.runtime.BreakException;
+package com.fizzed.rocker.runtime;
 
 /**
  *
  * @author joelauer
  */
-public interface ForIterator {
-    
-    int index();
-    
-    boolean first();
-    
-    boolean last();
+public class ContinueException extends RuntimeException {
+
+    /**
+     * Creates a new instance of <code>BreakException</code> without detail
+     * message.
+     */
+    public ContinueException() {
+    }
     
 }

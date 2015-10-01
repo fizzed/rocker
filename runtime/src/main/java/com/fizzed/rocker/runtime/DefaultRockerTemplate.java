@@ -223,6 +223,17 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         }
         
         //
+        // break, continue support
+        //
+        public void throwBreakException() throws BreakException {
+            throw new BreakException();
+        }
+        
+        public void throwContinueException() throws ContinueException {
+            throw new ContinueException();
+        }
+        
+        //
         // method for write raw expressions
         //
         public void writeValue(String s) throws IOException {
