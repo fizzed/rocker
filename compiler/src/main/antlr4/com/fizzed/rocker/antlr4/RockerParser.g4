@@ -23,27 +23,27 @@ comment
     ;
 
 importDeclaration
-    :   AT_IMPORT importStatement ML_EOL
+    :   AT_VALUE importStatement
     ;
 
 importStatement
-    :   ML_PLAIN
+    :   MV_IMPORT
     ;
 
 optionDeclaration
-    :   AT_OPTION optionStatement ML_EOL
+    :   AT_VALUE optionStatement
     ;
 
 optionStatement
-    :   ML_PLAIN
+    :   MV_OPTION
     ;
 
 argumentsDeclaration
-    :   AT_ARGS argumentsStatement
+    :   AT_VALUE argumentsStatement
     ;
 
 argumentsStatement
-    :   MA_ARGS
+    :   MV_ARGS
     ;
 
 templateContent
@@ -55,11 +55,7 @@ block
     ;
 
 ifBlock
-    :   AT_IF ifExpression MB_LCURLY templateContent* (RCURLY | elseBlock)
-    ;
-
-ifExpression
-    :   MB_PARENTHESE
+    :   AT_VALUE MV_IF templateContent* (RCURLY | elseBlock)
     ;
 
 elseBlock
@@ -67,11 +63,7 @@ elseBlock
     ;
 
 forBlock
-    :   AT_FOR forStatement MB_LCURLY templateContent* RCURLY
-    ;
-
-forStatement
-    :   MB_PARENTHESE
+    :   AT_VALUE MV_FOR templateContent* RCURLY
     ;
 
 contentClosure

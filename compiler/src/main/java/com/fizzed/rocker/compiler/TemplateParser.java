@@ -455,7 +455,8 @@ public class TemplateParser {
             // we only care about child import statement
             RockerParser.ImportStatementContext statementCtx = ctx.importStatement();
             
-            String statement = statementCtx.getText().trim();
+            // chop off 'import'
+            String statement = statementCtx.getText().substring(6).trim();
             
             model.getImports().add(new JavaImport(sourceRef, statement));
         }
@@ -469,7 +470,8 @@ public class TemplateParser {
             // we only care about child import statement
             RockerParser.OptionStatementContext statementCtx = ctx.optionStatement();
             
-            String statement = statementCtx.getText().trim();
+            // chop off 'option'
+            String statement = statementCtx.getText().substring(6).trim();
             
             model.getOptions().parseOption(new Option(sourceRef, statement));
         }
@@ -485,7 +487,8 @@ public class TemplateParser {
             
             SourceRef sourceRef = createSourceRef(ctx);
             
-            String statement = ctx.getText().trim();
+            // chop leading 'args'
+            String statement = ctx.getText().substring(4).trim();
             
             if (!statement.startsWith("(") || !statement.endsWith(")")) {
                throw TemplateParser.buildParserException(sourceRef, templatePath, "Arguments for @args must be enclosed with parentheses");
@@ -623,12 +626,18 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we only care about the expression
-            RockerParser.ForStatementContext statementCtx = ctx.forStatement();
+            //RockerParser.ForStatementContext statementCtx = ctx.forStatement();
             
-            String expression = statementCtx.getText();
+            //String expression = statementCtx.getText();
+            
+            // "for(..){" or "for (...) {"
+            String expr = ctx.MV_FOR().getText();
+            
+            // chop off leading 'for' and trailing '{' and then leading/trailing whitespace
+            expr = expr.substring(3, expr.length() - 1).trim();
             
             try {
-                ForStatement statement = ForStatement.parse(expression);
+                ForStatement statement = ForStatement.parse(expr);
 
                 // any Java 1.8+ features used?
                 if (!model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8) &&
@@ -636,7 +645,7 @@ public class TemplateParser {
                     throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
                 }
                 
-                model.getUnits().add(new ForBlockBegin(sourceRef, expression, statement));
+                model.getUnits().add(new ForBlockBegin(sourceRef, expr, statement));
             } catch (TokenException e) {
                 throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
@@ -654,9 +663,15 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we only care about the expression
-            RockerParser.IfExpressionContext expressionCtx = ctx.ifExpression();
+//            RockerParser.IfExpressionContext expressionCtx = ctx.ifExpression();
             
-            String expr = expressionCtx.getText();
+//            String expr = expressionCtx.getText();
+  
+            // "if(b){" or "if (b) {"
+            String expr = ctx.MV_IF().getText();
+            
+            // chop off leading 'if' and trailing '{' and then leading/trailing whitespace
+            expr = expr.substring(2, expr.length() - 1).trim();
             
             model.getUnits().add(new IfBlockBegin(sourceRef, expr));
         }

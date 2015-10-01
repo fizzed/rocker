@@ -567,4 +567,34 @@ public class TemplateParserTest {
         Assert.assertEquals("i am another block of content", model.getUnit(5, PlainText.class).getText().trim());
         Assert.assertNotNull(model.getUnit(6, ContentClosureEnd.class));
     }
+    
+    @Test
+    public void argsWithNamesLikeRockerReservedNames() throws Exception {
+        // requires java 1.8+ to parse
+        TemplateParser parser = createParser();
+        
+        parser.getConfiguration().getOptions().setJavaVersion(JavaVersion.v1_8);
+        
+        File f = findTemplate("rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        // should all be values
+        ValueExpression value;
+        
+        value = model.getUnit(2, ValueExpression.class);
+        Assert.assertEquals("ift", value.getExpression());
+        
+        value = model.getUnit(4, ValueExpression.class);
+        Assert.assertEquals("optiont", value.getExpression());
+        
+        value = model.getUnit(6, ValueExpression.class);
+        Assert.assertEquals("importt", value.getExpression());
+        
+        value = model.getUnit(8, ValueExpression.class);
+        Assert.assertEquals("argst", value.getExpression());
+        
+        value = model.getUnit(10, ValueExpression.class);
+        Assert.assertEquals("format", value.getExpression());
+    }
 }

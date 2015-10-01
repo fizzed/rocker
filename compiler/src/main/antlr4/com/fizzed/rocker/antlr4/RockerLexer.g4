@@ -23,80 +23,9 @@ PLAIN
     :   ('@@' | '@}' | '@{' | ~('@' | '{' | '}'))+
     ;
 
-AT_IMPORT
-    :   '@import'                               -> pushMode(MAGIC_LINE)
-    ;
-
-AT_OPTION
-    :   '@option'                               -> pushMode(MAGIC_LINE)
-    ;
-
-AT_ARGS
-    :   '@args'                                 -> pushMode(MAGIC_ARGS)
-    ;
-
-AT_IF
-    :   '@if'                                   -> pushMode(MAGIC_BLOCK)
-    ;
-
-AT_FOR
-    :   '@for'                                  -> pushMode(MAGIC_BLOCK)
-    ;
-
 AT_VALUE
     :   '@'                                     ->  pushMode(MAGIC_VALUE)
     ;
-
-
-// magic "for a single line" mode
-// @import java.util.*
-
-mode MAGIC_LINE;
-
-ML_WSNB
-    :   (' ' | '\t')+                           -> skip
-    ;
-
-ML_PLAIN
-    :   ~[\r\n]+
-    ;
-
-ML_EOL
-    :   '\r'? '\n'                              -> popMode
-    ;
-
-
-
-
-// magic arguments mode
-// @args (String s, Date d)
-
-mode MAGIC_ARGS;
-
-MA_ARGS
-    :   WhitespaceWithLineBreak* '(' ~(')')* ')' -> popMode
-    ;
-
-
-
-// magic "for an expression and block" mode
-// @if (true) { //stuff }
-
-mode MAGIC_BLOCK;
-
-MB_PARENTHESE
-    :   '(' (MB_PARENTHESE | ~(')'))* ')'
-    ;
-
-MB_LCURLY
-    :   '{'                                     -> popMode
-    ;
-
-MB_WSWB
-    :   WhitespaceWithLineBreak+                -> skip
-    ;
-
-
 
 // magic "for an expression" mode
 // @value[0]
@@ -116,6 +45,26 @@ MV_ARRAY
     :   '[' (MV_ARRAY | ~(']'))* ']'
     ;
 
+MV_IMPORT
+    :   'import' WhitespaceWithLineBreak+ ~[\r\n]+ '\r'? '\n'                                                -> popMode
+    ;
+
+MV_OPTION
+    :   'option' WhitespaceWithLineBreak+ ~[\r\n]+ '\r'? '\n'                                                -> popMode
+    ;
+
+MV_ARGS
+    :   'args' WhitespaceWithLineBreak* '(' ~(')')* ')'                             -> popMode
+    ;
+
+MV_IF
+    :   'if' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    ;
+
+MV_FOR
+    :   'for' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    ;
+
 MV_CONTENT_CLOSURE
     :   Identifier WhitespaceWithLineBreak* '=>' WhitespaceWithLineBreak* '{'    -> popMode
     ;
@@ -129,10 +78,13 @@ MV_VALUE
     ;
 
 
-
 //
 // fragments used everywhere else
 //
+
+fragment RerservedQualifiedNames
+    :   ('if' | 'for')
+    ;
 
 fragment LineBreak
     :   ('\r'? '\n')

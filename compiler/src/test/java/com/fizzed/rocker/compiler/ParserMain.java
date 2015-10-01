@@ -51,7 +51,10 @@ public class ParserMain {
         
         TemplateParser parser = new TemplateParser(configuration);
         
-        File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
+        //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
+        File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
+        
+        //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
         //File f = new File("src/test/resources/templates/NoHeader.rocker.html");
         //File f = new File("src/test/resources/templates/LauerMain.rocker.html");
