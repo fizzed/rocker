@@ -632,6 +632,23 @@ public class CompiledTemplateTest {
         Assert.assertEquals("013", out);
     }
 
+    @Test
+    public void longUnicodeString() throws Exception {
+        String out = rocker.LongUnicodeString.template()
+                .render()
+                .toString()
+                .trim();
+
+        Assert.assertEquals("!Я помню чудное мгновенье: " +
+                "Передо мной явилась ты, " +
+                "Как мимолетное виденье, " +
+                "Как гений чистой красоты. " +
+                "В томленьях грусти безнадежной " +
+                "В тревогах шумной суеты, " +
+                "Звучал мне долго голос нежный " +
+                "И снились милые черты.", out);
+    }
+
     /**
     @Test
     public void customInterface() throws Exception {
