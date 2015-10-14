@@ -16,10 +16,7 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
-import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
-import org.apache.commons.lang3.text.translate.EntityArrays;
-import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
-import org.apache.commons.lang3.text.translate.LookupTranslator;
+import org.apache.commons.lang3.text.translate.*;
 
 import java.io.File;
 import java.io.IOException;
