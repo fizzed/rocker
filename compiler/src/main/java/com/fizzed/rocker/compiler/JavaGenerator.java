@@ -363,8 +363,7 @@ public class JavaGenerator {
                 
                 // include static text as comments in source (limit to 500)
                 tab(w, indent).append("// ")
-                    .append(StringUtils.abbreviate(StringEscapeUtils.escapeJava(plainText), 500)).append(CRLF);
-                
+                        .append(StringUtils.abbreviate(RockerUtil.ESCAPE_JAVA.translate(plainText), 500)).append(CRLF);
                 for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
                 
                     if (this.plainTextStrategy == PlainTextStrategy.STATIC_STRINGS) {                   
