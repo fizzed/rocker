@@ -1,4 +1,4 @@
-Rocker Templates by Fizzed
+Rocker Templates by Fizzed [![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
