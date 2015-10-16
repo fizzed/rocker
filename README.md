@@ -1,4 +1,6 @@
-Rocker Templates by Fizzed [![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker)
+Rocker Templates by Fizzed
+[![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
