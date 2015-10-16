@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.10.3 - 2015-10-16
+
+ - Fix incorrect truncating of escaped unicode symbols; disable escaping of
+   unicode in debug comments (jshinobi)
+
 #### 0.10.2 - 2015-10-01
 
  - Added support for @break and @continue in loops
