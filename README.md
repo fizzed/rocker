@@ -69,8 +69,7 @@ can render the index template like so.
 ```java
 static public void main(String[] args) {
 
-    String output = views.index
-        .template("World")
+    String output = views.index.template("World")
         .render()
         .toString();
 
