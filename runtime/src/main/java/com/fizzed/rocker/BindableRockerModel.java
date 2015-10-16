@@ -48,9 +48,12 @@ public class BindableRockerModel implements RockerModel {
             // find method matching name w/ a single parameter
             Method[] methods = this.model.getClass().getMethods();
             for (Method method : methods) {
-                if (method.getName().equals(name) && method.getParameterCount() == 1) {
-                    setter = method;
-                    break;
+                if (method.getName().equals(name)) {
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes != null && parameterTypes.length == 1) {
+                        setter = method;
+                        break;
+                    }
                 }
             }
         } catch (SecurityException e) {

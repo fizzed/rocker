@@ -28,25 +28,33 @@
         <netbeans.compile.on.save>false</netbeans.compile.on.save>
     </properties>
 
+    <!-- jdk 6+, profile below for java 8 stuff -->
     <modules>
         <module>runtime</module>
         <module>compiler</module>
         <module>maven-plugin</module>
 	<module>reloadtest</module>
         <module>java6test</module>
-        <module>java8test</module>
     </modules>
     
-    <!-- ignore javadoc linting for JDK 8 on release -->
+    <!-- things to do if running on JDK 8 -->
     <profiles>
         <profile>
-            <id>doclint-java8-disable</id>
+            <id>java8-settings</id>
             <activation>
                 <jdk>[1.8,)</jdk>
             </activation>
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>
+            <modules>
+                <module>runtime</module>
+                <module>compiler</module>
+                <module>maven-plugin</module>
+                <module>reloadtest</module>
+                <module>java6test</module>
+                <module>java8test</module>
+            </modules>
         </profile>
     </profiles>
     

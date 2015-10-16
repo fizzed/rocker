@@ -5,6 +5,9 @@ Rocker Templates by Fizzed
 
  - Fix incorrect truncating of escaped unicode symbols; disable escaping of
    unicode in debug comments (jshinobi)
+ - Fix Java 7 compiler issues
+ - Maven project builds in either Java 7 or 8
+ - Project uses TravisCI
 
 #### 0.10.2 - 2015-10-01
 
