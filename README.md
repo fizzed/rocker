@@ -1,4 +1,4 @@
-Rocker Templates by Fizzed [![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker)
+Rocker Templates by Fizzed [![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
@@ -189,7 +189,7 @@ import com.fizzed.rocker.Rocker
 ...
 
 // dynamic interfaces, dynamic implementation
-String rendered = Rocker("views/index.rocker.html")
+String rendered = Rocker.template("views/index.rocker.html")
     .bind("val", "ValueA")
     .render()
     .toString();
@@ -215,7 +215,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.10.1</version>
+    <version><!-- use latest version --></version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -265,14 +265,14 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.10.1</version>
+    <version><!-- use latest version --></version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.10.1</version>
+    <version><!-- use latest version --></version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -298,7 +298,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.10.1</version>
+            <version><!-- use latest version --></version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
@@ -429,6 +429,6 @@ Looking to integrate Rocker into your own application/framework?  Check out
 
 ## License
 
-Copyright (C) 2015 Joe Lauer / Fizzed, Inc.
+Copyright (C) 2015 Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
