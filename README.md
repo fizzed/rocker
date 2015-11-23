@@ -244,7 +244,9 @@ RockerRuntime.setReloading(true);
 
 ### Trying out hot reloading
 
-There is a simple example demonstrating hot reload in action.  From a shell:
+There is a simple example demonstrating hot reload in action.  This project 
+uses [Blaze](https://github.com/fizzed/blaze) to help script tasks. Run the
+following
 
     java -jar blaze.jar run_reload
 
