@@ -13,7 +13,7 @@ that produces statically typed, plain java object templates that are compiled al
 with the rest of your project.  No more "warm-up" time in production, slow
 reflection-based logic, or nasty surprises that should have been caught during development.
 
-Write your templates using an [intuitive, **tagless** syntax](docs/tree/master/SYNTAX.md) with standard Java expressions
+Write your templates using an [intuitive, **tagless** syntax](blob/master/docs/SYNTAX.md) with standard Java expressions
 for logic, iteration, and values. All the heavy lifting is done by the Rocker
 parser during development -- which keeps the runtime dependencies down to just a
 handful of classes.  Rocker will parse your templates and generate well-documented
@@ -25,7 +25,7 @@ Based on the following [template benchmark](https://github.com/fizzed/template-b
 Rocker is the clear winner.  ~250% faster than Freemarker while also requiring
 orders-of-magnitude less memory.
 
-![Template Comparison](docs/tree/master/benchmark.png)
+![Template Comparison](blob/master/docs/benchmark.png)
 
 ## Two-minute drill
 
@@ -58,7 +58,7 @@ a block of rendering code to be executed within another template. Create templat
     }
 
 Hey, what about the ```RockerBody content``` argument?  We cover it in more
-detail in the [syntax readme](docs/tree/master/SYNTAX.md), but for now just understand that its
+detail in the [syntax readme](blob/master/docs/SYNTAX.md), but for now just understand that its
 the only special type of argument and instructs Rocker that a template expects
 a "body" to be passed to it.
 
@@ -103,7 +103,7 @@ context/implicit state).
 
  * [Hot reload support in two flavors](#hot-reloading)
 
- * [Elegant, intuitive, tagless syntax](docs/tree/master/SYNTAX.md) that infers when your logic ends for control / dynamic
+ * [Elegant, intuitive, tagless syntax](blob/master/docs/SYNTAX.md) that infers when your logic ends for control / dynamic
    content.  All dynamic / control code uses standard Java syntax.
 
  * Parsed templates become normal POJOs with defined arguments -- allowing you
