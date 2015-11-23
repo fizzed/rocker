@@ -25,7 +25,7 @@ Based on the following [template benchmark](https://github.com/fizzed/template-b
 Rocker is the clear winner.  ~250% faster than Freemarker while also requiring
 orders-of-magnitude less memory.
 
-![Template Comparison](blob/master/docs/benchmark.png)
+![Template Comparison](docs/benchmark.png)
 
 ## Two-minute drill
 
@@ -58,7 +58,7 @@ a block of rendering code to be executed within another template. Create templat
     }
 
 Hey, what about the ```RockerBody content``` argument?  We cover it in more
-detail in the [syntax readme](blob/master/docs/SYNTAX.md), but for now just understand that its
+detail in the [syntax readme](docs/SYNTAX.md), but for now just understand that its
 the only special type of argument and instructs Rocker that a template expects
 a "body" to be passed to it.
 
@@ -95,7 +95,7 @@ context/implicit state).
 
 ## Features
 
- * Templates are runtime compatible with Java 6+.
+ * Templates are runtime compatible with Java 6+
 
  * Optimizations enabled when targeting Java 8+ -- using Lambdas and type inference under-the-hood
 
@@ -103,7 +103,7 @@ context/implicit state).
 
  * [Hot reload support in two flavors](#hot-reloading)
 
- * [Elegant, intuitive, tagless syntax](blob/master/docs/SYNTAX.md) that infers when your logic ends for control / dynamic
+ * [Elegant, intuitive, tagless syntax](docs/SYNTAX.md) that infers when your logic ends for control / dynamic
    content.  All dynamic / control code uses standard Java syntax.
 
  * Parsed templates become normal POJOs with defined arguments -- allowing you
