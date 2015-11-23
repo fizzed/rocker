@@ -26,10 +26,6 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 
-/**
- *
- * @author joelauer
- */
 public class ConstantPoolMain {
     
     static public void main(String[] args) throws Exception {
@@ -89,7 +85,7 @@ public class ConstantPoolMain {
         //Strings.doSomething();
         
         // METHOD 4: via normal resource file
-        byte[] bytes = loadStringAsInputStream("src/test/java/com/fizzed/rocker/ConstantPoolMain.strings");
+        byte[] bytes = loadStringAsInputStream("java6test/src/test/java/com/fizzed/rocker/ConstantPoolMain.strings");
         
         
         

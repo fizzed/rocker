@@ -54,7 +54,7 @@ public class ReloadServer {
                         */
                         
                         // dynamic, runtime-time checked template interface, with arguments
-                        String out = Rocker.template("views/index.rocker.html", "Home", "Joe", 1)
+                        String out = Rocker.template("views/index.rocker.html", "Home", "Joe")
                             .render()
                             .toString();
                         
