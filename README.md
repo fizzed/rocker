@@ -13,7 +13,7 @@ that produces statically typed, plain java object templates that are compiled al
 with the rest of your project.  No more "warm-up" time in production, slow
 reflection-based logic, or nasty surprises that should have been caught during development.
 
-Write your templates using an [intuitive, **tagless** syntax](blob/master/docs/SYNTAX.md) with standard Java expressions
+Write your templates using an [intuitive, **tagless** syntax](docs/SYNTAX.md) with standard Java expressions
 for logic, iteration, and values. All the heavy lifting is done by the Rocker
 parser during development -- which keeps the runtime dependencies down to just a
 handful of classes.  Rocker will parse your templates and generate well-documented
