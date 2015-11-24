@@ -67,7 +67,6 @@ public class blaze {
             "-DskipTests=true", "-Dexec.classpathScope=test", "-Dexec.mainClass=com.fizzed.rocker.ConstantPoolMain")
             .run();
     }
-
     
     private String latest_tag() {
         // get latest tag and trim off "v"
@@ -152,6 +151,5 @@ public class blaze {
         // replace readme with updated version
         Files.move(newReadmeFile, readmeFile, StandardCopyOption.REPLACE_EXISTING);
     }
-    
     
 }
