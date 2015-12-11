@@ -18,20 +18,18 @@ package com.fizzed.test;
 import com.fizzed.rocker.runtime.DefaultRockerModel;
 
 /**
- *
- * @param <T>
  * @author joelauer
  */
-public class CustomRockerModel<T extends CustomRockerModel> extends DefaultRockerModel<T> {
+public class CustomRockerModel extends DefaultRockerModel {
 
     // implicit variables/functions
     protected String implicit;
-    
-    public T implicit(String s) {
+
+    public CustomRockerModel implicit(String s) {
         this.implicit = s;
-        return (T)this;
+        return this;
     }
-    
+
     /**
     public Integer i() {
         return 1;
@@ -57,5 +55,5 @@ public class CustomRockerModel<T extends CustomRockerModel> extends DefaultRocke
         return new CustomRockerOutput();
     }
     */
-    
+
 }
