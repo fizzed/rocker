@@ -49,7 +49,7 @@ public class DefaultRockerBootstrap implements RockerBootstrap {
     @Override
     public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException {
         
-        return buildTemplate(modelType, model, DefaultRockerBootstrap.class.getClassLoader());
+        return buildTemplate(modelType, model, modelType.getClassLoader());
 
     }
     
