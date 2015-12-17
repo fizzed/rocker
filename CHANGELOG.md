@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.10.4 - 2016-12-17
+
+ - Templates now use the classloader of model object (@alkemist)
+
 #### 0.10.3 - 2015-10-16
 
  - Fix incorrect truncating of escaped unicode symbols; disable escaping of
