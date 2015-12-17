@@ -52,7 +52,7 @@ public class blaze {
     
     public void run_reload() {
         exec("mvn", "-pl", "reloadtest", "-am", "test", "-Pexec-reloadtest",
-            "-DskipTests=true", "-Dexec.classpathScope=test", "-Dexec.mainClass=com.fizzed.rocker.reload.ReloadServer")
+            "-DskipTests=true", "-Dexec.classpathScope=test", "-Dexec.mainClass=com.fizzed.rocker.reload.ReloadMain")
             .run();
     }
     

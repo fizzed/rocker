@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-23d [%thread] %-5level %logger{32} - %m%n</pattern>
+        </encoder>
+    </appender>
+    
+    <logger name="com.fizzed" level="DEBUG"/>
+    <logger name="net.sf.ofx4j" level="DEBUG"/>
+    <logger name="org.apache.http" level="WARN"/>
+
+    <root level="TRACE">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

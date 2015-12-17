@@ -46,6 +46,16 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- adjusts how surefire plugin manipulates classpath for testing -->
+            <!-- only way to get compiling & reloading to work like we expect -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19</version>
+                <configuration>
+                    <useManifestOnlyJar>false</useManifestOnlyJar>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
@@ -108,7 +118,7 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
         

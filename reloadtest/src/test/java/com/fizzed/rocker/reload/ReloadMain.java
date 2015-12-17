@@ -15,34 +15,54 @@
  */
 package com.fizzed.rocker.reload;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fizzed.rocker.Rocker;
+import com.fizzed.rocker.runtime.RockerRuntime;
+import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 /**
  *
  * @author joelauer
  */
 public class ReloadMain {
-    static private final Logger log = LoggerFactory.getLogger(ReloadMain.class);
-    
-    static public void main(String[] args) throws Exception {
-        
-        while (true) {
-            try {
-                System.out.println("Press any key to render()");
-                System.in.read();
-                
-                String out = views.index.template("Home", "Joe")
-                        .render()
-                        .toString();
 
-                System.out.println("render: " + out);
-                
-            } catch (Throwable t) {
-                log.error("", t);
-            }
-        }
+    public static void main(final String[] args) {
+        // activate reloading @ runtime
+        RockerRuntime.getInstance().setReloading(true);
         
+        Undertow server = Undertow.builder()
+                .addHttpListener(8080, "localhost")
+                .setHandler(new HttpHandler() {
+                    @Override
+                    public void handleRequest(final HttpServerExchange exchange) throws Exception {
+                        /**
+                        // static, compile-time checked template interface
+                        String out = views.index.template("Home", "Joe")
+                            .render()
+                            .toString();
+                        */
+                        
+                        /**
+                        // dynamic, runtime-time checked template interface, builder-style
+                        String out = Rocker.template("views/index.rocker.html")
+                            .bind("title", "Home")
+                            .bind("name", "Joe")
+                            .render()
+                            .toString();
+                        */
+                        
+                        // dynamic, runtime-time checked template interface, with arguments
+                        String out = Rocker.template("views/index.rocker.html", "Home", "Joe")
+                            .render()
+                            .toString();
+                        
+                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html; charset=utf-8");
+                        exchange.getResponseSender().send(out);
+                    }
+                }).build();
+        server.start();
     }
-    
+
 }
