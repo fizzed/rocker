@@ -30,6 +30,6 @@ public interface RockerBootstrap {
     
     RockerModel model(String templatePath) throws TemplateNotFoundException, TemplateBindException;
     
-    DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException;
+    DefaultRockerTemplate template(DefaultRockerModel model) throws RenderingException;
     
 }

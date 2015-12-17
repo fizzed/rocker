@@ -327,7 +327,7 @@ public class JavaGenerator {
             tab(w, indent+1)
                 .append("return ")
                 .append(RockerRuntime.class.getCanonicalName())
-                .append(".getInstance().getBootstrap().template(this.getClass(), this);").append(CRLF);
+                .append(".getInstance().getBootstrap().template(this);").append(CRLF);
             //tab(w, indent+1).append("return template.__render(context);").append(CRLF);
         }
 
