@@ -414,6 +414,16 @@ public class CompiledTemplateTest {
         
         Assert.assertEquals("false-block", html);
     }
+
+    @Test
+    public void ifElseBlockMixedJavascript() throws Exception {
+
+        String html = new rocker.ifElseBlockMixedJavascript()
+                .b(true)
+                .render()
+                .toString()
+                .trim();
+    }
     
     @Test
     public void forBlock() throws Exception {
