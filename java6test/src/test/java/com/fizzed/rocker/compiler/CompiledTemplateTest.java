@@ -425,8 +425,10 @@ public class CompiledTemplateTest {
                 .render()
                 .toString()
                 .trim();
-        
+
+        assertThat(html, containsString("}  else  { // else"));
         assertThat(html, containsString("if (time < 100) {"));
+        assertThat(html, containsString("} else {"));
         assertThat(html, containsString("} else if (time < 200) {"));
     }
     
