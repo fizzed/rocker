@@ -1,4 +1,4 @@
-@args(b)
+@args (boolean b)
 
 <script>
     var time = 12;
@@ -12,9 +12,9 @@
 </script>
 @if(b){
 <script>
-    if (time < 10) {
+    if (time < 100) {
         greeting = "Good morning";
-    } else if (time < 20) {
+    } else if (time < 200) {
         greeting = "Good day";
     } else {
         greeting = "Good evening";

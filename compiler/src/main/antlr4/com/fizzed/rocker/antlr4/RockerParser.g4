@@ -15,7 +15,7 @@ plain
     ;
 
 plainBlock
-    :   LCURLY templateContent* RCURLY
+    :   LCURLY (templateContent | ELSE_CALL)* RCURLY
     ;
 
 comment

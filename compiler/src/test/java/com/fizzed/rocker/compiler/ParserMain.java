@@ -48,13 +48,15 @@ public class ParserMain {
         rockerRootLogger.setLevel(Level.TRACE);
         
         RockerConfiguration configuration = new RockerConfiguration();
-        configuration.setTemplateDirectory(new File("compiler/src/test/resources"));
+        //configuration.setTemplateDirectory(new File("compiler/src/test/resources"));
+        configuration.setTemplateDirectory(new File("java6test/src/test/java"));
         
         TemplateParser parser = new TemplateParser(configuration);
         
         //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
-        File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
+        //File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
+        File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
         
         //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");

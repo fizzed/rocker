@@ -26,9 +26,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
+import static org.hamcrest.CoreMatchers.containsString;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -418,11 +420,14 @@ public class CompiledTemplateTest {
     @Test
     public void ifElseBlockMixedJavascript() throws Exception {
 
-        String html = new rocker.ifElseBlockMixedJavascript()
+        String html = new rocker.IfElseBlockMixedJavascript()
                 .b(true)
                 .render()
                 .toString()
                 .trim();
+        
+        assertThat(html, containsString("if (time < 100) {"));
+        assertThat(html, containsString("} else if (time < 200) {"));
     }
     
     @Test
