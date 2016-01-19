@@ -572,17 +572,63 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we simply want to keep the left token for the start of this block
-            String text = ctx.LCURLY().getText();
+            String text = null;
+            
+            if (ctx.LCURLY() != null) {
+                text = ctx.LCURLY().getText();
+            } else {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "Did not find LCURLY");
+            }
             
             model.getUnits().add(new PlainText(sourceRef, text));
         }
-        
+
         @Override
         public void exitPlainBlock(RockerParser.PlainBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we simply want to keep the right token for the end of this block
-            String text = ctx.RCURLY().getText();
+            String text = null;
+            
+            if (ctx.RCURLY() != null) {
+                text = ctx.RCURLY().getText();
+            } else {
+                // do nothing, no RCURLY found
+                return;
+            }
+            
+            model.getUnits().add(new PlainText(sourceRef, text));
+        }
+        
+        @Override
+        public void enterPlainElseBlock(RockerParser.PlainElseBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            // we simply want to keep the left token for the start of this block
+            String text = null;
+            
+            if (ctx.ELSE_CALL() != null) {
+                text = ctx.ELSE_CALL().getText();
+            } else {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "Did not find ELSE_CALL");
+            }
+            
+            model.getUnits().add(new PlainText(sourceRef, text));
+        }
+
+        @Override
+        public void exitPlainElseBlock(RockerParser.PlainElseBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            // we simply want to keep the right token for the end of this block
+            String text = null;
+            
+            if (ctx.RCURLY() != null) {
+                text = ctx.RCURLY().getText();
+            } else {
+                // do nothing, no RCURLY found
+                return;
+            }
             
             model.getUnits().add(new PlainText(sourceRef, text));
         }

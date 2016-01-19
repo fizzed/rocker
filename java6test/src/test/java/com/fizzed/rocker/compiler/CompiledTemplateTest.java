@@ -426,8 +426,22 @@ public class CompiledTemplateTest {
                 .toString()
                 .trim();
         
-        assertThat(html, containsString("if (time < 100) {"));
-        assertThat(html, containsString("} else if (time < 200) {"));
+        //assertThat(html, containsString("if (time < 100) {"));
+        //assertThat(html, containsString("} else if (time < 200) {"));
+        assertThat(html, containsString("<script>\n" +
+"    if (time < 100) {\n" +
+"        greeting = \"Good morning\";\n" +
+"    } else if (time < 200) {\n" +
+"        greeting = \"Good day\";\n" +
+"    } else {\n" +
+"        greeting = \"Good evening\";\n" +
+"        if (time < 300) {\n" +
+"            // more if\n" +
+"        } else {\n" +
+"            // another embedded else\n" +
+"        }\n" +
+"    }\n" +
+"</script>"));
     }
     
     @Test
