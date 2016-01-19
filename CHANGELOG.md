@@ -1,7 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
-#### 0.10.4 - 2016-12-17
+#### 0.10.5 - 2016-01-19
+
+ - Fixed issue with plain text `} else {` blocks being interpreted as code rather
+   than as plain text
+
+#### 0.10.4 - 2015-12-17
 
  - Templates now use the classloader of model object (@alkemist)
 
