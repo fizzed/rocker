@@ -59,7 +59,7 @@ a block of rendering code to be executed within another template. Create templat
     <h1>Hello @message!</h1>
 }
 
-Hey, what about the ```RockerBody content``` argument?  We cover it in more
+Hey, what about the `RockerBody content` argument?  We cover it in more
 detail in the [syntax readme](docs/SYNTAX.md), but for now just understand that its
 the only special type of argument and instructs Rocker that a template expects
 a "body" to be passed to it.
@@ -95,7 +95,7 @@ The output will equal:
 Once you generate the Java sources and peek inside the code, it's simple
 to see how this works. The views.index class creates a views.main template instance
 and hands off rendering to it -- while also passing a block of itself that
-it will render when views.main calls the ```@content``` variable.  The syntax is 
+it will render when views.main calls the `@content` variable.  The syntax is 
 identical to how a lambda is defined in Java 8 -- because it literally is a lambda in 
 Java code (implemented with anonymous inner classes in Java 6/7).  Rocker
 does a few things behind the scenes to make sure templates that create other
