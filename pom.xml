@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.12</version>
+        <version>1.15</version>
     </parent>
     
     <scm>
@@ -26,6 +26,8 @@
         <license.skip>true</license.skip>
         <!-- netbeans specific -->
         <netbeans.compile.on.save>false</netbeans.compile.on.save>
+        <!-- workaround travis ci maven version requirement -->
+        <maven.enforce.version>3.2.5</maven.enforce.version>
     </properties>
 
     <!-- jdk 6+, profile below for java 8 stuff -->
