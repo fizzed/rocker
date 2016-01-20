@@ -32,30 +32,32 @@ orders-of-magnitude less memory.
 Most templates are used for websites, so here is a quick sample showing how
 Rocker templates work and can call each other during the rendering process.
 Create a template containing a common header and footer as well as a placeholder
-for body content. Template will be `src/main/java/views/main.rocker.html`
+for body content. Create template `src/main/java/views/main.rocker.html`
 
-    @*
-     Example of common header and footer
-    *@
-    @args (String title, RockerBody content)
+```html
+@args (String title, RockerBody content)
 
-    Header with title @title
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
     @content
-    Footer
+    </body>
+</html>
+```
 
 The template we actually plan on showing to a user will render its content
 within the context of the common/header footer. In Java terms, it's passing 
 a block of rendering code to be executed within another template. Create template
 `src/main/java/views/index.rocker.html`
 
-    @*
-     Example of index that uses common header and footer
-    *@
-    @args (String message)
+```html
+@args (String message)
 
-    @views.main.template("Home") -> {
-        Hello @message!
-    }
+@views.main.template("Home") -> {
+    <h1>Hello @message!</h1>
+}
 
 Hey, what about the ```RockerBody content``` argument?  We cover it in more
 detail in the [syntax readme](docs/SYNTAX.md), but for now just understand that its
@@ -79,9 +81,16 @@ static public void main(String[] args) {
 
 The output will equal:
 
-    Header with title Home
-        Hello World!
-    Footer
+```html
+<html>
+    <head>
+        <title>Home</title>
+    </head>
+    <body>
+        <h1>Hello @message!</h1>
+    </body>
+</html>
+```
 
 Once you generate the Java sources and peek inside the code, it's simple
 to see how this works. The views.index class creates a views.main template instance
