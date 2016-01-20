@@ -58,6 +58,7 @@ a block of rendering code to be executed within another template. Create templat
 @views.main.template("Home") -> {
     <h1>Hello @message!</h1>
 }
+```
 
 Hey, what about the `RockerBody content` argument?  We cover it in more
 detail in the [syntax readme](docs/SYNTAX.md), but for now just understand that its
