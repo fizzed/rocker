@@ -93,6 +93,10 @@ public class JavaVariableTest {
 
         List<JavaVariable> vars;
 
+        // single space
+        vars = JavaVariable.parseList(" ");
+        Assert.assertEquals(0, vars.size());
+        
         // single arg
         vars = JavaVariable.parseList("User u");
         

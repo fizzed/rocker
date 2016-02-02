@@ -16,7 +16,6 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.RenderingException;
-import com.fizzed.test.NameSupport;
 import com.fizzed.test.User;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
@@ -97,6 +97,15 @@ public class CompiledTemplateTest {
             .trim();
         
         Assert.assertEquals("string\n10", html);
+    }
+    
+    @Test
+    public void argsEmptyButWithSpace() throws Exception {
+        String html = new rocker.ArgsEmptyButWithSpace()
+            .render()
+            .toString();
+        
+        assertThat(html, is(""));
     }
     
     @Test

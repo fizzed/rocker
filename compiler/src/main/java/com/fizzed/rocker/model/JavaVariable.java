@@ -23,10 +23,6 @@ import com.fizzed.rocker.compiler.TokenException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author joelauer
- */
 public class JavaVariable {
     
     static final public Map<String,Class> PRIMITIVES;
@@ -80,12 +76,16 @@ public class JavaVariable {
     }
 
     static public List<JavaVariable> parseList(String s) throws TokenException {
+        // trim list to remove leading/trailing whitespace first
+        s = s.trim();
+        
         List<JavaVariable> vars = new ArrayList<>();
         int offset = 0;
 
         while (offset < s.length()) {
             // first will be either type or name
             String typeOrName = parseToken(s, offset);
+            
             offset += typeOrName.length();
 
             if (offset >= s.length() || s.charAt(offset) == ',') {
