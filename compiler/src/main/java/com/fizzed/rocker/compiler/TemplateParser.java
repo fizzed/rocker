@@ -519,6 +519,10 @@ public class TemplateParser {
             // chomp off parenthese
             statement = statement.substring(1, statement.length() - 1);
             
+            // fix for issue #17
+            // remove leading and trailing spaces (might result in empty string, which is ok)
+            statement = statement.trim();
+            
             try {
                 List<JavaVariable> args = JavaVariable.parseList(statement);
                 
