@@ -40,7 +40,7 @@ public class DefaultRockerModel<T extends DefaultRockerModel> implements RockerM
     protected RockerOutput render(DefaultRockerTemplate context) throws RenderingException {
         // no real need for thread safety since templates should only be used by a single thread
         if (this.rendered) {
-            throw new RenderingException("Template already rendered (templates are single use only!");
+            throw new RenderingException("Template already rendered (templates are single use only!)");
         }
         
         DefaultRockerTemplate template = buildTemplate();
