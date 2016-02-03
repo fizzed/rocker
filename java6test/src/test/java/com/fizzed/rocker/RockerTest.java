@@ -66,5 +66,27 @@ public class RockerTest {
         BindableRockerModel template = Rocker.template("rocker/Args.rocker.html");
         template.bind("s", 1);
     }
+
+    @Test
+    public void templateWithEmptyArgumentsNoSpaces() throws Exception {
+        BindableRockerModel template = Rocker.template("rocker/ArgsEmptyNoSpaces.rocker.html");
+        String out = template.render().toString().trim();
+        Assert.assertEquals("Test", out);
+    }
     
+    @Test
+    public void templateWithEmptyArgumentsWithSpaces() throws Exception {
+        BindableRockerModel template = Rocker.template("rocker/ArgsEmptyWithSpaces.rocker.html");
+        String out = template.render().toString().trim();
+        Assert.assertEquals("Test", out);
+    }
+    
+    @Test
+    public void templateWithEmptyArgumentsWithSpacesMultiline() throws Exception {
+        BindableRockerModel template = Rocker.template("rocker/ArgsEmptyWithSpacesMultiline.rocker.html");
+        String out = template.render().toString().trim();
+        Assert.assertEquals("Test", out);
+    }
+    
+
 }

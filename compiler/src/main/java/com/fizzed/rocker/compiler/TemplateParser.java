@@ -521,7 +521,8 @@ public class TemplateParser {
             
             // fix for issue #17
             // remove leading and trailing spaces (might result in empty string, which is ok)
-            statement = statement.trim();
+            // supports empty argument lists spanning over multiple lines
+            statement = statement.replaceAll("\\s+", " ").trim();
             
             try {
                 List<JavaVariable> args = JavaVariable.parseList(statement);
