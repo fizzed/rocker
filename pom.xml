@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
-    <version>0.10.6</version>
+    <version>0.10.7-SNAPSHOT</version>
 
     <parent>
         <groupId>com.fizzed</groupId>
@@ -15,7 +15,7 @@
     <scm>
         <url>https://github.com/fizzed/rocker</url>
         <connection>scm:git:git@github.com:fizzed/rocker.git</connection>
-      <tag>v0.10.6</tag>
+      <tag>HEAD</tag>
   </scm>
     
     <properties>
