@@ -15,7 +15,21 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.runtime.ParserException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
@@ -44,19 +58,7 @@ import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fizzed.rocker.runtime.ParserException;
 
 /**
  *
@@ -521,7 +523,8 @@ public class TemplateParser {
             
             // fix for issue #17
             // remove leading and trailing spaces (might result in empty string, which is ok)
-            statement = statement.trim();
+            // supports empty argument lists spanning over multiple lines
+            statement = statement.replaceAll("\\s+", " ").trim();
             
             try {
                 List<JavaVariable> args = JavaVariable.parseList(statement);
