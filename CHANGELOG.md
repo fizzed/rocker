@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.10.6 - 2016-02-03
+
+ - Allow @args consisting of any amount of empty whitespace (@jfendler)
+ - More unit tests
+
 #### 0.10.5 - 2016-01-19
 
  - Fixed issue with plain text `} else {` blocks being interpreted as code rather
