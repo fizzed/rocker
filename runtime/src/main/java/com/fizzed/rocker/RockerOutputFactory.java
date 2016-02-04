@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Fizzed Inc.
+ * Copyright 2016 Fizzed, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,12 @@
 package com.fizzed.rocker;
 
 /**
- * Callbacks for a RockerModel.
+ * Creates a RockerOutput during a render.
  * 
  * @author joelauer
  */
-public interface RockerModelCallback {
+public interface RockerOutputFactory<T extends RockerOutput> {
     
-    /**
-     * Called after model creates underlying Template it will render to and
-     * immediately before it calls Template.render().  Offers one last chance
-     * to inject variables into Template before it executes rendering.
-     * 
-     * @param template The template that will be rendered by the model.
-     */
-    void onRender(RockerTemplate template);
+    T create(ContentType contentType, String charsetName);
     
 }

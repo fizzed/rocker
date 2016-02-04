@@ -23,12 +23,9 @@ import com.fizzed.rocker.RockerStringify;
 import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.RockerContent;
 import com.fizzed.rocker.RockerModel;
+import com.fizzed.rocker.RockerOutputFactory;
 import java.io.IOException;
 
-/**
- *
- * @author joelauer
- */
 public abstract class DefaultRockerTemplate extends RockerTemplate {
     
     protected Internal __internal;
@@ -53,18 +50,19 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
     @Override
     protected RockerOutput __newOutput() {
         return new ArrayOfByteArraysOutput(__internal.getContentType(), __internal.getCharset());
-        //return new StringBuilderOutput(__internal.getCharset());
     }
 
     /**
      * Executes template and renders content to output.
      * @param context The optional context if this template is being rendered within another template
+     * @param outputFactory Factory for creating output if necessary
      * @return The output of rendering process
      * @throws RenderingException Thrown if any error encountered while rendering
      *      template. Exception will include underlying cause as well as line
      *      and position of original template source that triggered exception.
      */
-    final public RockerOutput __render(DefaultRockerTemplate context) throws RenderingException {
+    final public RockerOutput __render(DefaultRockerTemplate context,
+                                       RockerOutputFactory outputFactory) throws RenderingException {
         // associate with a context of another template
         if (context != null) {
             this.__associate(context);
@@ -86,8 +84,11 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         }
         
         if (this.__internal.out == null) {
-            // initialize with default output
-            this.__internal.out = __newOutput();
+            if (outputFactory != null) {
+                this.__internal.out = outputFactory.create(this.__internal.contentType, this.__internal.charset);
+            } else {
+                this.__internal.out = __newOutput();
+            }
         }
         
         // make sure not previously used
@@ -260,7 +261,7 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         
         public void renderValue(DefaultRockerModel model) throws RenderingException, IOException {
             // delegating rendering this model to itself BUT under a context
-            model.render(DefaultRockerTemplate.this);
+            model.doRender(DefaultRockerTemplate.this, null, null);
         }
         
         public void renderValue(BindableRockerModel model) throws RenderingException, IOException {

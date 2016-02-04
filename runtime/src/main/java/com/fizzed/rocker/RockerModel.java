@@ -16,7 +16,8 @@
 package com.fizzed.rocker;
 
 /**
- *
+ * Represents a model for a template.
+ * 
  * @author joelauer
  */
 public interface RockerModel {
@@ -29,5 +30,31 @@ public interface RockerModel {
      *      and position of original template source that triggered exception.
      */
     RockerOutput render() throws RenderingException;
+    
+    /**
+     * Executes a template model and renders content to output. Single use only.
+     * @param <O> The output type
+     * @param outputFactory A factory to create a new RockerOutput
+     * @return The output of rendering process
+     * @throws RenderingException Thrown if any error encountered while rendering
+     *      template. Exception will include underlying cause as well as line
+     *      and position of original template source that triggered exception. 
+     */
+    <O extends RockerOutput> O render(RockerOutputFactory<O> outputFactory) throws RenderingException;
+    
+    /**
+     * Executes a template model and renders content to output. Single use only.
+     * @param <O> The output type
+     * @param outputFactory A factory to create a new RockerOutput
+     * @param templateCustomizer A customizer for last second changes to template
+     *          between the time its built and the time it actually is rendered.
+     *          Useful for injecting implicit variables in frameworks.
+     * @return The output of rendering process
+     * @throws RenderingException Thrown if any error encountered while rendering
+     *      template. Exception will include underlying cause as well as line
+     *      and position of original template source that triggered exception. 
+     */
+    <O extends RockerOutput> O render(RockerOutputFactory<O> outputFactory,
+                                      RockerTemplateCustomizer templateCustomizer) throws RenderingException;
     
 }

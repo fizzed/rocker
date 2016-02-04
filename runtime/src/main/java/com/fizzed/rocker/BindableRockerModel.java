@@ -89,6 +89,16 @@ public class BindableRockerModel implements RockerModel {
     public RockerOutput render() throws RenderingException {
         return this.model.render();
     }
+
+    @Override
+    public <T extends RockerOutput> T render(RockerOutputFactory<T> outputFactory) throws RenderingException {
+        return this.model.render(outputFactory);
+    }
+
+    @Override
+    public <T extends RockerOutput> T render(RockerOutputFactory<T> outputFactory, RockerTemplateCustomizer templateCustomizer) throws RenderingException {
+        return this.model.render(outputFactory, templateCustomizer);
+    }
     
     public RockerModel getModel() {
         return this.model;

@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.11.0 - 2016-02-04
+
+ - Added support for overriding the RockerOutput a model will render to
+ - Removed `callback` feature on RockerModel. Use new model.render(outputFactory, templateCustomizer)
+   as its superior replacement.
+
 #### 0.10.6 - 2016-02-03
 
  - Allow @args consisting of any amount of empty whitespace (@jfendler)
