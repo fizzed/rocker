@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.11.1 - 2016-02-04
+
+ - Removed generic type parameter for DefaultRockerModel to fix an issue with
+   model.render(outputFactory) returning a generic vs. concrete type.
+
 #### 0.11.0 - 2016-02-04
 
  - Added support for overriding the RockerOutput a model will render to
