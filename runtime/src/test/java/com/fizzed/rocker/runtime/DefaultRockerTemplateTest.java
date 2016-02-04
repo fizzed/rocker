@@ -132,14 +132,7 @@ public class DefaultRockerTemplateTest {
             }
         };
         
-        RockerOutputFactory<StringBuilderOutput> outputFactory = new RockerOutputFactory<StringBuilderOutput>() {
-            @Override
-            public StringBuilderOutput create(ContentType contentType, String charsetName) {
-                return new StringBuilderOutput(contentType, charsetName);
-            }
-        };
-        
-        RockerOutput out = model.render(outputFactory);
+        StringBuilderOutput out = model.render(StringBuilderOutput.FACTORY);
         
         assertThat(out.toString(), is("Hello!"));
         assertThat(out, instanceOf(StringBuilderOutput.class));

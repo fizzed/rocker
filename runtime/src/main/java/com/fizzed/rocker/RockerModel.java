@@ -34,7 +34,8 @@ public interface RockerModel {
     /**
      * Executes a template model and renders content to output. Single use only.
      * @param <O> The output type
-     * @param outputFactory A factory to create a new RockerOutput
+     * @param outputFactory A factory to create a new RockerOutput. If null then
+     *      the a default defined by the template will be used instead.
      * @return The output of rendering process
      * @throws RenderingException Thrown if any error encountered while rendering
      *      template. Exception will include underlying cause as well as line
@@ -45,10 +46,12 @@ public interface RockerModel {
     /**
      * Executes a template model and renders content to output. Single use only.
      * @param <O> The output type
-     * @param outputFactory A factory to create a new RockerOutput
+     * @param outputFactory A factory to create a new RockerOutput. If null then
+     *      the a default defined by the template will be used instead.
      * @param templateCustomizer A customizer for last second changes to template
      *          between the time its built and the time it actually is rendered.
-     *          Useful for injecting implicit variables in frameworks.
+     *          Useful for injecting implicit variables in frameworks. If null
+     *          then no customization will be done.
      * @return The output of rendering process
      * @throws RenderingException Thrown if any error encountered while rendering
      *      template. Exception will include underlying cause as well as line

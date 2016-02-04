@@ -16,6 +16,7 @@
 package com.fizzed.rocker.runtime;
 
 import com.fizzed.rocker.ContentType;
+import com.fizzed.rocker.RockerOutputFactory;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -28,6 +29,14 @@ import java.nio.charset.Charset;
  */
 public class StringBuilderOutput extends AbstractRockerOutput<StringBuilderOutput> {
 
+    public static RockerOutputFactory<StringBuilderOutput> FACTORY
+        = new RockerOutputFactory<StringBuilderOutput>() {
+            @Override
+            public StringBuilderOutput create(ContentType contentType, String charsetName) {
+                return new StringBuilderOutput(contentType, charsetName);
+            }
+        };
+    
     private final StringBuilder buffer;
     
     public StringBuilderOutput(ContentType contentType, String charsetName) {

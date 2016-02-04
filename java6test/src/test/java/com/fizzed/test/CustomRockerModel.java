@@ -22,7 +22,7 @@ import com.fizzed.rocker.runtime.DefaultRockerModel;
  * @param <T>
  * @author joelauer
  */
-public class CustomRockerModel<T extends CustomRockerModel> extends DefaultRockerModel<T> {
+public class CustomRockerModel<T extends CustomRockerModel> extends DefaultRockerModel {
 
     // implicit variables/functions
     protected String implicit;
@@ -31,31 +31,5 @@ public class CustomRockerModel<T extends CustomRockerModel> extends DefaultRocke
         this.implicit = s;
         return (T)this;
     }
-    
-    /**
-    public Integer i() {
-        return 1;
-    }
-    */
-
-    /**
-    @Override
-    protected <T> void __configure(T other) throws RenderingException {
-        super.__configure(other);
-        if (other instanceof CustomRockerModel) {
-            CustomRockerModel otherTemplate = (CustomRockerModel)other;
-            this.implicit = otherTemplate.implicit;
-        }
-        else {
-            throw new RenderingException("Unable to configure template (not an instance of " + this.getClass().getName() + ")");
-        }
-    }
-
-    // example of render() providing its own output to tie into specific framework
-    @Override
-    protected RockerOutput __newOutput() {
-        return new CustomRockerOutput();
-    }
-    */
     
 }

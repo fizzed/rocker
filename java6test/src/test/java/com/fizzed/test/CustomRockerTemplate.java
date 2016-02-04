@@ -15,7 +15,6 @@
  */
 package com.fizzed.test;
 
-import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.RockerTemplate;
 import com.fizzed.rocker.runtime.DefaultRockerModel;

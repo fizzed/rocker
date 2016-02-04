@@ -15,13 +15,14 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.RockerModel;
 import com.fizzed.rocker.RockerOutputFactory;
 import com.fizzed.rocker.RockerTemplateCustomizer;
 
-public class DefaultRockerModel<T extends DefaultRockerModel> implements RockerModel {
+public class DefaultRockerModel implements RockerModel {
     
     private boolean rendered;
     
