@@ -24,6 +24,16 @@ public enum ContentType {
     RAW,
     HTML;
     
+    static public boolean removeWhitespace(ContentType contentType) {
+        switch (contentType) {
+            case RAW:
+                return false;
+            case HTML:
+                return true;
+        }
+        throw new IllegalArgumentException("Unsupported content type " + contentType);
+    }
+    
     static public boolean discardLogicWhitespace(ContentType contentType) {
         switch (contentType) {
             case RAW:

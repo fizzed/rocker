@@ -29,6 +29,7 @@ import java.util.Properties;
 public class RockerOptions {
     
     static public final String JAVA_VERSION = "javaVersion";
+    static public final String REMOVE_WHITESPACE = "removeWhitespace";
     static public final String DISCARD_LOGIC_WHITESPACE = "discardLogicWhitespace";
     static public final String COMBINE_ADJACENT_PLAIN = "combineAdjacentPlain";
     static public final String EXTENDS_CLASS = "extendsClass";
@@ -38,6 +39,8 @@ public class RockerOptions {
     
     // generated source compatiblity
     private JavaVersion javaVersion;
+    // replace whitespaces with single spaces
+    private Boolean removeWhitespace;
     // discard lines consisting of only logic/block
     private Boolean discardLogicWhitespace;
     // combine adjacent plain text elements together to form a single one
@@ -54,6 +57,7 @@ public class RockerOptions {
     
     public RockerOptions() {
         this.javaVersion = JavaVersion.v1_8;
+        this.removeWhitespace = Boolean.FALSE;              // defaults to FALSE to ensure content-safety
         this.discardLogicWhitespace = null;                 // will default to default of content type
         this.combineAdjacentPlain = Boolean.TRUE;
         this.extendsClass = com.fizzed.rocker.runtime.DefaultRockerTemplate.class.getName();
@@ -65,6 +69,7 @@ public class RockerOptions {
     public RockerOptions copy() {
         RockerOptions options = new RockerOptions();
         options.javaVersion = this.javaVersion;
+        options.removeWhitespace = this.removeWhitespace;
         options.discardLogicWhitespace = this.discardLogicWhitespace;
         options.combineAdjacentPlain = this.combineAdjacentPlain;
         options.extendsClass = this.extendsClass;
@@ -97,6 +102,14 @@ public class RockerOptions {
         }
         
         this.javaVersion = jv;
+    }
+
+    public Boolean getRemoveWhitespace() {
+        return removeWhitespace;
+    }
+    
+    public void setRemoveWhitespace(Boolean removeWhitespace) {
+        this.removeWhitespace = removeWhitespace;
     }
 
     public Boolean getDiscardLogicWhitespace() {
@@ -163,6 +176,9 @@ public class RockerOptions {
         String optionValue = value.trim();
         
         switch (optionName) {
+            case REMOVE_WHITESPACE:
+                this.setRemoveWhitespace(parseBoolean(optionValue));
+                break;
             case DISCARD_LOGIC_WHITESPACE:
                 this.setDiscardLogicWhitespace(parseBoolean(optionValue));
                 break;
@@ -192,6 +208,9 @@ public class RockerOptions {
     public void write(Properties properties) {
         if (this.optimize != null) {
             properties.put(RockerConfiguration.OPTION_PREFIX + OPTIMIZE, this.optimize.toString());
+        }
+        if (this.removeWhitespace != null) {
+            properties.put(RockerConfiguration.OPTION_PREFIX + REMOVE_WHITESPACE, this.removeWhitespace.toString());
         }
         if (this.discardLogicWhitespace != null) {
             properties.put(RockerConfiguration.OPTION_PREFIX + DISCARD_LOGIC_WHITESPACE, this.discardLogicWhitespace.toString());
@@ -240,5 +259,12 @@ public class RockerOptions {
             throw new TokenException("Unparseable boolean");
         }
     }
+
+	@Override
+	public String toString() {
+		return "RockerOptions [javaVersion=" + javaVersion + ", removeWhitespace=" + removeWhitespace + ", discardLogicWhitespace="
+				+ discardLogicWhitespace + ", combineAdjacentPlain=" + combineAdjacentPlain + ", extendsClass=" + extendsClass
+				+ ", extendsModelClass=" + extendsModelClass + ", targetCharset=" + targetCharset + ", optimize=" + optimize + "]";
+	}
 
 }

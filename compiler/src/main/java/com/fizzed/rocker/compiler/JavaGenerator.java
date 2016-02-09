@@ -366,11 +366,13 @@ public class JavaGenerator {
                         .append(StringUtils.abbreviate(RockerUtil.ESCAPE_JAVA.translate(plainText), 500)).append(CRLF);
                 for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
                 
-                    if (this.plainTextStrategy == PlainTextStrategy.STATIC_STRINGS) {                   
+                    if (this.plainTextStrategy == PlainTextStrategy.STATIC_STRINGS) {
                         tab(w, indent).append("static private final String ")
                             .append(chunk.getKey())
                             .append(" = \"")
-                            .append(StringEscapeUtils.escapeJava(chunk.getValue()))
+                            .append( StringEscapeUtils.escapeJava( Boolean.TRUE == model.getOptions().getRemoveWhitespace() ?
+                                RockerUtil.removeWhitespace(chunk.getValue()) :
+                                chunk.getValue()) )
                             .append("\";")
                             .append(CRLF);
                     }
@@ -854,11 +856,13 @@ public class JavaGenerator {
             for (String plainText : plainTextMap.keySet()) {
 
                 for (Map.Entry<String,String> chunk : plainTextMap.get(plainText).entrySet()) {
-
                     tab(w, indent+1).append("static private final String ")
                         .append(chunk.getKey())
                         .append(" = \"")
-                        .append(StringEscapeUtils.escapeJava(chunk.getValue()))
+                        .append( StringEscapeUtils.escapeJava( 
+                            Boolean.TRUE == model.getOptions().getRemoveWhitespace() ?
+                                RockerUtil.removeWhitespace(chunk.getValue()) : 
+                                chunk.getValue()))
                         .append("\";")
                         .append(CRLF);
                     

@@ -293,6 +293,64 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void removeWhitespace1() throws Exception {
+    	// test if single spaces remain intact
+        String html = rocker.RemoveWhitespace1
+            .template("World")
+            .render()
+            .toString();
+        
+        String expected = "\nHello World!";
+        
+        Assert.assertEquals(expected, html);
+    }
+    
+    @Test
+    public void removeWhitespace2() throws Exception {
+    	// test if multiple spaces within plaintext sections are reduced to a single space
+        String html = rocker.RemoveWhitespace2
+            .template("World")
+            .render()
+            .toString();
+        
+        String expected = "\nHello World!\n";
+        
+        Assert.assertEquals(expected, html);
+    }
+    
+    @Test
+    public void removeWhitespace3() throws Exception {
+    	// test if whitespace from dynamic content is preserved
+        String html = rocker.RemoveWhitespace3
+            .template("   World of Whitespace   ")
+            .render()
+            .toString();
+        
+        String expected = "\nHello   World of Whitespace   !\n";
+        
+        Assert.assertEquals(expected, html);
+    }
+    
+    @Test
+    public void largeContent() throws Exception {
+        // render large content into a string
+        String html = new rocker.LargeContent()
+            .title("The \t Title")
+            .twitter("twitterHandle")
+            .render()
+            .toString();
+        
+        // grab correct resource to compare it to
+        InputStream is = this.getClass().getResourceAsStream("/rocker/LargeContentWhitespaceRemoved.output");
+        
+        // IOUtils is ALSO inserting \r\n when I just want \n on windows
+        // make this test more portable across OSes
+        String expectedHtml = IOUtils.toString(is, "UTF-8").replace("\r\n", "\n");
+        
+        Assert.assertEquals(expectedHtml, html);
+    }
+
+    @Test
     public void valueWithChainedCall() throws Exception {
         
         User user = new User();
