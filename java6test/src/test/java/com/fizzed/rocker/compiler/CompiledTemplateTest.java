@@ -294,7 +294,7 @@ public class CompiledTemplateTest {
     
     @Test
     public void removeWhitespace1() throws Exception {
-    	// test if single spaces remain intact
+        // test if single spaces remain intact
         String html = rocker.RemoveWhitespace1
             .template("World")
             .render()
@@ -307,7 +307,7 @@ public class CompiledTemplateTest {
     
     @Test
     public void removeWhitespace2() throws Exception {
-    	// test if multiple spaces within plaintext sections are reduced to a single space
+        // test if multiple spaces within plaintext sections are reduced to a single space
         String html = rocker.RemoveWhitespace2
             .template("World")
             .render()
@@ -320,7 +320,7 @@ public class CompiledTemplateTest {
     
     @Test
     public void removeWhitespace3() throws Exception {
-    	// test if whitespace from dynamic content is preserved
+        // test if whitespace from dynamic content is preserved
         String html = rocker.RemoveWhitespace3
             .template("   World of Whitespace   ")
             .render()
