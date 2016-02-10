@@ -39,7 +39,7 @@ public enum ContentType {
             case RAW:
                 return false;
             case HTML:
-                return true;
+                return false;
         }
         throw new IllegalArgumentException("Unsupported content type " + contentType);
     }
