@@ -33,7 +33,9 @@ import com.fizzed.rocker.model.JavaImport;
 import com.fizzed.rocker.model.JavaVariable;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.PlainText;
+import com.fizzed.rocker.model.PostProcessorException;
 import com.fizzed.rocker.model.TemplateModel;
+import com.fizzed.rocker.model.TemplateModelPostProcessor;
 import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
@@ -50,6 +52,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -182,6 +185,15 @@ public class JavaGenerator {
 
     // TODO: square's JavaWriter looks like a possible replacement
     private void createSourceTemplate(TemplateModel model, Writer w) throws GeneratorException, IOException {
+        if ( model.getOptions().getPostProcessing() != null ) {
+            // allow post-processors to transform the model
+            try {
+                model = postProcess( model );
+            } catch ( PostProcessorException ppe ) {
+                throw new GeneratorException("Error during post-processing of model.", ppe);
+            }
+        }
+        
         // simple increment to help create unique var names
         int varCounter = -1;
         
@@ -874,6 +886,37 @@ public class JavaGenerator {
         
         w.append(CRLF);
         w.append("}").append(CRLF);
+    }
+
+    /**
+     * @param templateModel
+     * @return
+     * @throws PostProcessorException 
+     */
+    private TemplateModel postProcess(TemplateModel templateModel) throws PostProcessorException {
+        // Copy the array of post-processor names, rather than reading it from the model 
+        // in the for-loop. This ensures post-processors cannot change the post-processing
+        // part of the model's configuration.
+        // Future versions might allow post-processors to alter this part of the model as well. 
+        String[] originalPPClassNames = Arrays.copyOf(
+            templateModel.getOptions().getPostProcessing(), templateModel.getOptions().getPostProcessing().length);
+
+        for (int i = 0; i < originalPPClassNames.length; i ++) {
+            String ppClassName = originalPPClassNames[i];
+            try {
+                Class<TemplateModelPostProcessor> ppClass = (Class<TemplateModelPostProcessor>) Class.forName(ppClassName);
+                TemplateModelPostProcessor postProcessor = ppClass.newInstance();
+                templateModel = postProcessor.process(templateModel, i);
+            } catch (ClassNotFoundException e) {
+                throw new PostProcessorException("Post-Processor class not found (" + ppClassName + ").", e);
+            } catch (InstantiationException e) {
+                throw new PostProcessorException("Could not instantiate Post-Processor (" + ppClassName + ").", e);
+            } catch (IllegalAccessException e) {
+                throw new PostProcessorException("Illegal access for Post-Processor (" + ppClassName + ").", e);
+            }
+        }
+
+        return templateModel;
     }
     
 }

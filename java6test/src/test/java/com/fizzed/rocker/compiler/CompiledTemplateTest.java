@@ -705,5 +705,14 @@ public class CompiledTemplateTest {
         Assert.assertEquals("<h1>Hello Joe!</h1>", html);
     }
     */
-    
+
+    @Test
+    public void postProcessingTest1() throws Exception {
+        String out = rocker.PostProcessing1.template("Test")
+            .render()
+            .toString();
+        
+        Assert.assertEquals("\nPost-Processing Test\n", out);
+    }
+
 }
