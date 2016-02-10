@@ -53,11 +53,10 @@ public class ParserMain {
         
         TemplateParser parser = new TemplateParser(configuration);
         
-        // File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
+        //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
-        // File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
-        File f = new File("java6test/src/test/java/rocker/RemoveWhitespace1.rocker.html");
+        File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
         
         //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
@@ -96,7 +95,6 @@ public class ParserMain {
         log.info("name: {}", model.getName());
         log.info("package: {}", model.getPackageName());
         log.info("content type: {}", model.getContentType());
-        log.info("options: {}", model.getOptions() );
         log.info("");
         
         for (JavaImport i : model.getImports()) {
