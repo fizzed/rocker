@@ -42,6 +42,9 @@
                             <discardLogicWhitespace>false</discardLogicWhitespace>
                             <addAsTestSources>true</addAsTestSources>
                             <optimize>true</optimize>
+                            <postProcessing>
+                            	<param>com.fizzed.rocker.processor.LoggingProcessor</param>
+                            </postProcessing>
                         </configuration>
                     </execution>
                 </executions>

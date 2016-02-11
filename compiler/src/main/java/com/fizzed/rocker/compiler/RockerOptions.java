@@ -20,7 +20,9 @@ import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.Option;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -35,6 +37,7 @@ public class RockerOptions {
     static public final String EXTENDS_MODEL_CLASS = "extendsModelClass";
     static public final String TARGET_CHARSET = "targetCharset";
     static public final String OPTIMIZE = "optimize";
+    static public final String POST_PROCESSING = "postProcessing";
     
     // generated source compatiblity
     private JavaVersion javaVersion;
@@ -51,6 +54,8 @@ public class RockerOptions {
     private String targetCharset;
     // templates optimized for production
     private Boolean optimize;
+    // names of classes to be used for post-processing the model in order of appearance
+    private String[] postProcessing;
     
     public RockerOptions() {
         this.javaVersion = JavaVersion.v1_8;
@@ -60,6 +65,7 @@ public class RockerOptions {
         this.extendsModelClass = com.fizzed.rocker.runtime.DefaultRockerModel.class.getName();
         this.targetCharset = "UTF-8";
         this.optimize = Boolean.FALSE;
+        this.postProcessing = new String[0];
     }
     
     public RockerOptions copy() {
@@ -71,6 +77,9 @@ public class RockerOptions {
         options.extendsModelClass = this.extendsModelClass;
         options.targetCharset = this.targetCharset;
         options.optimize = this.optimize;
+        // do not copy post-processor class names from global configuration.
+        // these need to be kept separate from per-template configurations.
+        options.postProcessing = new String[0];
         return options;
     }
 
@@ -158,6 +167,14 @@ public class RockerOptions {
         this.optimize = optimize;
     }
 
+    public String[] getPostProcessing() {
+    	return postProcessing;
+    }
+    
+    public void setPostProcessing( String[] postProcessing ) {
+        this.postProcessing = postProcessing;
+    }
+
     public void set(String name, String value) throws TokenException {
         String optionName = name.trim();
         String optionValue = value.trim();
@@ -184,6 +201,9 @@ public class RockerOptions {
             case OPTIMIZE:
                 this.setOptimize(parseBoolean(optionValue));
                 break;
+            case POST_PROCESSING:
+            	this.setPostProcessing(parseStringArrayFromList(optionValue));
+            	break;
             default:
                 throw new TokenException("Invalid option (" + optionName + ") is not a property)");
         }
@@ -239,6 +259,26 @@ public class RockerOptions {
         else {
             throw new TokenException("Unparseable boolean");
         }
+    }
+    
+    /**
+     * Create an array of sub-strings from a given comma-separated string.
+     * The contents of each string in the returned array will be trimmed of leading and trailing spaces.
+     * @param value the original string, containing individual comma-separated tokens
+     * @return an array of 
+     * @throws TokenException
+     */
+    private String[] parseStringArrayFromList( String value ) throws TokenException {
+        if ( value == null ) {
+            throw new TokenException("List of strings cannot be null");
+        }
+        StringTokenizer st = new StringTokenizer(value, ",");
+        String[] tokens = new String[st.countTokens()];
+        int i = 0;
+        while ( st.hasMoreTokens() ) {
+            tokens[i++] = st.nextToken().trim(); 
+        }
+        return tokens;
     }
 
 }

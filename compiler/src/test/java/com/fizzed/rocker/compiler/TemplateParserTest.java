@@ -625,4 +625,38 @@ public class TemplateParserTest {
             Assert.assertEquals(1, e.getLineNumber());
         }
     }
+    
+    @Test
+    public void optionPostProcessing1() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/OptionPostProcessing1.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        Assert.assertArrayEquals(new String[] {"com.fizzed.rocker.processor.WhitespaceRemovalProcessor", 
+            "com.fizzed.rocker.processor.LoggingProcessor"}, model.getOptions().getPostProcessing());
+    }
+
+    @Test
+    public void optionPostProcessing2() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/OptionPostProcessing2.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        Assert.assertArrayEquals(new String[] {"com.fizzed.rocker.processor.WhitespaceRemovalProcessor", 
+            "com.fizzed.rocker.processor.LoggingProcessor"}, model.getOptions().getPostProcessing());
+    }
+
+    @Test
+    public void optionPostProcessing3() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/OptionPostProcessing3.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        Assert.assertArrayEquals(new String[] {"com.fizzed.rocker.processor.LoggingProcessor", 
+            "com.fizzed.rocker.processor.WhitespaceRemovalProcessor", 
+            "com.fizzed.rocker.processor.LoggingProcessor"}, model.getOptions().getPostProcessing());
+    }
 }
