@@ -386,7 +386,9 @@ public class JavaGenerator {
                         tab(w, indent).append("static private final String ")
                             .append(chunk.getKey())
                             .append(" = \"")
-                            .append(StringEscapeUtils.escapeJava(chunk.getValue()))
+                            .append( StringEscapeUtils.escapeJava( Boolean.TRUE == model.getOptions().getRemoveWhitespace() ?
+                                RockerUtil.removeWhitespace(chunk.getValue()) :
+                                chunk.getValue()) )
                             .append("\";")
                             .append(CRLF);
                     }
@@ -874,7 +876,9 @@ public class JavaGenerator {
                     tab(w, indent+1).append("static private final String ")
                         .append(chunk.getKey())
                         .append(" = \"")
-                        .append(StringEscapeUtils.escapeJava(chunk.getValue()))
+                        .append( StringEscapeUtils.escapeJava(Boolean.TRUE == model.getOptions().getRemoveWhitespace() ?
+                            RockerUtil.removeWhitespace(chunk.getValue()) : 
+                            chunk.getValue()))
                         .append("\";")
                         .append(CRLF);
                     

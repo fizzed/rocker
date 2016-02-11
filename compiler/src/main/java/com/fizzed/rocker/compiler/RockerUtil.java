@@ -44,6 +44,25 @@ public class RockerUtil {
     private static final Pattern VALID_JAVA_IDENTIFIER = Pattern
             .compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*");
 
+    /**
+     * For whitespace removals: matching one or more new-lines after horizontal spaces (e.g. space, tab),
+     * i.e. at the end of a line. Will be replaced by a single \n.  
+     */
+    private static final String LINE_END = "[ \t]+[\n\r]+";
+
+    /**
+     * For whitespace removals: matching more than one horizontal whitespace in a single line.
+     * Will be replaced by a single space. 
+     */
+    private static final String IN_LINE = "[ \t]{2,}";
+
+    /**
+     * For whitespace removals: matching one or more horizontal space (e.g. space, tab) after 
+     * one or more new-lines (i.e. at the beginning of a line).
+     * Will be replaced by a single new line.
+     */
+    private static final String LINE_START = "[\n\r]+[ \t]+";
+
     public static boolean isJavaIdentifier(String identifier) {
         return VALID_JAVA_IDENTIFIER.matcher(identifier).matches();
     }
@@ -286,4 +305,16 @@ public class RockerUtil {
                     new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
             );
     
+    /**
+     * Remove extra whitespace from the given chunk of text. New-lines are preserved, 
+     * but multiple new-lines will be reduced to a single new-line.
+     * <b>Note:</b> This method intentionally does not trim any single whitespace at the beginning or
+     * end of the given string, as these may be necessary to separate static text and dynamic content.
+     * 
+     * @return the given string, with all <em>multiple</em> whitespace reduced to single whitespaces.
+     */
+    public static String removeWhitespace(String s) {
+        return s.replaceAll(LINE_END, "\n").replaceAll(LINE_START, "\n").replaceAll(IN_LINE, " ");
+    }
+
 }
