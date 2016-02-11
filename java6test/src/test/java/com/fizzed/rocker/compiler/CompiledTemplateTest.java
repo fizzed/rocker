@@ -20,6 +20,7 @@ import com.fizzed.test.User;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -715,4 +716,40 @@ public class CompiledTemplateTest {
         Assert.assertEquals("\nPost-Processing Test\n", out);
     }
 
+    @Test
+    public void postProcessingMacroBase64Test() throws Exception {
+        String out = rocker.PostProcessingMacroBase64
+            .template()
+            .render()
+            .toString();
+
+        String expectedEncodedPartPlain = "This is a test";
+        String expectedEncodedPart = new String( Base64.getEncoder().encode(expectedEncodedPartPlain.getBytes()) );
+        
+        // expect the base64 encoded equivalent of "This is a test".
+        Assert.assertEquals("Macro Test: " + expectedEncodedPart, out);
+    }
+
+    @Test
+    public void postProcessingMacroIncludeTest() throws Exception {
+        String out = rocker.PostProcessingMacroInclude
+            .template()
+            .render()
+            .toString();
+
+        // expect the base64 encoded equivalent of "This is a test".
+        Assert.assertEquals("Macro Test: Included Content\n", out);
+    }
+
+    @Test
+    public void postProcessingMacroIncludeBase64Test() throws Exception {
+        String out = rocker.PostProcessingMacroIncludeBase64
+            .template()
+            .render()
+            .toString();
+
+        String pixelGifBase64 = "R0lGODdhAQABAIABAP///wCz/iwAAAAAAQABAAACAkQBADs=";
+        
+        Assert.assertEquals("Macro Test: " + pixelGifBase64, out);
+    }
 }
