@@ -508,8 +508,8 @@ being executed on every one of your models.
     <configuration>
     	<!-- ... other rocker configuration options -->
         <postProcessing>
-        	<param>com.fizzed.rocker.processor.LoggingProcessor</param>
-        	<param>com.fizzed.rocker.processor.WhitespaceRemovalProcessor</param>
+            <param>com.fizzed.rocker.processor.LoggingProcessor</param>
+            <param>com.fizzed.rocker.processor.WhitespaceRemovalProcessor</param>
         </postProcessing>
     </configuration>
 </execution>
