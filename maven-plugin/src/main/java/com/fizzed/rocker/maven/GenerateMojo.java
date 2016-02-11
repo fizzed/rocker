@@ -83,6 +83,9 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true )
     protected MavenProject project;
     
+    @Parameter( property = "rocker.postProcessing", required = false)
+    protected String[] postProcessing;
+    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.skip) {
@@ -146,6 +149,9 @@ public class GenerateMojo extends AbstractMojo {
             }
             if (optimize != null) {
                 jgm.getParser().getConfiguration().getOptions().setOptimize(optimize);
+            }
+            if (postProcessing != null ) {
+            	jgm.getParser().getConfiguration().getOptions().setPostProcessing(postProcessing);
             }
             
             jgm.run();

@@ -52,10 +52,14 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -889,23 +893,39 @@ public class JavaGenerator {
     }
 
     /**
-     * @param templateModel
-     * @return
-     * @throws PostProcessorException 
+     * Execute all {@link TemplateModelPostProcessor}s as they were configured globally through 
+     * Maven's pom.xml, and through a per-template option. If both were given, execute the global
+     * post-processors first, and then the per-template post-processors.
+     * Generation of Java code will continue with the TemplateModel returned by the last 
+     * post-processor in the chain.
+     * 
+     * @param templateModel the {@link TemplateModel} to run the post-processing on.
+     * 
+     * @return a {@link TemplateModel} with all post-processing transformations applied. Only this
+     *     resulting TemplateModel will be used for further Java-code generation. 
+     * @throws PostProcessorException if a post-processor cannot be instantiated, or if any of the
+     *     post-processors throws an exception during processing of the model.
      */
     private TemplateModel postProcess(TemplateModel templateModel) throws PostProcessorException {
-        // Copy the array of post-processor names, rather than reading it from the model 
-        // in the for-loop. This ensures post-processors cannot change the post-processing
-        // part of the model's configuration.
-        // Future versions might allow post-processors to alter this part of the model as well. 
-        String[] originalPPClassNames = Arrays.copyOf(
-            templateModel.getOptions().getPostProcessing(), templateModel.getOptions().getPostProcessing().length);
+        // create a list of post-processor class names. by setting up this list with copies of the
+        // configured class names before any post-processors run, no changes made by post-processors
+        // to the templateModel's list of post-processors will be honoured. 
+        List<String> postProcessorClassNames = new ArrayList<String>();
 
-        for (int i = 0; i < originalPPClassNames.length; i ++) {
-            String ppClassName = originalPPClassNames[i];
+        // consider global list of post-processors from Maven's pom.xml first.
+        if ( getConfiguration().getOptions().getPostProcessing() != null ) {
+            postProcessorClassNames.addAll( Arrays.asList(getConfiguration().getOptions().getPostProcessing() ) );
+        }
+        
+        // appened per-template post-processors
+        postProcessorClassNames.addAll( Arrays.asList(templateModel.getOptions().getPostProcessing())); 
+
+        for ( int i = 0; i < postProcessorClassNames.size(); i ++ ) {
+            String ppClassName = postProcessorClassNames.get(i);
             try {
                 Class<TemplateModelPostProcessor> ppClass = (Class<TemplateModelPostProcessor>) Class.forName(ppClassName);
                 TemplateModelPostProcessor postProcessor = ppClass.newInstance();
+                log.debug("Running post-processor {} on template {} at index {}.", postProcessor.getClass().getName(), templateModel.getName(), i );
                 templateModel = postProcessor.process(templateModel, i);
             } catch (ClassNotFoundException e) {
                 throw new PostProcessorException("Post-Processor class not found (" + ppClassName + ").", e);

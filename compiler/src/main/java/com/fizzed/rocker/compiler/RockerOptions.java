@@ -77,7 +77,9 @@ public class RockerOptions {
         options.extendsModelClass = this.extendsModelClass;
         options.targetCharset = this.targetCharset;
         options.optimize = this.optimize;
-        options.postProcessing = Arrays.copyOf(this.postProcessing, this.postProcessing.length);
+        // do not copy post-processor class names from global configuration.
+        // these need to be kept separate from per-template configurations.
+        options.postProcessing = new String[0];
         return options;
     }
 

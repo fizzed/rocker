@@ -398,6 +398,14 @@ intermediate classes that you'd like all templates to extend. Defaults to ```com
 The target charset for template output.  Defaults to UTF-8.  Accepts any value
 that is supported by Java's standard charsetName.
 
+### Post-Processing of Templates
+
+    @option postProcessing=com.sample.MyTemlateModelPostProcessor
+
+Post-processing of templates allows custom classes to perform compile-time 
+transformation of the model your templates are parsed into before any Java
+code is generated. See the section on Post-Processing below for details.
+
 ## Handling null values
 
 We suggest using the ```Optional``` class either via Google Gauva for Java 6/7
@@ -482,3 +490,54 @@ This will result in rendering
 </body>
 </html>
 ```
+
+## Post-Processing
+
+Rocker supports custom post-processing of the model your templates are parsed into before
+any Java code is actually generated for them.
+Post-processing is a compile-time feature which does not take any dynamic evaluations
+(e.g. method calls within your templates) into account.
+
+To enable post-processing for your templates, either add the postProcessing configuration
+to your pom.xml, and/or specify your post-processors using `@option postProcessing=...`
+
+### Global Setup of Post-Processors with Maven
+Provide a list of Post-Processor class names in your pom.xml to have these processors
+being executed on every one of your models.
+```xml
+    <configuration>
+    	<!-- ... other rocker configuration options -->
+        <postProcessing>
+        	<param>com.fizzed.rocker.processor.LoggingProcessor</param>
+        	<param>com.fizzed.rocker.processor.WhitespaceRemovalProcessor</param>
+        </postProcessing>
+    </configuration>
+</execution>
+```
+
+### Per-Template Setup of Post-Processors with @option
+To setup post-processing for selected templates only, use the following option at the
+beginning of your templates:
+```
+@option postProcessing=com.fizzed.rocker.processor.LoggingProcessor,com.fizzed.rocker.processor.WhitespaceRemovalProcessor
+```
+
+### Order of Execution
+
+If post-processors are setup in both ways (i.e. through pom.xml <b>and</b> with the `@option`
+directive, then the list of post-processors to run on the template will be the concatenation
+of first all post-processors from pom.xml, and then all post-processors from the template.
+
+Post-Processors are guaranteed to always execute in the order in which they were specified. 
+
+### Multiple Calls to the same Processor
+
+The same Post-Processor is allowed to run multiple times on the same template. To further
+support this, each post processor is provided with a 'call index' during execution, which is
+the index (starting with 0) of the active post-processor in the list of all post-processors 
+to run.
+
+However, post-processor instances are currently not reused. A new object is instantiated
+whenever a post-processor is called. If you need to maintain some context between two
+executions of post-processors, you could either use static fields, or amend the template
+model by adding otherwise unused `Unit`s (e.g. `PlainText`).  

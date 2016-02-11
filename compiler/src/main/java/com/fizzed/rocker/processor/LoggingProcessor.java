@@ -37,7 +37,7 @@ public class LoggingProcessor implements TemplateModelPostProcessor {
      */
     @Override
     public TemplateModel process(TemplateModel templateModel, int ppIndex) throws PostProcessorException {
-        log.info("Template {} being post-processed by {} at index {}.", templateModel.getName(), getClass().getSimpleName(), ppIndex );
+        log.debug("Template {} being post-processed by {} at index {}.", templateModel.getName(), getClass().getSimpleName(), ppIndex );
         return templateModel;
     }
 
