@@ -20,11 +20,11 @@ import com.fizzed.test.User;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -716,6 +716,9 @@ public class CompiledTemplateTest {
         Assert.assertEquals("\nPost-Processing Test\n", out);
     }
 
+    /**
+     * Test for the base64 macro to encode a given string in base64.
+     */
     @Test
     public void postProcessingMacroBase64Test() throws Exception {
         String out = rocker.PostProcessingMacroBase64
@@ -724,12 +727,15 @@ public class CompiledTemplateTest {
             .toString();
 
         String expectedEncodedPartPlain = "This is a test";
-        String expectedEncodedPart = new String( Base64.getEncoder().encode(expectedEncodedPartPlain.getBytes()) );
+        String expectedEncodedPart = new String(Base64.encodeBase64String(expectedEncodedPartPlain.getBytes()));
         
         // expect the base64 encoded equivalent of "This is a test".
         Assert.assertEquals("Macro Test: " + expectedEncodedPart, out);
     }
 
+    /**
+     * Test for the include macro to include a file's contents as plain text.
+     */
     @Test
     public void postProcessingMacroIncludeTest() throws Exception {
         String out = rocker.PostProcessingMacroInclude
@@ -741,6 +747,9 @@ public class CompiledTemplateTest {
         Assert.assertEquals("Macro Test: Included Content\n", out);
     }
 
+    /**
+     * Test for the includeBase64 macro to include a file's contents as a base64 encoded string.
+     */
     @Test
     public void postProcessingMacroIncludeBase64Test() throws Exception {
         String out = rocker.PostProcessingMacroIncludeBase64
@@ -748,6 +757,7 @@ public class CompiledTemplateTest {
             .render()
             .toString();
 
+        // the base64 encoded contents of src/main/resources/pixel.gif
         String pixelGifBase64 = "R0lGODdhAQABAIABAP///wCz/iwAAAAAAQABAAACAkQBADs=";
         
         Assert.assertEquals("Macro Test: " + pixelGifBase64, out);

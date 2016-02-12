@@ -17,7 +17,8 @@ package com.fizzed.rocker.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Includes the contents of a file as a Base-64 encoded string.
@@ -41,7 +42,7 @@ public class IncludeBase64Macro extends AbstractMacroProcessor {
 
         try {
             byte[] data = readFileToByteArray(new File(filename));
-            return Base64.getEncoder().encodeToString(data);
+            return Base64.encodeBase64String(data);
         } catch (IOException e) {
             throw new MacroException("Could not include file " + filename + " with base-64 encoding.", e);
         }

@@ -15,7 +15,7 @@
  */
 package com.fizzed.rocker.processor;
 
-import java.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Replaces a given string with its base-64 encoded equivalent.
@@ -37,7 +37,7 @@ public class Base64Macro extends AbstractMacroProcessor {
             throw new MacroException("Arguments for base64 macro must not be null");
         }
 
-        return new String(Base64.getEncoder().encode(arguments.getBytes()));
+        return new String(Base64.encodeBase64String(arguments.getBytes()));
     }
 
 }

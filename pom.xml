@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
-    <version>0.11.2-SNAPSHOT</version>
+    <version>0.11.6-SNAPSHOT</version>
 
     <parent>
         <groupId>com.fizzed</groupId>
@@ -94,6 +94,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.10</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
