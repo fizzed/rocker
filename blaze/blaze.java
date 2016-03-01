@@ -56,6 +56,12 @@ public class blaze {
             .run();
     }
     
+    public void run_undertow() {
+        exec("mvn", "-pl", "java8test", "-am", "test", "-Pexec-java8test",
+            "-DskipTests=true", "-Dexec.classpathScope=test", "-Dexec.mainClass=com.fizzed.rocker.UndertowMain")
+            .run();
+    }
+    
     public void run_netty() {
         exec("mvn", "-pl", "java6test", "-am", "test", "-Pexec-java6test",
             "-DskipTests=true", "-Dexec.classpathScope=test", "-Dexec.mainClass=com.fizzed.rocker.NettyMain")
