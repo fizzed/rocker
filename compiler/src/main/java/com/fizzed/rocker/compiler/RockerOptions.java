@@ -19,6 +19,8 @@ import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.Option;
+import org.apache.commons.lang3.StringUtils;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Properties;
@@ -225,7 +227,10 @@ public class RockerOptions {
         properties.put(RockerConfiguration.OPTION_PREFIX + EXTENDS_CLASS, this.extendsClass);
         properties.put(RockerConfiguration.OPTION_PREFIX + EXTENDS_MODEL_CLASS, this.extendsModelClass);
         properties.put(RockerConfiguration.OPTION_PREFIX + TARGET_CHARSET, this.targetCharset);
-        
+        if (this.postProcessing != null && postProcessing.length != 0) {
+            properties.put(RockerConfiguration.OPTION_PREFIX + POST_PROCESSING,
+                    StringUtils.join(this.postProcessing,","));
+        }
     }
     
     public void parseOption(Option option) throws ParserException {
