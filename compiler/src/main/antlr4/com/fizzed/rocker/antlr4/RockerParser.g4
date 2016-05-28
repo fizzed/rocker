@@ -55,7 +55,7 @@ templateContent
     ;
 
 block
-    :   (ifBlock | forBlock)
+    :   (ifBlock | forBlock | withBlock)
     ;
 
 ifBlock
@@ -68,6 +68,10 @@ elseBlock
 
 forBlock
     :   AT_VALUE MV_FOR templateContent* RCURLY
+    ;
+
+withBlock
+    :   AT_VALUE MV_WITH templateContent* RCURLY
     ;
 
 contentClosure

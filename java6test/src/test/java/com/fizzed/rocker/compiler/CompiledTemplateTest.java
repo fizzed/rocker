@@ -715,4 +715,30 @@ public class CompiledTemplateTest {
         Assert.assertEquals("\nPost-Processing Test\n", out);
     }
 
+    @Test
+    public void withBlock() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+        
+        String html = new rocker.WithBlock()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("b", html);
+    }
+    
+    @Test
+    public void withBlockNested() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+        
+        String html = new rocker.WithBlockNested()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("b a c", html);
+    }
+    
 }

@@ -1,0 +1,11 @@
+@import java.util.List
+
+@args(List<String> strings)
+    
+@with (s = strings.get(0)) {
+    @with (t = strings.get(1)) {
+        @with (u = strings.get(2)) {
+            @s @t @u
+        }
+    }
+}

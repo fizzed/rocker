@@ -44,6 +44,9 @@ import com.fizzed.rocker.model.TemplateUnit;
 import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
+import com.fizzed.rocker.model.WithBlockBegin;
+import com.fizzed.rocker.model.WithBlockEnd;
+import com.fizzed.rocker.model.WithStatement;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -745,6 +748,38 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             model.getUnits().add(new ForBlockEnd(sourceRef));
+        }
+        
+        @Override
+        public void enterWithBlock(RockerParser.WithBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            // "with (...) {"
+            String expr = ctx.MV_WITH().getText();
+            
+            // chop off leading 'with' and trailing '{' and then leading/trailing whitespace
+            expr = expr.substring(4, expr.length() - 1).trim();
+            
+            try {
+                WithStatement statement = WithStatement.parse(expr);
+
+                // any Java 1.8+ features used?
+                //if (!model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8) &&
+                //        statement.hasAnyUntypedArguments()) {
+                //    throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
+                //}
+                
+                model.getUnits().add(new WithBlockBegin(sourceRef, expr, statement));
+            } catch (TokenException e) {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void exitWithBlock(RockerParser.WithBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            model.getUnits().add(new WithBlockEnd(sourceRef));
         }
         
         @Override

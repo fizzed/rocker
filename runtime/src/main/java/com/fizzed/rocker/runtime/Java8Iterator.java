@@ -23,10 +23,6 @@ import java.util.Collection;
 import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 
-/**
- *
- * @author joelauer
- */
 public class Java8Iterator {
     
     static public interface ConsumeCollection<V> {

@@ -65,6 +65,10 @@ MV_FOR
     :   'for' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
     ;
 
+MV_WITH
+    :   'with' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    ;
+
 MV_CONTENT_CLOSURE
     :   Identifier WhitespaceWithLineBreak* '=>' WhitespaceWithLineBreak* '{'    -> popMode
     ;

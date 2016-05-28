@@ -74,6 +74,16 @@ public class JavaVariable {
     public boolean hasType() {
         return this.type != null && !this.type.equals("");
     }
+    
+    static public JavaVariable parse(String s) throws TokenException {
+        List<JavaVariable> vars = parseList(s);
+        
+        if (vars.size() != 1) {
+            throw new TokenException("Invalid java variable");
+        }
+        
+        return vars.get(0);
+    }
 
     static public List<JavaVariable> parseList(String s) throws TokenException {
         // trim list to remove leading/trailing whitespace first

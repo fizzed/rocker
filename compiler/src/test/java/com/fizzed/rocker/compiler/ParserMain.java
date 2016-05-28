@@ -20,6 +20,8 @@ import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
+import com.fizzed.rocker.model.WithBlockBegin;
+import com.fizzed.rocker.model.WithBlockEnd;
 import com.fizzed.rocker.model.IfBlockBegin;
 import com.fizzed.rocker.model.IfBlockEnd;
 import com.fizzed.rocker.model.JavaImport;
@@ -34,10 +36,6 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import com.fizzed.rocker.model.BreakStatement;
 
-/**
- *
- * @author joelauer
- */
 public class ParserMain {
     static private final Logger log = LoggerFactory.getLogger(ParserMain.class);
     
@@ -56,7 +54,8 @@ public class ParserMain {
         //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
-        File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
+        //File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
+        File f = new File("java6test/src/test/java/rocker/WithBlock.rocker.html");
         
         //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
@@ -122,6 +121,11 @@ public class ParserMain {
                 log.info("for begin: {}", block.getExpression());
             } else if (unit instanceof ForBlockEnd) {
                 log.info("for end:");
+            } else if (unit instanceof WithBlockBegin) {
+                WithBlockBegin block = (WithBlockBegin)unit;
+                log.info("with begin: {} = {}", block.getStatement().getVariable(), block.getStatement().getValueExpression());
+            } else if (unit instanceof WithBlockEnd) {
+                log.info("with end:");
             } else if (unit instanceof IfBlockBegin) {
                 IfBlockBegin block = (IfBlockBegin)unit;
                 log.info("if begin: {}", block.getExpression());
