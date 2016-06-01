@@ -1,4 +1,5 @@
 import com.fizzed.blaze.Contexts;
+import com.fizzed.blaze.core.Actions;
 import static com.fizzed.blaze.Contexts.fail;
 import static com.fizzed.blaze.Contexts.withBaseDir;
 import static com.fizzed.blaze.Systems.exec;
