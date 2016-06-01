@@ -154,15 +154,15 @@ As of v0.12.0, sets a variable to a value within a scoped block. Once the block
 exits the variable is no longer available.  Variable names cannot conflict with
 other variable names (e.g. arguments) and they will be checked by the Java compiler.
 
-For Java 6/7
+For Java 8 (note this is statically typed and checked at compile time)
 
-    @with (String s = list.get(0)) {
+    @with (s = list.get(0)) {
         @s
     }
 
-For Java 8+ (the type can be inferred)
+For Java 6/7
 
-    @with (s = list.get(0)) {
+    @with (String s = list.get(0)) {
         @s
     }
 
