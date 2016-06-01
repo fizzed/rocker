@@ -681,7 +681,7 @@ public class JavaGenerator {
                 } else {
                     
                     tab(w, depth+indent)
-                        .append("if (true) {").append(CRLF);
+                        .append("{ // with begin").append(CRLF);
 
                     depth++;
 

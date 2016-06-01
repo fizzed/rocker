@@ -17,6 +17,7 @@ package com.fizzed.rocker.compiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
@@ -132,6 +133,32 @@ public class Java8FeaturesTest {
             .trim();
         
         Assert.assertEquals("013", out);
+    }
+    
+    @Test
+    public void withBlock() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+        
+        String html = new rocker.WithBlock()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("b", html);
+    }
+    
+    @Test
+    public void withBlockNested() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+        
+        String html = new rocker.WithBlockNested()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("b a c", html);
     }
     
 }
