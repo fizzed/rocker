@@ -49,25 +49,27 @@ public class WithStatement {
         statement = statement.substring(1, statement.length() - 1);
         
         int equalsPos = statement.indexOf('=');
-        
-        if (equalsPos > 0) {
-            String varPart = statement.substring(0, equalsPos);
-            
-            // parse variable
-            JavaVariable variable = JavaVariable.parse(varPart);
-            
-            String valueExpression = statement.substring(equalsPos+1).trim();
-
-            // verify its not an empty string
-            if (valueExpression.equals("")) {
-                throw new TokenException("With block contains an empty string for value part (e.g. var = value)");
-            }
-
-            return new WithStatement(variable, valueExpression);
+        if (equalsPos < 0) {
+            throw new TokenException("With block invalid: no equals symbol found");
         }
-                
-        throw new TokenException("With block appears to be invalid (no equals symbol found)");
+        
+        // multiple equals chars?
+        if (statement.indexOf('=', equalsPos+1) > 0) {
+            throw new TokenException("With block invalid: multiple equals symbols found");
+        }
+        
+        String varPart = statement.substring(0, equalsPos);
+
+        // parse variable
+        JavaVariable variable = JavaVariable.parse(varPart);
+
+        String valueExpression = statement.substring(equalsPos+1).trim();
+
+        // verify its not an empty string
+        if (valueExpression.equals("")) {
+            throw new TokenException("With block contains an empty string for value part (e.g. var = value)");
+        }
+
+        return new WithStatement(variable, valueExpression);
     }
-    
-    
 }

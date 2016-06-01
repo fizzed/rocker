@@ -149,6 +149,19 @@ public class Java8FeaturesTest {
     }
     
     @Test
+    public void withBlockUsingLambda() throws Exception {
+        List<String> strings = Arrays.asList("a", "c", "b");
+        
+        String html = new rocker.WithBlockUsingLamda()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+        
+        Assert.assertEquals("b", html);
+    }
+    
+    @Test
     public void withBlockNested() throws Exception {
         List<String> strings = Arrays.asList("b", "a", "c");
         

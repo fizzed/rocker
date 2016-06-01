@@ -2,7 +2,6 @@ import com.fizzed.blaze.Contexts;
 import static com.fizzed.blaze.Contexts.fail;
 import static com.fizzed.blaze.Contexts.withBaseDir;
 import static com.fizzed.blaze.Systems.exec;
-import com.fizzed.blaze.core.Actions;
 import com.fizzed.blaze.util.Streamables;
 import java.io.BufferedWriter;
 import java.io.IOException;

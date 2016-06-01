@@ -1,0 +1,7 @@
+@import java.util.List
+
+@args(List<String> strings)
+    
+@with (s = strings.stream().filter(t -> t.equals("b")).findFirst().get()) {
+    @s
+}

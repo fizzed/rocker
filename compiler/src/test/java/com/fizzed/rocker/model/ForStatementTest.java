@@ -15,15 +15,10 @@
  */
 package com.fizzed.rocker.model;
 
-import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.compiler.TokenException;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author joelauer
- */
 public class ForStatementTest {
     
     @Test
