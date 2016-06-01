@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.12.0 - 2016-06-01
+
+ - New @with feature to set a scoped variable to a value.  When in Java 8+, the
+   variable type is optional since it will be inferred by the compiler.
+
 #### 0.11.1 - 2016-02-04
 
  - Removed generic type parameter for DefaultRockerModel to fix an issue with

@@ -148,6 +148,24 @@ Note that Rocker has intelligence to skip template content that includes ```{```
 and ```}``` characters such as JavaScript or CSS.  You will not need to escape
 these characters as long as you have matching left and right curly brackets.
 
+### With blocks (set a variable)
+
+As of v0.12.0, sets a variable to a value within a scoped block. Once the block
+exits the variable is no longer available.  Variable names cannot conflict with
+other variable names (e.g. arguments) and they will be checked by the Java compiler.
+
+For Java 6/7
+
+    @with (String s = list.get(0)) {
+        @s
+    }
+
+For Java 8+ (the type can be inferred)
+
+    @with (s = list.get(0)) {
+        @s
+    }
+
 ### Iteration
 
 Standard Java for loops as well as enhanced syntax for Java 6 & 7 and
