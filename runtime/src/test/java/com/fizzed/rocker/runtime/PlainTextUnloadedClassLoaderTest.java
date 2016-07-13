@@ -38,7 +38,7 @@ public class PlainTextUnloadedClassLoaderTest {
         String charsetName = "UTF-8";
         
         PlainTextUnloadedClassLoader loader
-                = PlainTextUnloadedClassLoader.load(this.getClass().getName() + "$PlainText1", charsetName);
+                = PlainTextUnloadedClassLoader.load(this.getClass().getClassLoader(), this.getClass().getName() + "$PlainText1", charsetName);
         
         Assert.assertEquals(2, loader.size());
         Assert.assertArrayEquals("hello world!".getBytes(charsetName), loader.get("TEXT1"));
@@ -46,7 +46,7 @@ public class PlainTextUnloadedClassLoaderTest {
         
         
         loader
-                = PlainTextUnloadedClassLoader.load(this.getClass().getName() + "$PlainText2", charsetName);
+                = PlainTextUnloadedClassLoader.load(this.getClass().getClassLoader(), this.getClass().getName() + "$PlainText2", charsetName);
         
         Assert.assertEquals(0, loader.size());
         
@@ -61,7 +61,7 @@ public class PlainTextUnloadedClassLoaderTest {
         
         // try class that doesn't exist
         try {
-            PlainTextUnloadedClassLoader.load(this.getClass().getName() + "PlainText2", charsetName);
+            PlainTextUnloadedClassLoader.load(this.getClass().getClassLoader(), this.getClass().getName() + "PlainText2", charsetName);
             Assert.fail();
         } catch (ClassNotFoundException e) {
             // expected
