@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.12.1 - 2016-07-13
+
+ - Load template field inner classes via the classloader that loaded the template (alkemist)
+
 #### 0.12.0 - 2016-06-01
 
  - New @with feature to set a scoped variable to a value.  When in Java 8+, the
