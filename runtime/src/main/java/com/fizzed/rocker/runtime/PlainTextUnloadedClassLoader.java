@@ -61,12 +61,27 @@ public class PlainTextUnloadedClassLoader {
         return bytes;
     }
     
+    @Deprecated
+    static public PlainTextUnloadedClassLoader tryLoad(String classBinaryName, String charsetName) {
+        try {
+            return load(classBinaryName, charsetName);
+        } catch (Exception e) {
+            throw new RenderingException(e.getMessage(), e);
+        }
+    }
+    
     static public PlainTextUnloadedClassLoader tryLoad(ClassLoader sourceClassLoader, String classBinaryName, String charsetName) {
         try {
             return load(sourceClassLoader, classBinaryName, charsetName);
         } catch (Exception e) {
             throw new RenderingException(e.getMessage(), e);
         }
+    }
+    
+    @Deprecated
+    static public PlainTextUnloadedClassLoader load(String classBinaryName, String charsetName)
+            throws ClassNotFoundException, MalformedURLException, IllegalArgumentException, UnsupportedEncodingException, IllegalAccessException {
+        return load(PlainTextUnloadedClassLoader.class.getClassLoader(), classBinaryName, charsetName);
     }
     
     static public PlainTextUnloadedClassLoader load(ClassLoader sourceClassLoader, String classBinaryName, String charsetName)

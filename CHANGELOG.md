@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.12.2 - 2016-07-13
+
+ - Fixed backwards compat with templates compiled w/ older versions running with this
+   version of Rocker.
+
 #### 0.12.1 - 2016-07-13
 
  - Load template field inner classes via the classloader that loaded the template (alkemist)
