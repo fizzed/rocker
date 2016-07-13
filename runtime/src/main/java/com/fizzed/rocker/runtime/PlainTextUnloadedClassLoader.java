@@ -61,20 +61,20 @@ public class PlainTextUnloadedClassLoader {
         return bytes;
     }
     
-    static public PlainTextUnloadedClassLoader tryLoad(String classBinaryName, String charsetName) {
+    static public PlainTextUnloadedClassLoader tryLoad(ClassLoader sourceClassLoader, String classBinaryName, String charsetName) {
         try {
-            return load(classBinaryName, charsetName);
+            return load(sourceClassLoader, classBinaryName, charsetName);
         } catch (Exception e) {
             throw new RenderingException(e.getMessage(), e);
         }
     }
     
-    static public PlainTextUnloadedClassLoader load(String classBinaryName, String charsetName)
+    static public PlainTextUnloadedClassLoader load(ClassLoader sourceClassLoader, String classBinaryName, String charsetName)
             throws ClassNotFoundException, MalformedURLException, IllegalArgumentException, UnsupportedEncodingException, IllegalAccessException {
         // find class as though it was any other resource
         // this will search the classpath
-        String resourceName = '/' + classBinaryName.replace('.', '/') + ".class";
-        URL url = PlainTextUnloadedClassLoader.class.getResource(resourceName);
+        String resourceName = classBinaryName.replace('.', '/') + ".class";
+        URL url = sourceClassLoader.getResource(resourceName);
         if (url == null) {
             throw new ClassNotFoundException("Unable to find class as resource [" + resourceName + "]");
         }
@@ -82,7 +82,7 @@ public class PlainTextUnloadedClassLoader {
         // chop off path at end to get the base url we will use to load
         // the class via a temporary URLClassLoader below
         String resourcePath = url.toString();
-        int pos = resourcePath.lastIndexOf(resourceName);
+        int pos = resourcePath.lastIndexOf("/" + resourceName);
         if (pos < 0) {
             throw new ClassNotFoundException("Unable to compute resource base for [" + resourceName + "]");
         }

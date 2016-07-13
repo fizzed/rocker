@@ -417,6 +417,8 @@ public class JavaGenerator {
                         .append(loaderClassName)
                         .append(".tryLoad(")
                         .append(model.getName())
+                        .append(".class.getClassLoader(), ")
+                        .append(model.getName())
                         .append(".class.getName()")
                         .append(" + \"$PlainText\", \"")
                         .append(model.getOptions().getTargetCharset())
