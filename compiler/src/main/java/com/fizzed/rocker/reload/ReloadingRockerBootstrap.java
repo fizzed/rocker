@@ -133,8 +133,8 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
     }
     
     @Override
-    public DefaultRockerTemplate template(Class modelType, DefaultRockerModel model) throws RenderingException {
-        
+    public DefaultRockerTemplate template(DefaultRockerModel model) throws RenderingException {
+        Class<?> modelType = model.getClass();
         LoadedTemplate template = templates.get(modelType.getName());
         
         if (template == null) {
