@@ -117,6 +117,10 @@ public class PlainTextUnloadedClassLoader {
         Map<String,byte[]> fields = new HashMap<String,byte[]>();
         
         for (Field field : type.getDeclaredFields()) {
+            if (field.isSynthetic()) {
+                continue;
+            }
+
             field.setAccessible(true);
             
             // field should be static
