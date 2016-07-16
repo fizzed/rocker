@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.12.3 - 2016-07-16
+
+ - Ignore synthetic fields in plain text classloader (alkemist)
+
 #### 0.12.2 - 2016-07-13
 
  - Fixed backwards compat with templates compiled w/ older versions running with this
