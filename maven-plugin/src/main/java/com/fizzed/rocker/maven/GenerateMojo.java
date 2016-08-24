@@ -4,6 +4,10 @@ import com.fizzed.rocker.compiler.JavaGeneratorMain;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,65 +19,65 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Maven plugin for parsing Rocker templates and generating Java source code.
- * 
+ *
  * @author joelauer
  */
 @Mojo(name = "generate",  defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractMojo {
-    
+
     @Parameter ( property = "rocker.skip", defaultValue = "false")
     private boolean skip;
-    
+
     @Parameter(property = "rocker.failOnError", defaultValue = "true")
     protected boolean failOnError;
-    
+
     @Parameter(property = "rocker.skipTouch", defaultValue = "false")
     protected boolean skipTouch;
-    
+
     @Parameter(property = "rocker.touchFile", defaultValue = "${basedir}/pom.xml")
     protected String touchFile;
-    
+
     @Parameter(property = "rocker.addAsSources", defaultValue = "true")
     protected boolean addAsSources;
-    
+
     @Parameter(property = "rocker.addAsTestSources", defaultValue = "false")
     protected boolean addAsTestSources;
-    
+
     @Parameter(property = "rocker.javaVersion")
     protected String javaVersion;
-    
+
     @Parameter(property = "rocker.extendsClass")
     protected String extendsClass;
-    
+
     @Parameter(property = "rocker.extendsModelClass")
     protected String extendsModelClass;
-    
+
     @Parameter(property = "rocker.optimize")
     protected Boolean optimize;
-    
+
     @Parameter(property = "rocker.discardLogicWhitespace")
     protected Boolean discardLogicWhitespace;
-    
+
     @Parameter(property = "rocker.targetCharset")
     protected String targetCharset;
-    
+
     @Parameter(property = "rocker.suffixRegex")
     protected String suffixRegex;
-    
+
     /**
      * Directory containing templates. The base directory to search -- which is
      * also how their "package" name is determined.
      */
     @Parameter(property = "rocker.templateDirectory", defaultValue = "${project.build.sourceDirectory}")
     protected File templateDirectory;
-    
+
     /**
      * Directory to output generated Java source files.
      */
     @Parameter(property = "rocker.outputDirectory", defaultValue = "${project.build.directory}/generated-sources/rocker", required = true)
     protected File outputDirectory;
-    
+
     /**
      * Directory where classes are compiled to (for placing rocker config file).
      */
@@ -82,35 +86,35 @@ public class GenerateMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true )
     protected MavenProject project;
-    
+
     @Parameter( property = "rocker.postProcessing", required = false)
     protected String[] postProcessing;
-    
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.skip) {
             getLog().info("Skip flag is on, will skip goal.");
             return;
         }
-        
+
         if (this.templateDirectory == null) {
             throw new MojoExecutionException("Property templateDirectory cannot be null/empty");
         }
-        
+
         if (this.outputDirectory == null) {
             throw new MojoExecutionException("Property outputDirectory cannot be null/empty");
         }
-        
+
         if (this.classDirectory == null) {
             throw new MojoExecutionException("Property classDirectory cannot be null/empty");
         }
-        
+
         /**
         if (this.compileDirectory == null) {
             throw new MojoExecutionException("Property compileDirectory cannot be null/empty");
         }
         */
-        
+
         if (javaVersion == null || javaVersion.length() == 0) {
             // set to current jdk version
             javaVersion = System.getProperty("java.version").substring(0, 3);
@@ -118,16 +122,25 @@ public class GenerateMojo extends AbstractMojo {
         } else {
             getLog().info("Targeting java version " + this.javaVersion);
         }
-        
+
         try {
             JavaGeneratorMain jgm = new JavaGeneratorMain();
-            
+
             jgm.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
             jgm.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
             jgm.getGenerator().getConfiguration().setClassDirectory(classDirectory);
             //jgm.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
             jgm.setFailOnError(failOnError);
-            
+
+            List<String> runtimeClasspathElements = project.getRuntimeClasspathElements();
+            URL[] runtimeUrls = new URL[runtimeClasspathElements.size()];
+            for (int i = 0; i < runtimeClasspathElements.size(); i++) {
+                runtimeUrls[i] = new File(runtimeClasspathElements.get(i)).toURI().toURL();
+            }
+            URLClassLoader newLoader = new URLClassLoader(runtimeUrls, Thread.currentThread().getContextClassLoader());
+            jgm.getGenerator().getConfiguration().setClassLoader(newLoader);
+
+
             // passthru other config
             if (suffixRegex != null) {
                 jgm.setSuffixRegex(suffixRegex);
@@ -153,13 +166,13 @@ public class GenerateMojo extends AbstractMojo {
             if (postProcessing != null ) {
             	jgm.getParser().getConfiguration().getOptions().setPostProcessing(postProcessing);
             }
-            
+
             jgm.run();
         }
         catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
-        
+
         // after generating templates THEN its safe to add a new source root
         // directory since it may not have existed before and the adding of it
         // would have silently failed
@@ -171,7 +184,7 @@ public class GenerateMojo extends AbstractMojo {
             getLog().info("Added sources with " + this.outputDirectory);
             project.addCompileSourceRoot(this.outputDirectory.getAbsolutePath());
         }
-        
+
         if (!skipTouch) {
             if (touchFile != null && touchFile.length() > 0) {
                 File f = new File(touchFile);
@@ -187,5 +200,5 @@ public class GenerateMojo extends AbstractMojo {
             }
         }
     }
-    
+
 }

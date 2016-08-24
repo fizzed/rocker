@@ -43,11 +43,13 @@ public class RockerConfiguration {
     private File classDirectory;
     //private File compileDirectory;
     private RockerOptions options;
-    
+    private ClassLoader classLoader;
+
     public RockerConfiguration() {
         this.templateDirectory = new File("src/main/resources/rocker");
         this.outputDirectory = new File("target/generated-sources/rocker");
         this.classDirectory = new File("target/classes");
+        this.classLoader = getClass().getClassLoader();
         //this.compileDirectory = null;
         this.options = new RockerOptions();
         // merge in rocker.conf from classpath
@@ -145,6 +147,14 @@ public class RockerConfiguration {
 
     public void setClassDirectory(File classDirectory) {
         this.classDirectory = classDirectory;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**

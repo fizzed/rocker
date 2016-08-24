@@ -967,7 +967,7 @@ public class JavaGenerator {
         for ( int i = 0; i < postProcessorClassNames.size(); i ++ ) {
             String ppClassName = postProcessorClassNames.get(i);
             try {
-                Class<TemplateModelPostProcessor> ppClass = (Class<TemplateModelPostProcessor>) Class.forName(ppClassName);
+                Class<TemplateModelPostProcessor> ppClass = (Class<TemplateModelPostProcessor>) configuration.getClassLoader().loadClass(ppClassName);
                 TemplateModelPostProcessor postProcessor = ppClass.newInstance();
                 log.debug("Running post-processor {} on template {} at index {}.", postProcessor.getClass().getName(), templateModel.getName(), i );
                 templateModel = postProcessor.process(templateModel, i);
