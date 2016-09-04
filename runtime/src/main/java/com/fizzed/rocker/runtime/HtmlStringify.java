@@ -15,7 +15,7 @@
  */
 package com.fizzed.rocker.runtime;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.google.common.html.HtmlEscapers;
 
 /**
  *
@@ -25,7 +25,7 @@ public class HtmlStringify extends RawStringify {
 
     @Override
     public String s(String str) {
-        return StringEscapeUtils.escapeHtml3(str);
+        return HtmlEscapers.htmlEscaper().escape(str);
     }
 
     @Override
