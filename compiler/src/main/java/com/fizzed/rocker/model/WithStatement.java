@@ -21,10 +21,16 @@ public class WithStatement {
     
     private final JavaVariable variable;
     private final String valueExpression;
-
+    private final boolean nullSafe;
+    
     public WithStatement(JavaVariable variable, String valueExpression) {
+        this(variable, valueExpression, false);
+    }
+    
+    public WithStatement(JavaVariable variable, String valueExpression, boolean nullSafe) {
         this.variable = variable;
         this.valueExpression = valueExpression;
+        this.nullSafe = nullSafe;
     }
 
     public JavaVariable getVariable() {
@@ -34,9 +40,22 @@ public class WithStatement {
     public String getValueExpression() {
         return valueExpression;
     }
+
+    public boolean isNullSafe() {
+        return nullSafe;
+    }
     
     static public WithStatement parse(String statement) throws TokenException
     {
+        // possible its starts with a '?' mark
+        boolean nullSafe = false;
+        
+        if (statement.startsWith("?")) {
+            nullSafe = true;
+            // chop off leading ? then trim
+            statement = statement.substring(1).trim();
+        }
+        
         if (!statement.startsWith("(")) {
             throw new TokenException("With block does not start with parenthese");
         }
@@ -70,6 +89,6 @@ public class WithStatement {
             throw new TokenException("With block contains an empty string for value part (e.g. var = value)");
         }
 
-        return new WithStatement(variable, valueExpression);
+        return new WithStatement(variable, valueExpression, nullSafe);
     }
 }

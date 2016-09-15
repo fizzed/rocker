@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,6 +174,27 @@ public class Java8FeaturesTest {
             .trim();
         
         Assert.assertEquals("b a c", html);
+    }
+    
+    @Test
+    public void withBlockNullSafe() throws Exception {
+        String html = new rocker.WithBlockNullSafe()
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("skipped"));
+    }
+    
+    @Test
+    public void withBlockNullSafeButWithValue() throws Exception {
+        String html = new rocker.WithBlockNullSafe()
+            .strings(Arrays.asList("a", "b", "c"))
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a\n\nskipped"));
     }
     
 }

@@ -148,6 +148,14 @@ public class RockerUtil {
         return fileTree;
     }
     
+    public static String qualifiedClassName(Object obj) {
+        return qualifiedClassName(obj.getClass());
+    }
+    
+    public static String qualifiedClassName(Class<?> type) {
+        return type.getName().replace('$', '.');
+    }
+    
     public static String unqualifiedClassName(Object obj) {
         return unqualifiedClassName(obj.getClass());
     }

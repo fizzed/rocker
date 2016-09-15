@@ -16,6 +16,9 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
+import com.fizzed.rocker.RockerContent;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.BreakStatement;
@@ -47,6 +50,7 @@ import com.fizzed.rocker.runtime.BreakException;
 import com.fizzed.rocker.runtime.ContinueException;
 import com.fizzed.rocker.runtime.Java8Iterator;
 import com.fizzed.rocker.runtime.Java8With;
+import com.fizzed.rocker.runtime.NullSafe;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -63,7 +67,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -162,7 +165,7 @@ public class JavaGenerator {
     }
     
     public void appendCommentAndSourcePositionUpdate(Writer w, int tab, TemplateUnit unit) throws IOException {
-        String unitName = RockerUtil.unqualifiedClassName(unit);
+        String unitName = unqualifiedClassName(unit);
         //tab(w, tab).append("// ").append(unitName).append(sourceRef(unit)).append(CRLF);
         tab(w, tab).append("// ").append(unitName).append(" ").append(sourceRef(unit)).append(CRLF);
         tab(w, tab)
@@ -174,7 +177,32 @@ public class JavaGenerator {
     
     public boolean isForIteratorType(String type) {
         return type != null &&
-                (type.equals("ForIterator") || type.equals(com.fizzed.rocker.ForIterator.class.getName()));
+             (type.equals("ForIterator") || type.equals(com.fizzed.rocker.ForIterator.class.getName()));
+    }
+    
+    public String maybeNullSafe(TemplateModel model, boolean nullSafe, JavaVariable variable, String expression) {
+        if (!nullSafe) {
+            return expression;
+        } else {
+            // Java 1.8+
+            if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                return new StringBuilder()
+                    .append(qualifiedClassName(NullSafe.class)).append(".of(() -> ")
+                    .append(expression)
+                    .append(")")
+                    .toString();
+            } else {
+                return new StringBuilder()
+                    .append(qualifiedClassName(NullSafe.class))
+                    .append(".of(new ").append(qualifiedClassName(NullSafe.Supplier.class)).append("<").append(variable.getType()).append(">() {")
+                    .append("@Override public ").append(variable.getType()).append(" apply() throws ")
+                        .append(qualifiedClassName(BreakException.class)).append("{ ")
+                    .append("return ")
+                    .append(expression)
+                    .append("; }})")
+                    .toString();
+            }
+        }
     }
     
     public void appendArgumentMembers(TemplateModel model, Writer w, String access, boolean finalModifier, int indent) throws IOException {
@@ -411,7 +439,7 @@ public class JavaGenerator {
                 
                 tab(w, indent).append("static {").append(CRLF);
                 
-                String loaderClassName = RockerUtil.unqualifiedClassName(PlainTextUnloadedClassLoader.class);
+                String loaderClassName = unqualifiedClassName(PlainTextUnloadedClassLoader.class);
                 tab(w, indent+1).append(loaderClassName)
                         .append(" loader = ")
                         .append(loaderClassName)
@@ -528,7 +556,7 @@ public class JavaGenerator {
                 // Java 1.7- uses anonymous inner class
                 else {
                     w.append("new ")
-                        .append(RockerUtil.unqualifiedClassName(com.fizzed.rocker.RockerContent.class))
+                        .append(unqualifiedClassName(RockerContent.class))
                         .append("() {").append(CRLF);
                 
                     depth++;
@@ -591,7 +619,7 @@ public class JavaGenerator {
                 // Java 1.7- uses anonymous inner class
                 else {
                     w.append("new ")
-                        .append(RockerUtil.unqualifiedClassName(com.fizzed.rocker.RockerContent.class))
+                        .append(unqualifiedClassName(com.fizzed.rocker.RockerContent.class))
                         .append("() {").append(CRLF);
                 
                     depth++;
@@ -667,13 +695,19 @@ public class JavaGenerator {
                 WithBlockBegin block = (WithBlockBegin)unit;
                 WithStatement stmt = block.getStatement();
                 
+                // null-safe support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("try {").append(CRLF);
+
+                depth++;
+                
                 // Java 1.8+ (use lambdas)
                 if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
                 
                     tab(w, depth+indent)
                         .append(Java8With.class.getName())
                         .append(".with(")
-                        .append(stmt.getValueExpression())
+                        .append(maybeNullSafe(model, stmt.isNullSafe(), stmt.getVariable(), stmt.getValueExpression()))
                         .append(", (").append(stmt.getVariable().toString()).append(") -> {").append(CRLF);
                 
                     depth++;
@@ -691,7 +725,8 @@ public class JavaGenerator {
 
                     tab(w, depth+indent)
                         .append("final ").append(stmt.getVariable().toString()).append(" = ")
-                            .append(stmt.getValueExpression()).append(";").append(CRLF);
+                            .append(maybeNullSafe(model, stmt.isNullSafe(), stmt.getVariable(), stmt.getValueExpression()))
+                            .append(";").append(CRLF);
                 }
             }
             else if (unit instanceof WithBlockEnd) {                
@@ -700,6 +735,18 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append(blockEnd.pop())
                         .append(" // with end ").append(sourceRef(unit)).append(CRLF);
+                
+                depth--;
+                
+                // break support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("} catch (").append(BreakException.class.getCanonicalName()).append(" e) {") .append(CRLF);
+                
+                tab(w, depth+indent+1)
+                    .append("// support for null-safe").append(CRLF);
+
+                tab(w, depth+indent)
+                    .append("}").append(CRLF);
             }
             else if (unit instanceof ForBlockBegin) {
                 ForBlockBegin block = (ForBlockBegin)unit;
@@ -845,7 +892,7 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                     .append("try {").append(CRLF);
                 
-                 depth++;
+                depth++;
                 
             }
             else if (unit instanceof ForBlockEnd) {

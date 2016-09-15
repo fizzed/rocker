@@ -1,0 +1,9 @@
+@import java.util.List
+
+@args(List<String> strings)
+ 
+@* block will be skipped if NPE thrown in value expr *@
+@with? (String s = strings.get(0)) {
+    @s
+}
+skipped

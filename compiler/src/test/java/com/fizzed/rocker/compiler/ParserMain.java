@@ -55,7 +55,7 @@ public class ParserMain {
         //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
         //File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
         //File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
-        File f = new File("java6test/src/test/java/rocker/WithBlock.rocker.html");
+        File f = new File("java6test/src/test/java/rocker/WithBlockNS.rocker.html");
         
         //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
         //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
@@ -123,7 +123,7 @@ public class ParserMain {
                 log.info("for end:");
             } else if (unit instanceof WithBlockBegin) {
                 WithBlockBegin block = (WithBlockBegin)unit;
-                log.info("with begin: {} = {}", block.getStatement().getVariable(), block.getStatement().getValueExpression());
+                log.info("with begin: ns? {}: {} = {}", block.getStatement().isNullSafe(), block.getStatement().getVariable(), block.getStatement().getValueExpression());
             } else if (unit instanceof WithBlockEnd) {
                 log.info("with end:");
             } else if (unit instanceof IfBlockBegin) {
