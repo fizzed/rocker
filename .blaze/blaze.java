@@ -21,7 +21,7 @@ public class blaze {
     @Task(order=1, value="Demo of parsing a template and logs its structure. Argument of -Drocker.file=<file>")
     public void parser() {
         String rockerFile = config.value("rocker.file").get();
-        exec("mvn", "-pl", "compiler", "-am", "test", "-Pexec-compiler",
+        exec("mvn", "-pl", "rocker-compiler", "-am", "test", "-Pexec-compiler",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.ParserMain",
             "-Drocker.file=" + rockerFile).run();
@@ -30,7 +30,7 @@ public class blaze {
     @Task(order=2, value="Demo of generating a .java source file from a template. Argument of -Drocker.file=<file>")
     public void generate() {
         String rockerFile = config.value("rocker.file").get();
-        exec("mvn", "-pl", "compiler", "-am", "test", "-Pexec-compiler",
+        exec("mvn", "-pl", "rocker-compiler", "-am", "test", "-Pexec-compiler",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.GenerateMain",
             "-Drocker.file=" + rockerFile).run();
@@ -38,28 +38,28 @@ public class blaze {
     
     @Task(order=3, value="Demo of rendering a template into a string.")
     public void render() {
-        exec("mvn", "-pl", "java6test", "-am", "test", "-Pexec-java6test",
+        exec("mvn", "-pl", "rocker-test-java6", "-am", "test", "-Pexec-java6test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.RenderMain").run();
     }
     
     @Task(order=4, value="Demo of a template that can be reloaded on-the-fly")
     public void hot_reload() {
-        exec("mvn", "-pl", "reloadtest", "-am", "test", "-Pexec-reloadtest",
+        exec("mvn", "-pl", "rocker-test-reload", "-am", "test", "-Pexec-reloadtest",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.HotReloadMain").run();
     }
     
     @Task(order=5, value="Demo of asynchronously sending a template in an Undertow-based HTTP server.")
     public void undertow() {
-        exec("mvn", "-pl", "java8test", "-am", "test", "-Pexec-java8test",
+        exec("mvn", "-pl", "rocker-test-java8", "-am", "test", "-Pexec-java8test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.UndertowMain").run();
     }
     
     @Task(order=6, value="Demo of asynchronously sending a template in an Netty-based HTTP server.")
     public void netty() {
-        exec("mvn", "-pl", "java8test", "-am", "test", "-Pexec-java8test",
+        exec("mvn", "-pl", "rocker-test-java8", "-am", "test", "-Pexec-java8test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.NettyMain").run();
     }
