@@ -2,8 +2,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>rocker-reloadtest</artifactId>
-    <name>rocker-reloadtest</name>
+    <artifactId>rocker-test-java6</artifactId>
+    <name>rocker-test-java6</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -13,7 +13,7 @@
     </parent>
     
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.6</java.version>
     </properties>
     
     <build>
@@ -39,29 +39,22 @@
                             <javaVersion>${java.version}</javaVersion>
                             <templateDirectory>${basedir}/src/test/java</templateDirectory>
                             <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
-                            <classDirectory>${basedir}/target/test-classes</classDirectory>
+                            <discardLogicWhitespace>false</discardLogicWhitespace>
                             <addAsTestSources>true</addAsTestSources>
-                            <discardLogicWhitespace>true</discardLogicWhitespace>
+                            <optimize>true</optimize>
+                            <postProcessing>
+                            	<param>com.fizzed.rocker.processor.LoggingProcessor</param>
+                            </postProcessing>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- adjusts how surefire plugin manipulates classpath for testing -->
-            <!-- only way to get compiling & reloading to work like we expect -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <configuration>
-                    <useManifestOnlyJar>false</useManifestOnlyJar>
-                </configuration>
             </plugin>
         </plugins>
     </build>
     
     <profiles>
         <profile>
-            <id>exec-reloadtest</id>
+            <id>exec-java6test</id>
             <build>
                 <plugins>
                     <plugin>
@@ -84,39 +77,30 @@
     </profiles>
 
     <dependencies>
-        <dependency>
-            <groupId>com.fizzed</groupId>
-            <artifactId>rocker-runtime</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fizzed</groupId>
-            <artifactId>rocker-compiler</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- depend on maven plugin to force order of build -->
         
-        <!-- testing via http -->
         <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-            <version>1.2.12.Final</version>
-            <scope>test</scope>
+            <groupId>com.fizzed</groupId>
+            <artifactId>rocker-maven-plugin</artifactId>
         </dependency>
         
         <!-- test -->
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

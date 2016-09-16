@@ -1,11 +1,6 @@
 /target/
-accounts.json
-/compiler/target/
-/core/target/
-/java8/target/
-/runtime/target/
-/java8test/target/
-/maven-plugin/target/
-/java6test/target/
-/dynamic/target/
-/reloadtest/target/
+/rocker-runtime/target/
+/rocker-test-reload/target/
+/rocker-test-java6/target/
+/rocker-test-java8/target/
+/rocker-compiler/target/

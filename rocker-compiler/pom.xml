@@ -2,8 +2,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>rocker-java8test</artifactId>
-    <name>rocker-java8test</name>
+    <artifactId>rocker-compiler</artifactId>
+    <name>rocker-compiler</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -13,51 +13,58 @@
     </parent>
     
     <properties>
-        <java.version>1.8</java.version>
+        <main.java.package>com.fizzed.rocker.compiler</main.java.package>
+        <!-- compiler designed specifically to run on JDK 1.7+ -->
+        <java.version>1.7</java.version>
     </properties>
     
     <build>
         <plugins>
+            <!-- generate antlr parser from grammar -->
             <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.fizzed</groupId>
-                <artifactId>rocker-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-rocker-templates</id>
-                        <phase>generate-test-sources</phase>
+                        <id>generate-antlr-sources</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
                         </goals>
                         <configuration>
-                            <javaVersion>${java.version}</javaVersion>
-                            <templateDirectory>${basedir}/src/test/java</templateDirectory>
-                            <outputDirectory>${basedir}/target/generated-test-sources/rocker</outputDirectory>
-                            <discardLogicWhitespace>false</discardLogicWhitespace>
-                            <addAsTestSources>true</addAsTestSources>
-                            <optimize>true</optimize>
+                            <sources>
+                                <source>target/generated-sources/antlr4</source>
+                            </sources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
+    
     <profiles>
         <profile>
-            <id>exec-java8test</id>
+            <id>exec-compiler</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.3.2</version>
+                        <version>1.5.0</version>
                         <executions>
                             <execution>
                                 <id>exec-run</id>
@@ -74,12 +81,21 @@
     </profiles>
 
     <dependencies>
-        <!-- depend on maven plugin to force order of build -->
+        <!-- compile -->
         
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>rocker-maven-plugin</artifactId>
-            <version>${project.version}</version>
+            <artifactId>rocker-runtime</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
         </dependency>
         
         <!-- test -->
@@ -90,19 +106,13 @@
         </dependency>
         
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-        
+             <groupId>ch.qos.logback</groupId>
+             <artifactId>logback-classic</artifactId>
+         </dependency>
     </dependencies>
 </project>
