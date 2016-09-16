@@ -1,6 +1,15 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.13.0 - ????
+ 
+ - Simple null safe handling with various flavors.
+ - New `@?value` expression will render nothing if the value is null
+ - New `@?(value : fallback)` expression will render either the value, or
+   the fallback, or nothing if both are null.
+ - Enhanced `@with?` feature where it accepts the null-safe operator and skips
+   the entire block if the value is null.
+
 #### 0.12.3 - 2016-07-16
 
  - Ignore synthetic fields in plain text classloader (alkemist)

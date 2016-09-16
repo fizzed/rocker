@@ -33,6 +33,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -767,6 +768,49 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void valueElvis() throws Exception {
+        String html = new rocker.ValueElvis()
+            .a(null)
+            .b("b")
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("b"));
+        
+        html = new rocker.ValueElvis()
+            .a("a")
+            .b("b")
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a"));
+    }
+    
+    @Test
+    public void valueElvisNoTertiary() throws Exception {
+        String html = new rocker.ValueElvisNoTertiary()
+            .a(null)
+            .b("b")
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is(""));
+        
+        html = new rocker.ValueElvisNoTertiary()
+            .a("a")
+            .b("b")
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a"));
+    }
+    
+    /** TODO: NPE should probably be handled with ?? operator
+    @Test
     public void withBlockNullSafe() throws Exception {
         String html = new rocker.WithBlockNullSafe()
             .render()
@@ -775,6 +819,7 @@ public class CompiledTemplateTest {
         
         assertThat(html, is("skipped"));
     }
+    */
     
     @Test
     public void withBlockNullSafeButWithValue() throws Exception {

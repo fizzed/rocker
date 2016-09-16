@@ -47,6 +47,7 @@ import com.fizzed.rocker.model.ValueExpression;
 import com.fizzed.rocker.model.WithBlockBegin;
 import com.fizzed.rocker.model.WithBlockEnd;
 import com.fizzed.rocker.model.WithStatement;
+import com.fizzed.rocker.runtime.Elvis;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -694,7 +695,6 @@ public class TemplateParser {
             
             // speak handling for specific values which actually are commands
             // break, continue
-            
             if (expr.equals("break")) {
                 // verify we're in a "for" loop that hasn't ended yet...
                 if (!areWeCurrentlyInAForLoop()) {
@@ -713,9 +713,38 @@ public class TemplateParser {
                     nullSafety = true;
                     expr = expr.substring(1);   // chop it off
                 }
+
+                // if next char is a '(' then we're 
                 
                 model.getUnits().add(new ValueExpression(sourceRef, expr, nullSafety));
             }
+        }
+
+        @Override
+        public void enterElvis(RockerParser.ElvisContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            // we only care about the expression
+            RockerParser.ElvisExpressionContext expressionCtx = ctx.elvisExpression();
+            
+            String expr = expressionCtx.getText();
+            
+            // confirm only a single ':' exists in it
+            int colonCount = RockerUtil.countChars(expr, ':');
+            if (colonCount > 1) {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "More than a single ':' character used in elvis expression");
+            }
+            
+            // if no ':' then this is a simple value expression with nullsafety
+            if (colonCount == 0) {
+                expr = expr.substring(2, expr.length()-1);
+            } else {
+                // convert to a method call
+                expr = RockerUtil.qualifiedClassName(Elvis.class) + ".op"+ expr.substring(1);
+                expr = expr.replace(":", ",");
+            }
+            
+            model.getUnits().add(new ValueExpression(sourceRef, expr, true));
         }
 
         @Override

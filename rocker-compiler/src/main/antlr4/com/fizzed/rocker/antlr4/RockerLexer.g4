@@ -77,8 +77,12 @@ MV_VALUE_CLOSURE
     :   QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)* WhitespaceWithLineBreak* '->' WhitespaceWithLineBreak* '{'    -> popMode
     ;
 
+MV_ELVIS
+    :   '?' MV_PARENTHESE                                                                                 -> popMode
+    ;
+
 MV_VALUE 
-    :   '?'? QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)*     -> popMode
+    :   '?'? QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)*            -> popMode
     ;
 
 

@@ -177,16 +177,6 @@ public class Java8FeaturesTest {
     }
     
     @Test
-    public void withBlockNullSafe() throws Exception {
-        String html = new rocker.WithBlockNullSafe()
-            .render()
-            .toString()
-            .trim();
-        
-        assertThat(html, is("skipped"));
-    }
-    
-    @Test
     public void withBlockNullSafeButWithValue() throws Exception {
         String html = new rocker.WithBlockNullSafe()
             .strings(Arrays.asList("a", "b", "c"))
@@ -197,4 +187,26 @@ public class Java8FeaturesTest {
         assertThat(html, is("a\n\nskipped"));
     }
     
+    @Test
+    public void withBlockNullSafeExpressionReturnsNull() throws Exception {
+        String html = new rocker.WithBlockNullSafe()
+            .strings(Arrays.asList(null, "b", "c"))
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("skipped"));
+    }
+    
+    /** TODO: NPE should probably be handled with ?? operator
+    @Test
+    public void withBlockNullSafe() throws Exception {
+        String html = new rocker.WithBlockNullSafe()
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("skipped"));
+    }
+    */
 }

@@ -17,7 +17,7 @@ package com.fizzed.rocker.model;
 
 import com.fizzed.rocker.compiler.TokenException;
 
-public class WithStatement {
+public class WithStatement implements NullSafety {
     
     private final JavaVariable variable;
     private final String valueExpression;
@@ -41,6 +41,7 @@ public class WithStatement {
         return valueExpression;
     }
 
+    @Override
     public boolean isNullSafe() {
         return nullSafe;
     }

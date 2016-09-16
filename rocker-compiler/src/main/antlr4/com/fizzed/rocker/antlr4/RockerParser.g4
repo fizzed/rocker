@@ -51,7 +51,7 @@ argumentsStatement
     ;
 
 templateContent
-    :   (comment | block | plain | contentClosure | valueClosure | value)
+    :   (comment | block | plain | contentClosure | valueClosure | value | elvis)
     ;
 
 block
@@ -95,5 +95,13 @@ value
     ;
 
 valueExpression
-    :  MV_VALUE
+    :   MV_VALUE
+    ;
+
+elvis
+    :   AT_VALUE elvisExpression
+    ;
+
+elvisExpression
+    :   MV_ELVIS
     ;

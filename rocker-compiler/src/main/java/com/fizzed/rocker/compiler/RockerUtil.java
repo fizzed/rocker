@@ -35,10 +35,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
 
-/**
- *
- * @author joelauer
- */
 public class RockerUtil {
     
     private static final Pattern VALID_JAVA_IDENTIFIER = Pattern
@@ -65,6 +61,16 @@ public class RockerUtil {
     
     static public boolean isRelativePath(Path baseDir, Path file) {
         return file.startsWith(baseDir);
+    }
+    
+    public static int countChars(String value, char ch) {
+        int count = 0;
+        for (int i = 0; i < value.length(); i++) {
+            if (value.charAt(i) == ch) {
+                count++;
+            }
+        }
+        return count;
     }
     
     static public boolean isWhitespaceNoLineBreak(char c) {

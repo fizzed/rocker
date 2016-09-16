@@ -11,7 +11,7 @@ public class NullSafe {
     }
     
     static public <V> V of(Supplier<V> supplier) {
-        try {
+        //try {
             V v = supplier.apply();
             
             if (v == null) {
@@ -19,9 +19,9 @@ public class NullSafe {
             }
             
             return v;
-        } catch (NullPointerException e) {
-            throw new BreakException();
-        }
+        //} catch (NullPointerException e) {
+        //    throw new BreakException();
+        //}
     }
     
 }
