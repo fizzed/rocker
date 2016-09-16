@@ -102,6 +102,7 @@
 
     <dependencies>
         <!-- depend on maven plugin to force order of build -->
+        
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
@@ -109,25 +110,25 @@
         </dependency>
         
         <!-- test -->
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
         </dependency>
         
     </dependencies>

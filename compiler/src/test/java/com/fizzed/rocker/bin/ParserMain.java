@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.compiler;
+package com.fizzed.rocker.bin;
 
 import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.Argument;
@@ -34,36 +34,30 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
+import com.fizzed.rocker.compiler.RockerConfiguration;
+import com.fizzed.rocker.compiler.RockerUtil;
+import com.fizzed.rocker.compiler.TemplateParser;
 import com.fizzed.rocker.model.BreakStatement;
 
 public class ParserMain {
     static private final Logger log = LoggerFactory.getLogger(ParserMain.class);
     
     static public void main(String[] args) {
+        String rockerFile = System.getProperty("rocker.file");
         
         // set log level to trace @ runtime
-        ch.qos.logback.classic.Logger rockerRootLogger = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("com.fizzed.rocker");
+        ch.qos.logback.classic.Logger rockerRootLogger
+            = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("com.fizzed.rocker");
         rockerRootLogger.setLevel(Level.TRACE);
         
         RockerConfiguration configuration = new RockerConfiguration();
-        //configuration.setTemplateDirectory(new File("compiler/src/test/resources"));
-        configuration.setTemplateDirectory(new File("java6test/src/test/java"));
+        configuration.setTemplateDirectory(new File("."));
         
         TemplateParser parser = new TemplateParser(configuration);
         
-        //File f = new File("compiler/src/test/resources/rocker/parser/DiscardLogicWhitespace.rocker.html");
-        //File f = new File("compiler/src/test/resources/rocker/parser/ArgsWithNamesLikeRockerReservedNames.rocker.html");
-        //File f = new File("compiler/src/test/resources/rocker/parser/BreakStatement.rocker.html");
-        //File f = new File("java6test/src/test/java/rocker/IfElseBlockMixedJavascript.rocker.html");
-        File f = new File("java6test/src/test/java/rocker/WithBlockNS.rocker.html");
-        
-        //File f = new File("compiler/src/test/resources/rocker/parser/PlainTextIncludesStyleWithinBlock.rocker.html");
-        //File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
-        //File f = new File("src/test/resources/templates/NoHeader.rocker.html");
-        //File f = new File("src/test/resources/templates/LauerMain.rocker.html");
-        //File f = new File("src/test/resources/templates/BadSyntax1.rocker.html");
-        
-        TemplateModel model = parse(parser, f);
+        File templateFile = new File(rockerFile);
+
+        TemplateModel model = parse(parser, templateFile);
         
         logModel(model);
     }

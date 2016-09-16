@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker;
+package com.fizzed.rocker.bin;
 
+import com.fizzed.rocker.BindableRockerModel;
+import com.fizzed.rocker.Rocker;
+import com.fizzed.rocker.TemplateBindException;
+import com.fizzed.rocker.TemplateNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 

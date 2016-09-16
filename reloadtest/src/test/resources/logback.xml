@@ -7,10 +7,8 @@
     </appender>
     
     <logger name="com.fizzed" level="DEBUG"/>
-    <logger name="net.sf.ofx4j" level="DEBUG"/>
-    <logger name="org.apache.http" level="WARN"/>
 
-    <root level="TRACE">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

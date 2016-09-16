@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker;
+package com.fizzed.rocker.bin;
 
+import com.fizzed.rocker.RockerOutput;
 import com.fizzed.rocker.runtime.ArrayOfByteArraysOutput;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -33,36 +34,28 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaders;
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpHeaders.Values;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import io.netty.util.CharsetUtil;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rocker.Stocks;
 
-/**
- *
- * @author joelauer
- */
 public class NettyMain {
     static private final Logger log = LoggerFactory.getLogger(NettyMain.class);
 
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL? "8443" : "8080"));
+    static final List<Stock> stocks = Stock.dummyItems();
 
     public static void main(String[] args) throws Exception {
         // Configure SSL.
@@ -140,8 +133,7 @@ public class NettyMain {
             if (msg instanceof FullHttpRequest) {
                 FullHttpRequest request = (FullHttpRequest)msg;
                     
-                RockerOutput out = rocker.LargeLargeContent
-                    .template("Hello", "jjlauer")
+                RockerOutput out = rocker.Stocks.template(stocks)
                     .render();
 
                 //

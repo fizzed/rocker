@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.reload;
+package com.fizzed.rocker.bin;
 
 import com.fizzed.rocker.Rocker;
 import com.fizzed.rocker.runtime.RockerRuntime;
@@ -22,11 +22,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
-/**
- *
- * @author joelauer
- */
-public class ReloadMain {
+public class HotReloadMain {
 
     public static void main(final String[] args) {
         // activate reloading @ runtime

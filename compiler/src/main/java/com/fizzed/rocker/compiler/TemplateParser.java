@@ -72,8 +72,6 @@ public class TemplateParser {
     
     public TemplateParser(RockerConfiguration configuration) {
         this.configuration = configuration;
-        //this.baseDirectory = RockerConfiguration.getTemplateDirectory();
-        //this.defaultOptions = RockerConfiguration.getOptions();
     }
 
     public RockerConfiguration getConfiguration() {
@@ -96,10 +94,10 @@ public class TemplateParser {
         // deduce "package" of file by relativizing it to input directory
         identity.packageName = RockerUtil.pathToPackageName(templateFile.toPath());
         
-        Path p = templateFile.getAbsoluteFile().toPath();
+        Path p = templateFile.getAbsoluteFile().toPath().normalize();
         
         if (baseDirectory != null) {
-            Path bdp = baseDirectory.getAbsoluteFile().toPath();
+            Path bdp = baseDirectory.getAbsoluteFile().toPath().normalize();
             
             if (!RockerUtil.isRelativePath(bdp, p)) {
                 throw new IOException("Template file [" + templateFile + "] not relative to base dir [" + baseDirectory + "]");

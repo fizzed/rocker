@@ -82,7 +82,7 @@
             <version>${project.version}</version>
         </dependency>
         
-        <!-- test scope -->
+        <!-- test -->
         
         <dependency>
             <groupId>junit</groupId>
@@ -97,6 +97,11 @@
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
         
     </dependencies>

@@ -1,4 +1,4 @@
-package com.fizzed.rocker;
+package com.fizzed.rocker.bin;
 
 /*
  * Copyright 2015 Fizzed Inc.
@@ -40,8 +40,6 @@ public class UndertowMain {
         
         // fully async, nio template rendering and delivery
         PathHandler rootHandler = Handlers.path().addExactPath("/", (final HttpServerExchange exchange) -> {
-            //exchange.startBlocking();
-            
             // dispatch to worker thread pool
             exchange.dispatch(() -> {
                 Stocks template = rocker.Stocks.template(stocks);
@@ -85,6 +83,8 @@ public class UndertowMain {
             .build();
         
         server.start();
+        
+        log.info("Open browser to http://localhost:8080");
     }
     
 }

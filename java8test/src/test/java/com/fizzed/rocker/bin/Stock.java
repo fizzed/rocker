@@ -1,4 +1,4 @@
-package com.fizzed.rocker;
+package com.fizzed.rocker.bin;
 
 import java.util.ArrayList;
 import java.util.List;

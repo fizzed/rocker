@@ -18,7 +18,6 @@ package com.fizzed.rocker.compiler;
 import com.fizzed.rocker.model.SourcePosition;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
