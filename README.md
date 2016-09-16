@@ -252,17 +252,17 @@ import com.fizzed.rocker.runtime.RockerRuntime
 RockerRuntime.setReloading(true);
 ```
 
-### Trying out hot reloading
+### Try out hot reloading
 
 There is a simple example demonstrating hot reload in action.  This project 
 uses [Blaze](https://github.com/fizzed/blaze) to help script tasks. Run the
 following
 
-    java -jar blaze.jar run_reload
+    java -jar blaze.jar hot_reload
 
 Point your browser to http://localhost:8080
 
-Then modify & save <code>reloadtest/src/test/java/views/index.rocker.html</code>
+Then modify & save <code>rocker-test-reload/src/test/java/views/index.rocker.html</code>
 and refresh your browser.
 
 ## Getting started
@@ -440,6 +440,15 @@ static public void main(String[] args) {
 
 Looking to integrate Rocker into your own application/framework?  Check out
 [Rocker's integration into the Ninja web framework](https://github.com/fizzed/ninja-rocker) for ideas.
+
+## Other demos?
+
+There are numerous demos of Rocker in action.  From parsing templates into a
+model to asynchronously sending results in an HTTP server.  This project 
+uses [Blaze](https://github.com/fizzed/blaze) to help script tasks. Run the
+following for a complete list:
+
+    java -jar blaze.jar -l
 
 ## License
 
