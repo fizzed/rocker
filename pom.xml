@@ -37,7 +37,6 @@
         <module>rocker-maven-plugin</module>
         <module>rocker-test-reload</module>
         <module>rocker-test-java6</module>
-        <module>rocker-test-java8</module>
     </modules>
     
     <!-- things to do if running on JDK 8 -->
