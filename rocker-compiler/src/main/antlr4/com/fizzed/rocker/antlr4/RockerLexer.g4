@@ -78,7 +78,7 @@ MV_VALUE_CLOSURE
     ;
 
 MV_VALUE 
-    :   QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)*     -> popMode
+    :   '?'? QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)*     -> popMode
     ;
 
 

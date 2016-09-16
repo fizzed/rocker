@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -739,6 +741,29 @@ public class CompiledTemplateTest {
             .trim();
         
         Assert.assertEquals("b a c", html);
+    }
+    
+    @Test
+    public void valueNotNullSafe() throws Exception {
+        try {
+            new rocker.ValueNotNullSafe()
+                .s(null)
+                .render();
+            fail();
+        } catch (RenderingException e) {
+            assertThat(e.getCause(), instanceOf(NullPointerException.class));
+        }
+    }
+    
+    @Test
+    public void valueNullSafe() throws Exception {
+        String html = new rocker.ValueNullSafe()
+            .s(null)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a"));
     }
     
     @Test

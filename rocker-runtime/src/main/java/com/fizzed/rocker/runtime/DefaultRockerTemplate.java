@@ -237,6 +237,7 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         //
         // method for write raw expressions
         //
+        
         public void writeValue(String s) throws IOException {
             out.w(s);
         }
@@ -249,64 +250,81 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         // methods for rendering value expressions
         //
         
-        public void renderValue(Raw raw) throws RenderingException, IOException {
-            // no stringify for raws
-            out.w(raw.toString());
-        }
-        
-        public void renderValue(RockerContent c) throws RenderingException, IOException {
+        public void renderValue(RockerContent c, boolean nullSafe) throws RenderingException, IOException {
             // delegating rendering this chunk of content to itself
             c.render();
         }
         
-        public void renderValue(DefaultRockerModel model) throws RenderingException, IOException {
+        public void renderValue(DefaultRockerModel model, boolean nullSafe) throws RenderingException, IOException {
             // delegating rendering this model to itself BUT under a context
             model.doRender(DefaultRockerTemplate.this, null, null);
         }
         
-        public void renderValue(BindableRockerModel model) throws RenderingException, IOException {
+        public void renderValue(BindableRockerModel model, boolean nullSafe) throws RenderingException, IOException {
             // delegating rendering this model to itself BUT under a context
             DefaultRockerModel underlyingModel = (DefaultRockerModel)model.getModel();
-            renderValue(underlyingModel);
+            renderValue(underlyingModel, nullSafe);
         }
         
-        public void renderValue(String s) throws IOException {
-            out.w(stringify.s(s));
+        public void renderValue(Raw raw, boolean nullSafe) throws RenderingException, IOException {
+            if (nullSafe && raw.getValue() == null) {
+                return;
+            }
+            // no stringify for raws
+            out.w(raw.toString());
         }
         
-        public void renderValue(Object obj) throws IOException {
-            out.w(stringify.s(obj));
+        public void renderValue(String value, boolean nullSafe) throws IOException {
+            if (nullSafe && value == null) {
+                return;
+            }
+            out.w(stringify.s(value));
         }
         
-        public void renderValue(byte v) throws IOException {
+        public void renderValue(Object value, boolean nullSafe) throws IOException {
+            if (nullSafe && value == null) {
+                return;
+            }
+            out.w(stringify.s(value));
+        }
+        
+        public void renderValue(byte v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
         
-        public void renderValue(short v) throws IOException {
+        public void renderValue(short v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
 
-        public void renderValue(int v) throws IOException {
+        public void renderValue(int v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
         
-        public void renderValue(long v) throws IOException {
+        public void renderValue(long v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
 
-        public void renderValue(float v) throws IOException {
+        public void renderValue(float v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
 
-        public void renderValue(double v) throws IOException {
+        public void renderValue(double v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
 
-        public void renderValue(char v) throws IOException {
+        public void renderValue(char v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
 
-        public void renderValue(boolean v) throws IOException {
+        public void renderValue(boolean v, boolean nullSafe) throws IOException {
+            // ignore nullSafe since a primitive cannot be null
             out.w(stringify.s(v));
         }
         

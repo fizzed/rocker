@@ -707,7 +707,14 @@ public class TemplateParser {
                 }
                 model.getUnits().add(new ContinueStatement(sourceRef));
             } else {
-                model.getUnits().add(new ValueExpression(sourceRef, expr));
+                // null safety?
+                boolean nullSafety = false;
+                if (expr.startsWith("?")) {
+                    nullSafety = true;
+                    expr = expr.substring(1);   // chop it off
+                }
+                
+                model.getUnits().add(new ValueExpression(sourceRef, expr, nullSafety));
             }
         }
 

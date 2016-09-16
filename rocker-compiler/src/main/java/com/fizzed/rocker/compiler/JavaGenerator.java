@@ -535,6 +535,7 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append("__internal.renderValue(")
                         .append(value.getExpression())
+                        .append(", ").append(""+value.isNullSafe())
                         .append(");").append(CRLF);
             }
             else if (unit instanceof ValueClosureBegin) {
@@ -551,7 +552,7 @@ public class JavaGenerator {
                     
                     depth++;
                     
-                    blockEnd.push("}));");
+                    blockEnd.push("}), false);");
                 }
                 // Java 1.7- uses anonymous inner class
                 else {
@@ -561,7 +562,7 @@ public class JavaGenerator {
                 
                     depth++;
                     
-                    blockEnd.push("}));");
+                    blockEnd.push("}), false);");
                 
                     tab(w, depth+indent)
                             .append("@Override")

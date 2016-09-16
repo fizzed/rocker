@@ -16,20 +16,26 @@
 package com.fizzed.rocker.model;
 
 /**
- *
- * @author joelauer
+ * Model for @value or @?value
  */
-public class ValueExpression extends TemplateUnit {
+public class ValueExpression extends TemplateUnit implements NullSafety {
     
     private final String expression;
-
-    public ValueExpression(SourceRef sourceRef, String expression) {
+    private final boolean nullSafe;
+    
+    public ValueExpression(SourceRef sourceRef, String expression, boolean nullSafe) {
         super(sourceRef);
         this.expression = expression;
+        this.nullSafe = nullSafe;
     }
 
     public String getExpression() {
         return expression;
+    }
+
+    @Override
+    public boolean isNullSafe() {
+        return this.nullSafe;
     }
     
 }

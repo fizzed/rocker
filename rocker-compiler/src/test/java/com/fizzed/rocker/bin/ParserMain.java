@@ -17,6 +17,7 @@ package com.fizzed.rocker.bin;
 
 import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.Argument;
+import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ElseBlockBegin;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -104,6 +105,9 @@ public class ParserMain {
             if (unit instanceof PlainText) {
                 PlainText plain = (PlainText)unit;
                 log.info("plain: {}", RockerUtil.consoleFriendlyText(plain.getText()));
+            } else if (unit instanceof Comment) {
+                Comment comment = (Comment)unit;
+                log.info("comment: {}", comment.getText());
             } else if (unit instanceof ValueExpression) {
                 ValueExpression valueExpr = (ValueExpression)unit;
                 log.info("value: {}", valueExpr.getExpression());
@@ -117,7 +121,7 @@ public class ParserMain {
                 log.info("for end:");
             } else if (unit instanceof WithBlockBegin) {
                 WithBlockBegin block = (WithBlockBegin)unit;
-                log.info("with begin: ns? {}: {} = {}", block.getStatement().isNullSafe(), block.getStatement().getVariable(), block.getStatement().getValueExpression());
+                log.info("with begin: isNullSafe={} ({} = {})", block.getStatement().isNullSafe(), block.getStatement().getVariable(), block.getStatement().getValueExpression());
             } else if (unit instanceof WithBlockEnd) {
                 log.info("with end:");
             } else if (unit instanceof IfBlockBegin) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Fizzed Inc.
+ * Copyright 2016 Fizzed, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.runtime;
+package com.fizzed.rocker.model;
 
-/**
- *
- * @author joelauer
- */
-public class Raw {
+public interface NullSafety {
     
-    private final String value;
-    
-    private Raw(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-    
-    static public Raw of(String value) {
-        return new Raw(value);
-    }
-    
-    @Override
-    public String toString() {
-        return this.value;
-    }
+    boolean isNullSafe();
     
 }

@@ -35,7 +35,9 @@ import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
 import java.io.File;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -658,5 +660,18 @@ public class TemplateParserTest {
         Assert.assertArrayEquals(new String[] {"com.fizzed.rocker.processor.LoggingProcessor", 
             "com.fizzed.rocker.processor.WhitespaceRemovalProcessor", 
             "com.fizzed.rocker.processor.LoggingProcessor"}, model.getOptions().getPostProcessing());
+    }
+    
+    @Test
+    public void valueNullSafe() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/ValueNullSafe.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        ValueExpression value = model.getUnit(1, ValueExpression.class);
+        
+        assertThat(value.isNullSafe(), is(true));
+        assertThat(value.getExpression(), is("s"));
     }
 }
