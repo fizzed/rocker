@@ -49,7 +49,6 @@ import com.fizzed.rocker.model.ValueExpression;
 import com.fizzed.rocker.model.WithBlockBegin;
 import com.fizzed.rocker.model.WithBlockEnd;
 import com.fizzed.rocker.model.WithStatement;
-import com.fizzed.rocker.runtime.Elvis;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -61,7 +60,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

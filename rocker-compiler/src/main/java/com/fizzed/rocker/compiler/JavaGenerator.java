@@ -49,7 +49,6 @@ import com.fizzed.rocker.runtime.BreakException;
 import com.fizzed.rocker.runtime.ContinueException;
 import com.fizzed.rocker.runtime.Java8Iterator;
 import com.fizzed.rocker.runtime.WithBlock;
-import com.fizzed.rocker.runtime.NullSafe;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -182,32 +181,6 @@ public class JavaGenerator {
     
     public boolean isJava8Plus(TemplateModel model) {
         return model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8);
-    }
-    
-    public String maybeNullSafe(TemplateModel model, boolean nullSafe, JavaVariable variable, String expression) {
-        if (!nullSafe) {
-            return expression;
-        } else {
-            if (isJava8Plus(model)) {
-                // NullSafe.of(() -> variable)
-                return new StringBuilder()
-                    .append(qualifiedClassName(NullSafe.class)).append(".of(() -> ")
-                    .append(expression)
-                    .append(")")
-                    .toString();
-            } else {
-                // NullSafe.of(new Supplier<String>() { ... return variable });
-                return new StringBuilder()
-                    .append(qualifiedClassName(NullSafe.class))
-                    .append(".of(new ").append(qualifiedClassName(NullSafe.Supplier.class)).append("<").append(variable.getType()).append(">() {")
-                    .append("@Override public ").append(variable.getType()).append(" apply() throws ")
-                        .append(qualifiedClassName(BreakException.class)).append("{ ")
-                    .append("return ")
-                    .append(expression)
-                    .append("; }})")
-                    .toString();
-            }
-        }
     }
     
     public void appendArgumentMembers(TemplateModel model, Writer w, String access, boolean finalModifier, int indent) throws IOException {

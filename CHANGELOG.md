@@ -3,12 +3,15 @@ Rocker Templates by Fizzed
 
 #### 0.13.0 - ????
  
- - Simple null safe handling with various flavors.
+ - Major built-in support for null safe handling.  New present operator `?`
+   allowed on various expression and keyword types to enable null safety.
+ - New `@()` expression evaluates values such as Java strings, literals,
+   variables, or statements.   
  - New `@?value` expression will render nothing if the value is null
  - New `@?(value : fallback)` expression will render either the value, or
    the fallback, or nothing if both are null.
- - Enhanced `@with?` feature where it accepts the null-safe operator and skips
-   the entire block if the value is null.
+ - New `@with?` expression will skip the block if the variable assignment is
+   null.
 
 #### 0.12.3 - 2016-07-16
 
