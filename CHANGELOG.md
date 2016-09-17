@@ -11,7 +11,8 @@ Rocker Templates by Fizzed
  - New `@?(value : fallback)` expression will render either the value, or
    the fallback, or nothing if both are null.
  - New `@with?` expression will skip the block if the variable assignment is
-   null.
+   null. 
+ - Antlr dependency from v4.5 to v4.5.3
 
 #### 0.12.3 - 2016-07-16
 
