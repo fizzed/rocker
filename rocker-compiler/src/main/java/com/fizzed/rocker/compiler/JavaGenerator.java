@@ -17,8 +17,6 @@ package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerContent;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.BreakStatement;
@@ -27,6 +25,7 @@ import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.ElvisExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
 import com.fizzed.rocker.model.ForStatement;
@@ -49,7 +48,7 @@ import com.fizzed.rocker.model.WithStatement;
 import com.fizzed.rocker.runtime.BreakException;
 import com.fizzed.rocker.runtime.ContinueException;
 import com.fizzed.rocker.runtime.Java8Iterator;
-import com.fizzed.rocker.runtime.Java8With;
+import com.fizzed.rocker.runtime.WithBlock;
 import com.fizzed.rocker.runtime.NullSafe;
 import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
 import java.io.BufferedWriter;
@@ -66,11 +65,12 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 
 /**
  *
@@ -180,18 +180,23 @@ public class JavaGenerator {
              (type.equals("ForIterator") || type.equals(com.fizzed.rocker.ForIterator.class.getName()));
     }
     
+    public boolean isJava8Plus(TemplateModel model) {
+        return model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8);
+    }
+    
     public String maybeNullSafe(TemplateModel model, boolean nullSafe, JavaVariable variable, String expression) {
         if (!nullSafe) {
             return expression;
         } else {
-            // Java 1.8+
-            if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+            if (isJava8Plus(model)) {
+                // NullSafe.of(() -> variable)
                 return new StringBuilder()
                     .append(qualifiedClassName(NullSafe.class)).append(".of(() -> ")
                     .append(expression)
                     .append(")")
                     .toString();
             } else {
+                // NullSafe.of(new Supplier<String>() { ... return variable });
                 return new StringBuilder()
                     .append(qualifiedClassName(NullSafe.class))
                     .append(".of(new ").append(qualifiedClassName(NullSafe.Supplier.class)).append("<").append(variable.getType()).append(">() {")
@@ -538,6 +543,23 @@ public class JavaGenerator {
                         .append(", ").append(""+value.isNullSafe())
                         .append(");").append(CRLF);
             }
+            else if (unit instanceof ElvisExpression) {
+                ElvisExpression elvis = (ElvisExpression)unit;
+                tab(w, depth+indent)
+                   .append("{").append(CRLF);
+                tab(w, depth+indent+1)
+                   .append("final Object __v = ").append(elvis.getLeftExpression()).append(";").append(CRLF);
+                tab(w, depth+indent+1)
+                   .append("if (__v != null) { __internal.renderValue(__v, false); }").append(CRLF);
+                if (elvis.getRightExpression() != null) {
+                    tab(w, depth+indent+1)
+                        .append("else {__internal.renderValue(")
+                        .append(elvis.getRightExpression())
+                        .append(", true); }").append(CRLF);
+                }
+                tab(w, depth+indent)
+                    .append("}").append(CRLF);
+            }
             else if (unit instanceof ValueClosureBegin) {
                 
                 ValueClosureBegin closure = (ValueClosureBegin)unit;
@@ -547,7 +569,7 @@ public class JavaGenerator {
                         .append(".__body(");
                 
                 // Java 1.8+ use lambda
-                if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                if (isJava8Plus(model)) {
                     w.append("() -> {").append(CRLF);
                     
                     depth++;
@@ -579,7 +601,7 @@ public class JavaGenerator {
             }
             else if (unit instanceof ValueClosureEnd) {
                 // Java 1.8+ use lambda
-                if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                if (isJava8Plus(model)) {
                     depth--;
                     
                     tab(w, depth+indent)
@@ -610,7 +632,7 @@ public class JavaGenerator {
                         .append(" = ");
                 
                 // Java 1.8+ use lambda
-                if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                if (isJava8Plus(model)) {
                     w.append("() -> {").append(CRLF);
                     
                     depth++;
@@ -642,7 +664,7 @@ public class JavaGenerator {
             }
             else if (unit instanceof ContentClosureEnd) {
                 // Java 1.8+ use lambda
-                if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                if (isJava8Plus(model)) {
                     depth--;
                     
                     tab(w, depth+indent)
@@ -696,19 +718,12 @@ public class JavaGenerator {
                 WithBlockBegin block = (WithBlockBegin)unit;
                 WithStatement stmt = block.getStatement();
                 
-                // null-safe support via try and catch mechanism (works across lambdas!)
-                tab(w, depth+indent)
-                    .append("try {").append(CRLF);
-
-                depth++;
-                
-                // Java 1.8+ (use lambdas)
-                if (model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                if (isJava8Plus(model)) {
                 
                     tab(w, depth+indent)
-                        .append(Java8With.class.getName())
-                        .append(".with(")
-                        .append(maybeNullSafe(model, stmt.isNullSafe(), stmt.getVariable(), stmt.getValueExpression()))
+                        .append(qualifiedClassName(WithBlock.class))
+                        .append(".with(").append(stmt.getValueExpression())
+                        .append(", ").append(stmt.isNullSafe()+"")
                         .append(", (").append(stmt.getVariable().toString()).append(") -> {").append(CRLF);
                 
                     depth++;
@@ -718,16 +733,15 @@ public class JavaGenerator {
                 } else {
                     
                     tab(w, depth+indent)
-                        .append("{ // with begin").append(CRLF);
+                        .append(qualifiedClassName(WithBlock.class))
+                        .append(".with(").append(stmt.getValueExpression())
+                        .append(", ").append(stmt.isNullSafe()+"")
+                        .append(", (new ").append(qualifiedClassName(WithBlock.Consumer.class)).append("<").append(stmt.getVariable().getType()).append(">() { ")
+                        .append("@Override public void accept(final ").append(stmt.getVariable().toString()).append(") throws IOException {").append(CRLF);
 
                     depth++;
-
-                    blockEnd.push("}");
-
-                    tab(w, depth+indent)
-                        .append("final ").append(stmt.getVariable().toString()).append(" = ")
-                            .append(maybeNullSafe(model, stmt.isNullSafe(), stmt.getVariable(), stmt.getValueExpression()))
-                            .append(";").append(CRLF);
+                
+                    blockEnd.push("}}));");
                 }
             }
             else if (unit instanceof WithBlockEnd) {                
@@ -736,18 +750,6 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append(blockEnd.pop())
                         .append(" // with end ").append(sourceRef(unit)).append(CRLF);
-                
-                depth--;
-                
-                // break support via try and catch mechanism (works across lambdas!)
-                tab(w, depth+indent)
-                    .append("} catch (").append(BreakException.class.getCanonicalName()).append(" e) {") .append(CRLF);
-                
-                tab(w, depth+indent+1)
-                    .append("// support for null-safe").append(CRLF);
-
-                tab(w, depth+indent)
-                    .append("}").append(CRLF);
             }
             else if (unit instanceof ForBlockBegin) {
                 ForBlockBegin block = (ForBlockBegin)unit;
@@ -771,7 +773,7 @@ public class JavaGenerator {
                 else if (stmt.getForm() == ForStatement.Form.ENHANCED) {
                     // Java 1.8+ (use lambdas)
                     if (stmt.hasAnyUntypedArguments() &&
-                            model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8)) {
+                            isJava8Plus(model)) {
                         
                         // build list of lambda vars
                         String localVars = "";

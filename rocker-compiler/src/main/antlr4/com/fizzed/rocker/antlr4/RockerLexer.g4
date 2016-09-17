@@ -66,29 +66,29 @@ MV_CONTENT_CLOSURE
     ;
 
 MV_VALUE_CLOSURE
-    :   ValueExpr Ws? '->' Ws? '{'                                  -> popMode
+    :   VariableExpression Ws? '->' Ws? '{'                         -> popMode
     ;
 
-MV_ELVIS_OPEN
-    :   '?('                                                        -> pushMode(ELVIS_EXPR)
+MV_EVAL_OPEN
+    :   '?'? '('                                                    -> pushMode(EVAL_EXPR)
     ;
 
 MV_VALUE 
-    :   '?'? ValueExpr                                              -> popMode
+    :   '?'? VariableExpression                                     -> popMode
     ;
 
 
-mode ELVIS_EXPR;
+mode EVAL_EXPR;
 
-ELVIS_RH_EXPR
-    :   ':' Ws? ValueExpr Ws? 
+EVAL_RH_EXPR
+    :   ':' Ws? ValueExpressions Ws? 
     ;
 
-ELVIS_LH_EXPR
-    :   Ws? ValueExpr Ws? 
+EVAL_LH_EXPR
+    :   Ws? ValueExpressions Ws? 
     ;
 
-ELVIS_CLOSE
+EVAL_CLOSE
     :   ')'                                                         -> popMode, popMode
     ;
 
@@ -96,8 +96,21 @@ ELVIS_CLOSE
 // fragments used everywhere else
 //
 
-fragment ValueExpr
+fragment ValueExpressions
+    :   ValueExpression (Ws? Op Ws? ValueExpression)*
+    ;
+
+// "joe" or variable expression
+fragment ValueExpression
+    :   JavaString | JavaLiteral | VariableExpression
+    ;
+
+fragment VariableExpression
     :   QualifiedName Parentheses? Arrays? ('.' Identifier Parentheses? Arrays?)*
+    ;
+
+fragment Op
+    :   '+' | '-' | '*' | '/'
     ;
 
 fragment Arrays
@@ -167,4 +180,13 @@ fragment JavaLetterOrDigit
     |   // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
         [\uD800-\uDBFF] [\uDC00-\uDFFF]
         {Character.isJavaIdentifierPart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
+    ;
+
+fragment JavaLiteral
+    :   [0-9]+ ('.' [0-9]+)? [Ldf]?
+    |   'true' | 'false'
+    ;
+
+fragment JavaString
+    :   '"' ('\\"' | ~('"'))* '"'
     ;

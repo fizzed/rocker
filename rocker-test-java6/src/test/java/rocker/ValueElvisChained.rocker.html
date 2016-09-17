@@ -1,0 +1,3 @@
+@import java.util.List
+@args (List<String> a, List<String> b, int a1, int b1)
+@?(a.get((a1 < 0 ? 0 : a1)) : b.get((b1 < 0 ? 0 : b1)))

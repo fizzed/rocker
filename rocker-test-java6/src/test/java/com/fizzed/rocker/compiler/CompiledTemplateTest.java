@@ -789,6 +789,45 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void valueElvisChained() throws Exception {
+        String html = new rocker.ValueElvisChained()
+            .a(Arrays.asList("a", null))
+            .a1(1)
+            .b(Arrays.asList("a", null))
+            .b1(0)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a"));
+    }
+    
+    @Test
+    public void valueElvisRightSideNeverEvaluated() throws Exception {    
+        String html = new rocker.ValueElvisChained()
+            .a(Arrays.asList("a", null))
+            .a1(0)
+            .b(null)
+            .b1(0)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("a"));
+    }
+    
+    @Test
+    public void valueElvisStringAndLiterals() throws Exception {    
+        String html = new rocker.ValueElvisStringAndLiterals()
+            .a(null)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("or a\nor &quot;a&quot;\n0\n0\n0.0"));
+    }
+    
+    @Test
     public void valueElvisNoTertiary() throws Exception {
         String html = new rocker.ValueElvisNoTertiary()
             .a(null)

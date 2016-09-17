@@ -27,6 +27,8 @@ import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
 import com.fizzed.rocker.model.ForStatement;
@@ -722,29 +724,28 @@ public class TemplateParser {
         }
 
         @Override
-        public void enterElvis(RockerParser.ElvisContext ctx) {
+        public void enterEval(RockerParser.EvalContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we only care about the expression
-            RockerParser.ElvisExpressionContext elvisExpr = ctx.elvisExpression();
+            RockerParser.EvalExpressionContext evalExpr = ctx.evalExpression();
             
-            String leftValueExpr = elvisExpr.ELVIS_LH_EXPR().getText().trim();
+            boolean nullSafe = ctx.MV_EVAL_OPEN().getText().startsWith("?");
             
-            String rightValueExpr = null;
-            if (elvisExpr.ELVIS_RH_EXPR() != null) {
-                rightValueExpr = elvisExpr.ELVIS_RH_EXPR().getText();
+            String leftValueExpr = evalExpr.EVAL_LH_EXPR().getText().trim();
+            
+            if (evalExpr.EVAL_RH_EXPR() != null) {
+                // elvis can only be used if nullSafe is true
+                if (!nullSafe) {
+                    throw TemplateParser.buildParserException(sourceRef, templatePath, "Elvis can only be used if null safe true (e.g. '@?(a : b)')");
+                }
+                
+                String rightValueExpr = evalExpr.EVAL_RH_EXPR().getText();
                 // chop off leading ':'
                 rightValueExpr = rightValueExpr.substring(1).trim();
-            }
-            
-            // if no ':' then this is a simple value expression with nullsafety
-            if (leftValueExpr == null) {
-                model.getUnits().add(new ValueExpression(sourceRef, leftValueExpr, true));
+                model.getUnits().add(new ElvisExpression(sourceRef, leftValueExpr, rightValueExpr, nullSafe));
             } else {
-                // convert to a method call
-                String expr = RockerUtil.qualifiedClassName(Elvis.class)
-                    + ".op("+ leftValueExpr + ", " + rightValueExpr + ")";
-                model.getUnits().add(new ValueExpression(sourceRef, expr, true));
+                model.getUnits().add(new EvalExpression(sourceRef, leftValueExpr, nullSafe));
             }
         }
 

@@ -22,6 +22,8 @@ import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
 import com.fizzed.rocker.model.ForStatement;
@@ -673,5 +675,75 @@ public class TemplateParserTest {
         
         assertThat(value.isNullSafe(), is(true));
         assertThat(value.getExpression(), is("s"));
+    }
+    
+    @Test
+    public void eval() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/Eval.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        EvalExpression eval = model.getUnit(1, EvalExpression.class);
+        
+        assertThat(eval.isNullSafe(), is(false));
+        assertThat(eval.getExpression(), is("a"));
+        
+        eval = model.getUnit(3, EvalExpression.class);
+        
+        assertThat(eval.isNullSafe(), is(false));
+        assertThat(eval.getExpression(), is("a + \"more\""));
+        
+        eval = model.getUnit(5, EvalExpression.class);
+        
+        assertThat(eval.isNullSafe(), is(false));
+        assertThat(eval.getExpression(), is("a + \"more\"+\"even more\"+0"));
+    }
+    
+    @Test
+    public void evalNullSafe() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/EvalNullSafe.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        EvalExpression eval = model.getUnit(1, EvalExpression.class);
+        
+        assertThat(eval.isNullSafe(), is(true));
+        assertThat(eval.getExpression(), is("s"));
+    }
+    
+    @Test(expected=ParserException.class)
+    public void evalElvisIllegal() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/EvalElvisIllegal.rocker.html");
+        
+        parser.parse(f);
+    }
+    
+    @Test
+    public void elvis() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/Elvis.rocker.html");
+        
+        TemplateModel model = parser.parse(f);
+        
+        ElvisExpression elvis = model.getUnit(1, ElvisExpression.class);
+        
+        assertThat(elvis.isNullSafe(), is(true));
+        assertThat(elvis.getLeftExpression(), is("a"));
+        assertThat(elvis.getRightExpression(), is("b"));
+        
+        elvis = model.getUnit(3, ElvisExpression.class);
+        
+        assertThat(elvis.isNullSafe(), is(true));
+        assertThat(elvis.getLeftExpression(), is("a"));
+        assertThat(elvis.getRightExpression(), is("b"));
+        
+        elvis = model.getUnit(5, ElvisExpression.class);
+        
+        assertThat(elvis.isNullSafe(), is(true));
+        assertThat(elvis.getLeftExpression(), is("a + 0"));
+        assertThat(elvis.getRightExpression(), is("b + \"joe\""));
     }
 }

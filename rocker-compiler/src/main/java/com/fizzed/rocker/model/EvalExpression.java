@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.rocker.runtime;
+package com.fizzed.rocker.model;
 
-import com.fizzed.rocker.RenderingException;
-import java.io.IOException;
+/**
+ * Model for @(value) or @?(value)
+ */
+public class EvalExpression extends ValueExpression {
+    
+    public EvalExpression(SourceRef sourceRef, String expression, boolean nullSafe) {
+        super(sourceRef, expression, nullSafe);
+    }
 
-public class Java8With {
-    
-    static public interface Function<V> {
-        void apply(V v) throws RenderingException, IOException;
-    }
-    
-    static public <V> void with(V v, Function<V> function) throws RenderingException, IOException {
-        function.apply(v);
-    }
-    
 }
