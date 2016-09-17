@@ -27,7 +27,7 @@ comment
     ;
 
 importDeclaration
-    :   AT_VALUE importStatement
+    :   AT importStatement
     ;
 
 importStatement
@@ -35,7 +35,7 @@ importStatement
     ;
 
 optionDeclaration
-    :   AT_VALUE optionStatement
+    :   AT optionStatement
     ;
 
 optionStatement
@@ -43,7 +43,7 @@ optionStatement
     ;
 
 argumentsDeclaration
-    :   AT_VALUE argumentsStatement
+    :   AT argumentsStatement
     ;
 
 argumentsStatement
@@ -59,7 +59,7 @@ block
     ;
 
 ifBlock
-    :   AT_VALUE MV_IF templateContent* (RCURLY | elseBlock)
+    :   AT MV_IF templateContent* (RCURLY | elseBlock)
     ;
 
 elseBlock
@@ -67,15 +67,15 @@ elseBlock
     ;
 
 forBlock
-    :   AT_VALUE MV_FOR templateContent* RCURLY
+    :   AT MV_FOR templateContent* RCURLY
     ;
 
 withBlock
-    :   AT_VALUE MV_WITH templateContent* RCURLY
+    :   AT MV_WITH templateContent* RCURLY
     ;
 
 contentClosure
-    :   AT_VALUE contentClosureExpression templateContent* RCURLY
+    :   AT contentClosureExpression templateContent* RCURLY
     ;
 
 contentClosureExpression
@@ -83,7 +83,7 @@ contentClosureExpression
     ;
 
 valueClosure
-    :   AT_VALUE valueClosureExpression templateContent* RCURLY
+    :   AT valueClosureExpression templateContent* RCURLY
     ;
 
 valueClosureExpression
@@ -91,7 +91,7 @@ valueClosureExpression
     ;
 
 value
-    :   AT_VALUE valueExpression
+    :   AT valueExpression
     ;
 
 valueExpression
@@ -99,9 +99,9 @@ valueExpression
     ;
 
 elvis
-    :   AT_VALUE elvisExpression
+    :   AT MV_ELVIS_OPEN elvisExpression ELVIS_CLOSE
     ;
 
 elvisExpression
-    :   MV_ELVIS
+    :   ELVIS_LH_EXPR ELVIS_RH_EXPR?
     ;

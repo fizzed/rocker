@@ -59,6 +59,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -725,26 +726,26 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we only care about the expression
-            RockerParser.ElvisExpressionContext expressionCtx = ctx.elvisExpression();
+            RockerParser.ElvisExpressionContext elvisExpr = ctx.elvisExpression();
             
-            String expr = expressionCtx.getText();
+            String leftValueExpr = elvisExpr.ELVIS_LH_EXPR().getText().trim();
             
-            // confirm only a single ':' exists in it
-            int colonCount = RockerUtil.countChars(expr, ':');
-            if (colonCount > 1) {
-                throw TemplateParser.buildParserException(sourceRef, templatePath, "More than a single ':' character used in elvis expression");
+            String rightValueExpr = null;
+            if (elvisExpr.ELVIS_RH_EXPR() != null) {
+                rightValueExpr = elvisExpr.ELVIS_RH_EXPR().getText();
+                // chop off leading ':'
+                rightValueExpr = rightValueExpr.substring(1).trim();
             }
             
             // if no ':' then this is a simple value expression with nullsafety
-            if (colonCount == 0) {
-                expr = expr.substring(2, expr.length()-1);
+            if (leftValueExpr == null) {
+                model.getUnits().add(new ValueExpression(sourceRef, leftValueExpr, true));
             } else {
                 // convert to a method call
-                expr = RockerUtil.qualifiedClassName(Elvis.class) + ".op"+ expr.substring(1);
-                expr = expr.replace(":", ",");
+                String expr = RockerUtil.qualifiedClassName(Elvis.class)
+                    + ".op("+ leftValueExpr + ", " + rightValueExpr + ")";
+                model.getUnits().add(new ValueExpression(sourceRef, expr, true));
             }
-            
-            model.getUnits().add(new ValueExpression(sourceRef, expr, true));
         }
 
         @Override
