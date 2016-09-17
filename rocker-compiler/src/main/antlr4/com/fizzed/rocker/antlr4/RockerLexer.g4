@@ -4,7 +4,7 @@ lexer grammar RockerLexer;
 // content mode (by default)
 
 ELSE_CALL
-    :   '}' WhitespaceWithLineBreak* 'else' WhitespaceWithLineBreak* '{'
+    :   '}' Whitespace? 'else' Whitespace? '{'
     ;
 
 LCURLY
@@ -46,35 +46,35 @@ MV_ARRAY
     ;
 
 MV_IMPORT
-    :   'import' WhitespaceWithLineBreak+ ~[\r\n]+ '\r'? '\n'                                                -> popMode
+    :   'import' WhitespaceNoLineBreak ~[\r\n]+ '\r'? '\n'                                                -> popMode
     ;
 
 MV_OPTION
-    :   'option' WhitespaceWithLineBreak+ ~[\r\n]+ '\r'? '\n'                                                -> popMode
+    :   'option' WhitespaceNoLineBreak ~[\r\n]+ '\r'? '\n'                                                -> popMode
     ;
 
 MV_ARGS
-    :   'args' WhitespaceWithLineBreak* '(' ~(')')* ')'                             -> popMode
+    :   'args' Whitespace? '(' ~(')')* ')'                                          -> popMode
     ;
 
 MV_IF
-    :   'if' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    :   'if' Whitespace? MV_PARENTHESE Whitespace? '{'    -> popMode
     ;
 
 MV_FOR
-    :   'for' WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    :   'for' Whitespace? MV_PARENTHESE Whitespace? '{'    -> popMode
     ;
 
 MV_WITH
-    :   'with' '?'? WhitespaceWithLineBreak* MV_PARENTHESE WhitespaceWithLineBreak* '{'    -> popMode
+    :   'with' '?'? Whitespace? MV_PARENTHESE Whitespace? '{'    -> popMode
     ;
 
 MV_CONTENT_CLOSURE
-    :   Identifier WhitespaceWithLineBreak* '=>' WhitespaceWithLineBreak* '{'    -> popMode
+    :   Identifier Whitespace? '=>' Whitespace? '{'    -> popMode
     ;
 
 MV_VALUE_CLOSURE
-    :   QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)* WhitespaceWithLineBreak* '->' WhitespaceWithLineBreak* '{'    -> popMode
+    :   QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)* Whitespace? '->' Whitespace? '{'    -> popMode
     ;
 
 MV_ELVIS
@@ -84,7 +84,6 @@ MV_ELVIS
 MV_VALUE 
     :   '?'? QualifiedName MV_PARENTHESE? MV_ARRAY? ('.' Identifier MV_PARENTHESE? MV_ARRAY?)*            -> popMode
     ;
-
 
 //
 // fragments used everywhere else
@@ -98,12 +97,12 @@ fragment LineBreak
     :   ('\r'? '\n')
     ;
 
-fragment WhitespaceWithNoLineBreak
-    :   (' ' | '\t')
+fragment Whitespace
+    :   (' ' | '\t' | '\r'? '\n')+
     ;
 
-fragment WhitespaceWithLineBreak
-    :   (' ' | '\t' | '\r'? '\n')
+fragment WhitespaceNoLineBreak
+    :   (' ' | '\t')+
     ;
 
 fragment TypeArguments
