@@ -21,7 +21,7 @@ import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
-import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.IfBlockElse;
 import com.fizzed.rocker.model.ElvisExpression;
 import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
@@ -183,7 +183,7 @@ public class TemplateParserTest {
             "            ";
         Assert.assertEquals(plainText5, model.getUnit(9, PlainText.class).getText());
         
-        Assert.assertEquals(ElseBlockBegin.class, model.getUnit(10, ElseBlockBegin.class).getClass());
+        Assert.assertEquals(IfBlockElse.class, model.getUnit(10, IfBlockElse.class).getClass());
         
         String plainText6 = "\n" +
             "                else-block\n" +

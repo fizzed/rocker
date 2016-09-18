@@ -17,6 +17,7 @@ package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerContent;
+import static com.fizzed.rocker.compiler.RockerUtil.isJava8Plus;
 import com.fizzed.rocker.runtime.RockerRuntime;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.BreakStatement;
@@ -24,7 +25,7 @@ import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
-import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.IfBlockElse;
 import com.fizzed.rocker.model.ElvisExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -70,6 +71,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
 import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import com.fizzed.rocker.model.WithBlockElse;
 
 /**
  *
@@ -99,8 +107,6 @@ public class JavaGenerator {
     public RockerConfiguration getConfiguration() {
         return configuration;
     }
-    
-    
 
     public PlainTextStrategy getPlainTextStrategy() {
         return plainTextStrategy;
@@ -177,10 +183,6 @@ public class JavaGenerator {
     public boolean isForIteratorType(String type) {
         return type != null &&
              (type.equals("ForIterator") || type.equals(com.fizzed.rocker.ForIterator.class.getName()));
-    }
-    
-    public boolean isJava8Plus(TemplateModel model) {
-        return model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8);
     }
     
     public void appendArgumentMembers(TemplateModel model, Writer w, String access, boolean finalModifier, int indent) throws IOException {
@@ -670,7 +672,7 @@ public class JavaGenerator {
                 blockEnd.push("}");
                 depth++;
             }
-            else if (unit instanceof ElseBlockBegin) {
+            else if (unit instanceof IfBlockElse) {
                 depth--;
                 
                 tab(w, depth+indent)
@@ -709,13 +711,26 @@ public class JavaGenerator {
                         .append(qualifiedClassName(WithBlock.class))
                         .append(".with(").append(stmt.getValueExpression())
                         .append(", ").append(stmt.isNullSafe()+"")
-                        .append(", (new ").append(qualifiedClassName(WithBlock.Consumer.class)).append("<").append(stmt.getVariable().getType()).append(">() { ")
+                        .append(", (new ").append(qualifiedClassName(WithBlock.Consumer1.class)).append("<").append(stmt.getVariable().getType()).append(">() { ")
                         .append("@Override public void accept(final ").append(stmt.getVariable().toString()).append(") throws IOException {").append(CRLF);
 
                     depth++;
                 
                     blockEnd.push("}}));");
                 }
+            }
+            else if (unit instanceof WithBlockElse) {
+                depth--;
+                
+                if (isJava8Plus(model)) {
+                    tab(w, depth+indent)
+                        .append("}, () -> {").append(CRLF);
+                } else {
+                    tab(w, depth+indent)
+                        .append("}}), (new ").append(qualifiedClassName(WithBlock.Consumer0.class)).append("() { ")
+                        .append("@Override public void accept() throws IOException {").append(CRLF);
+                }
+                depth++;
             }
             else if (unit instanceof WithBlockEnd) {                
                 depth--;

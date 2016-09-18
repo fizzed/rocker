@@ -16,6 +16,8 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
+import com.fizzed.rocker.model.JavaVersion;
+import com.fizzed.rocker.model.TemplateModel;
 import org.apache.commons.lang3.text.translate.*;
 
 import java.io.File;
@@ -40,6 +42,10 @@ public class RockerUtil {
     private static final Pattern VALID_JAVA_IDENTIFIER = Pattern
             .compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*");
 
+    static public boolean isJava8Plus(TemplateModel model) {
+        return model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8);
+    }
+    
     public static boolean isJavaIdentifier(String identifier) {
         return VALID_JAVA_IDENTIFIER.matcher(identifier).matches();
     }

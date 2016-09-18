@@ -20,13 +20,14 @@ import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
 import com.fizzed.rocker.antlr4.RockerParserBaseListener;
+import static com.fizzed.rocker.compiler.RockerUtil.isJava8Plus;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.BreakStatement;
 import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
-import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.IfBlockElse;
 import com.fizzed.rocker.model.ElvisExpression;
 import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
@@ -47,6 +48,7 @@ import com.fizzed.rocker.model.ValueClosureBegin;
 import com.fizzed.rocker.model.ValueClosureEnd;
 import com.fizzed.rocker.model.ValueExpression;
 import com.fizzed.rocker.model.WithBlockBegin;
+import com.fizzed.rocker.model.WithBlockElse;
 import com.fizzed.rocker.model.WithBlockEnd;
 import com.fizzed.rocker.model.WithStatement;
 import java.io.File;
@@ -615,10 +617,10 @@ public class TemplateParser {
             // we simply want to keep the left token for the start of this block
             String text = null;
             
-            if (ctx.ELSE_CALL() != null) {
-                text = ctx.ELSE_CALL().getText();
+            if (ctx.ELSE() != null) {
+                text = ctx.ELSE().getText();
             } else {
-                throw TemplateParser.buildParserException(sourceRef, templatePath, "Did not find ELSE_CALL");
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "Did not find ELSE");
             }
             
             model.getUnits().add(new PlainText(sourceRef, text));
@@ -751,11 +753,6 @@ public class TemplateParser {
         public void enterForBlock(RockerParser.ForBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
-            // we only care about the expression
-            //RockerParser.ForStatementContext statementCtx = ctx.forStatement();
-            
-            //String expression = statementCtx.getText();
-            
             // "for(..){" or "for (...) {"
             String expr = ctx.MV_FOR().getText();
             
@@ -766,8 +763,7 @@ public class TemplateParser {
                 ForStatement statement = ForStatement.parse(expr);
 
                 // any Java 1.8+ features used?
-                if (!model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8) &&
-                        statement.hasAnyUntypedArguments()) {
+                if (!isJava8Plus(model) && statement.hasAnyUntypedArguments()) {
                     throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
                 }
                 
@@ -798,15 +794,21 @@ public class TemplateParser {
                 WithStatement statement = WithStatement.parse(expr);
 
                 // any Java 1.8+ features used?
-                //if (!model.getOptions().isGreaterThanOrEqualToJavaVersion(JavaVersion.v1_8) &&
-                //        statement.hasAnyUntypedArguments()) {
-                //    throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
-                //}
+                if (!isJava8Plus(model) && statement.getVariable().getType() == null) {
+                    throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
+                }
                 
                 model.getUnits().add(new WithBlockBegin(sourceRef, expr, statement));
             } catch (TokenException e) {
                 throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
+        }
+        
+        @Override
+        public void enterWithElseBlock(RockerParser.WithElseBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            model.getUnits().add(new WithBlockElse(sourceRef));
         }
 
         @Override
@@ -820,11 +822,7 @@ public class TemplateParser {
         public void enterIfBlock(RockerParser.IfBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
-            // we only care about the expression
-//            RockerParser.IfExpressionContext expressionCtx = ctx.ifExpression();
-            
-//            String expr = expressionCtx.getText();
-  
+            // only need the expression
             // "if(b){" or "if (b) {"
             String expr = ctx.MV_IF().getText();
             
@@ -842,10 +840,10 @@ public class TemplateParser {
         }
 
         @Override
-        public void enterElseBlock(RockerParser.ElseBlockContext ctx) {
+        public void enterIfElseBlock(RockerParser.IfElseBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
-            model.getUnits().add(new ElseBlockBegin(sourceRef));
+            model.getUnits().add(new IfBlockElse(sourceRef));
         }
     }   
 }

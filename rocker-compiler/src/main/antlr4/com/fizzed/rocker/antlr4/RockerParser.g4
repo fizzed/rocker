@@ -19,7 +19,7 @@ plainBlock
     ;
 
 plainElseBlock
-    :   ELSE_CALL templateContent* RCURLY
+    :   ELSE templateContent* RCURLY
     ;
 
 comment
@@ -59,11 +59,11 @@ block
     ;
 
 ifBlock
-    :   AT MV_IF templateContent* (RCURLY | elseBlock)
+    :   AT MV_IF templateContent* (RCURLY | ifElseBlock)
     ;
 
-elseBlock
-    :   ELSE_CALL templateContent* RCURLY
+ifElseBlock
+    :   ELSE templateContent* RCURLY
     ;
 
 forBlock
@@ -71,7 +71,11 @@ forBlock
     ;
 
 withBlock
-    :   AT MV_WITH templateContent* RCURLY
+    :   AT MV_WITH templateContent* (RCURLY | withElseBlock)
+    ;
+
+withElseBlock
+    :   ELSE templateContent* RCURLY
     ;
 
 contentClosure

@@ -33,15 +33,10 @@ import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author joelauer
- */
 public class CompiledTemplateTest {
     static private final Logger log = LoggerFactory.getLogger(CompiledTemplateTest.class);
     
@@ -848,18 +843,6 @@ public class CompiledTemplateTest {
         assertThat(html, is("a"));
     }
     
-    /** TODO: NPE should probably be handled with ?? operator
-    @Test
-    public void withBlockNullSafe() throws Exception {
-        String html = new rocker.WithBlockNullSafe()
-            .render()
-            .toString()
-            .trim();
-        
-        assertThat(html, is("skipped"));
-    }
-    */
-    
     @Test
     public void withBlockNullSafeButWithValue() throws Exception {
         String html = new rocker.WithBlockNullSafe()
@@ -880,6 +863,27 @@ public class CompiledTemplateTest {
             .trim();
         
         assertThat(html, is("skipped"));
+    }
+    
+    @Test
+    public void withBlockElse() throws Exception {
+        String html = new rocker.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(0)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("in-with-else-block"));
+        
+        html = new rocker.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(1)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("b"));
     }
     
 }

@@ -15,13 +15,9 @@
  */
 package com.fizzed.rocker.model;
 
-/**
- *
- * @author joelauer
- */
-public class ElseBlockBegin extends BlockBegin {
+public class WithBlockElse extends BlockBegin {
 
-    public ElseBlockBegin(SourceRef sourceRef) {
+    public WithBlockElse(SourceRef sourceRef) {
         super(sourceRef, null);
     }
     

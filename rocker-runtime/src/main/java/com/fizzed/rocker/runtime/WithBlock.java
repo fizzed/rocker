@@ -19,13 +19,25 @@ import java.io.IOException;
 
 public class WithBlock {
     
-    static public interface Consumer<V> {
+    static public interface Consumer0 {
+        void accept() throws IOException;
+    }
+    
+    static public interface Consumer1<V> {
         void accept(V v) throws IOException;
     }
     
-    static public <V> void with(V v, boolean nullSafe, Consumer<V> consumer) throws IOException {
+    static public <V> void with(V v, boolean nullSafe, Consumer1<V> consumer) throws IOException {
         if (!nullSafe || v != null) {
             consumer.accept(v);
+        }
+    }
+    
+    static public <V> void with(V v, boolean nullSafe, Consumer1<V> consumer, Consumer0 elseConsumer) throws IOException {
+        if (!nullSafe || v != null) {
+            consumer.accept(v);
+        } else {
+            elseConsumer.accept();
         }
     }
     

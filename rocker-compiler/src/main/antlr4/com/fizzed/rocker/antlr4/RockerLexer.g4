@@ -3,7 +3,7 @@ lexer grammar RockerLexer;
 
 // content mode (by default)
 
-ELSE_CALL
+ELSE
     :   '}' Ws? 'else' Ws? '{'
     ;
 

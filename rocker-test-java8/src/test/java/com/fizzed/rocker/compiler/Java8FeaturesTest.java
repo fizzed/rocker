@@ -198,15 +198,24 @@ public class Java8FeaturesTest {
         assertThat(html, is("skipped"));
     }
     
-    /** TODO: NPE should probably be handled with ?? operator
     @Test
-    public void withBlockNullSafe() throws Exception {
-        String html = new rocker.WithBlockNullSafe()
+    public void withBlockElse() throws Exception {
+        String html = new rocker.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(0)
             .render()
             .toString()
             .trim();
         
-        assertThat(html, is("skipped"));
+        assertThat(html, is("in-with-else-block"));
+        
+        html = new rocker.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(1)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("b"));
     }
-    */
 }

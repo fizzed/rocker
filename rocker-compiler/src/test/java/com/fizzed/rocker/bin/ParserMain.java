@@ -18,7 +18,7 @@ package com.fizzed.rocker.bin;
 import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.model.Argument;
 import com.fizzed.rocker.model.Comment;
-import com.fizzed.rocker.model.ElseBlockBegin;
+import com.fizzed.rocker.model.IfBlockElse;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
 import com.fizzed.rocker.model.WithBlockBegin;
@@ -131,7 +131,7 @@ public class ParserMain {
             } else if (unit instanceof IfBlockBegin) {
                 IfBlockBegin block = (IfBlockBegin)unit;
                 log.info("if begin: {}", block.getExpression());
-            } else if (unit instanceof ElseBlockBegin) {
+            } else if (unit instanceof IfBlockElse) {
                 log.info("else begin:");
             } else if (unit instanceof IfBlockEnd) {
                 log.info("if end:");
