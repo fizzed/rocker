@@ -115,6 +115,14 @@
                 <version>3.3.2</version>
             </dependency>
             
+            <!-- an optional dependency that's used for html escaping but only
+               if its on the classpath.  its super quick and worth it -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
+            </dependency>
+            
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

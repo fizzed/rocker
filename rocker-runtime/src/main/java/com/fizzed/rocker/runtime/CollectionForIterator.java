@@ -16,16 +16,12 @@
 package com.fizzed.rocker.runtime;
 
 import com.fizzed.rocker.ForIterator;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * ForIterator implementation that wraps a <code>Collection</code> and actually
  * handles the iteration of elements.
- * 
- * @author joelauer
  */
 public class CollectionForIterator<T> implements ForIterator {
 
@@ -38,11 +34,39 @@ public class CollectionForIterator<T> implements ForIterator {
     }
     
     public CollectionForIterator(Object[] a) {
-        this(Arrays.asList(a));
+        this(new PrimitiveCollections.ObjectCollection(a));
+    }
+    
+    public CollectionForIterator(boolean[] a) {
+        this(new PrimitiveCollections.BooleanCollection(a));
+    }
+    
+    public CollectionForIterator(byte[] a) {
+        this(new PrimitiveCollections.ByteCollection(a));
+    }
+    
+    public CollectionForIterator(char[] a) {
+        this(new PrimitiveCollections.CharacterCollection(a));
+    }
+    
+    public CollectionForIterator(short[] a) {
+        this(new PrimitiveCollections.ShortCollection(a));
     }
     
     public CollectionForIterator(int[] a) {
-        this(ArrayUtils.toObject(a));
+        this(new PrimitiveCollections.IntegerCollection(a));
+    }
+    
+    public CollectionForIterator(long[] a) {
+        this(new PrimitiveCollections.LongCollection(a));
+    }
+    
+    public CollectionForIterator(float[] a) {
+        this(new PrimitiveCollections.FloatCollection(a));
+    }
+    
+    public CollectionForIterator(double[] a) {
+        this(new PrimitiveCollections.DoubleCollection(a));
     }
     
     public CollectionForIterator(Iterator<?> iterator, int size) {
@@ -75,7 +99,5 @@ public class CollectionForIterator<T> implements ForIterator {
     public boolean last() {
         return index == (size - 1);
     }
-
-    
     
 }

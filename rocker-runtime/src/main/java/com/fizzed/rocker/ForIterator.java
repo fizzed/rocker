@@ -15,8 +15,6 @@
  */
 package com.fizzed.rocker;
 
-import com.fizzed.rocker.runtime.BreakException;
-
 /**
  *
  * @author joelauer

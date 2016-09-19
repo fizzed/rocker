@@ -15,14 +15,11 @@
  */
 package com.fizzed.rocker.runtime;
 
+import com.fizzed.rocker.RockerStringify;
 import javax.tools.ToolProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author joelauer
- */
 public class RockerRuntime {
     private final static Logger log = LoggerFactory.getLogger(RockerRuntime.class.getName());
     
@@ -109,6 +106,17 @@ public class RockerRuntime {
             throw new RuntimeException("Unable to activate Rocker template reloading. Did you forget to include 'rocker-compiler' as an optional/provided dependency?");
         } catch (Exception e) {
             throw new RuntimeException("Unable to activate Rocker template reloading. Unable to create ReloadingRockerBootstrap instance", e);
+        }
+    }
+    
+    static public RockerStringify createDefaultHtmlStringify() {
+        try {
+            // try to load guava stringify for speed, but since its a large
+            // dependency simply fallback to default version if it fails
+            Class<?> cls = Class.forName("com.fizzed.rocker.runtime.GuavaHtmlStringify");
+            return (RockerStringify)cls.newInstance();
+        } catch (Throwable t) {
+            return new DefaultHtmlStringify();
         }
     }
     

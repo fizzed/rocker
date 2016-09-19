@@ -68,44 +68,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 import com.fizzed.rocker.model.WithBlockElse;
 import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
 import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 
-/**
- *
- * @author joelauer
- */
 public class JavaGenerator {
     static private final Logger log = LoggerFactory.getLogger(JavaGenerator.class);
     

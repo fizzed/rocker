@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.bin;
 
+import com.fizzed.rocker.RockerOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public class RenderMain {
     static private final Logger log = LoggerFactory.getLogger(RenderMain.class);
     
     static public void main(String[] args) {
+        /*
         String html = new rocker.Args()
             .s("Hi")
             .i(1)
@@ -30,6 +32,25 @@ public class RenderMain {
         
         System.out.println("---- render output -----");
         System.out.println(html);
+        */
+        
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 1000000; i++) {
+            RockerOutput out = new rocker.Args()
+                .s("<>&'\"€")
+                //.s("")
+                .i(1)
+                .render();
+                //.toString();
+        }
+        
+        long stop = System.currentTimeMillis();
+        
+        System.out.println("Finished in " + (stop-start) + " ms");
+        
+        //System.out.println("---- render output -----");
+        //System.out.println(html);
     }
     
 }

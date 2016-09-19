@@ -18,7 +18,7 @@ package com.fizzed.rocker.compiler;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.TemplateModel;
-import org.apache.commons.lang3.text.translate.*;
+//import org.apache.commons.lang3.text.translate.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
+import org.apache.commons.lang3.text.translate.EntityArrays;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
 
 public class RockerUtil {
     
@@ -293,17 +296,16 @@ public class RockerUtil {
     }
 
     /**
-     * copied from commons lang, but without Unicode escaper
-     * anyway whether you have unicode in your template or not
-     * in last case you would like to have a pretty-generated comments for debug
+     * copied from commons lang, but without Unicode escaper anyway whether you
+     * have unicode in your template or not in last case you would like to have
+     * a pretty-generated comments for debug
      */
-    public static final CharSequenceTranslator ESCAPE_JAVA =
-            new LookupTranslator(
-                    new String[][] {
-                            {"\"", "\\\""},
-                            {"\\", "\\\\"},
-                    }).with(
+    public static final CharSequenceTranslator ESCAPE_JAVA
+            = new LookupTranslator(
+                    new String[][]{
+                        {"\"", "\\\""},
+                        {"\\", "\\\\"},}).with(
                     new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
             );
-    
+
 }

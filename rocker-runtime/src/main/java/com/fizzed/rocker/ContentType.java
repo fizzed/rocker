@@ -15,10 +15,6 @@
  */
 package com.fizzed.rocker;
 
-/**
- *
- * @author joelauer
- */
 public enum ContentType {
     
     RAW,

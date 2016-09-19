@@ -15,26 +15,22 @@
  */
 package com.fizzed.rocker.runtime;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 /**
- *
- * @author joelauer
+ * Guava-based implementation of HtmlStringify. Guava uses some fancy buffer
+ * techniques to achieve 3-5x performance boosts on escaping.  However, its
+ * a large library and so its simply an optional dependency.
  */
-public class HtmlStringify extends RawStringify {
+public class GuavaHtmlStringify extends DefaultHtmlStringify {
 
+    private final com.google.common.escape.Escaper escaper;
+    
+    public GuavaHtmlStringify() {
+        this.escaper = com.google.common.html.HtmlEscapers.htmlEscaper();
+    }
+    
     @Override
     public String s(String str) {
-        return StringEscapeUtils.escapeHtml3(str);
-    }
-
-    @Override
-    public String s(Object obj) {
-        // what to do with null objects?
-        if (obj == null) {
-            throw new NullPointerException();
-        }
-        return s(obj.toString());
+        return this.escaper.escape(str);
     }
     
     // all primitives require no further escaping

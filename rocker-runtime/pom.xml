@@ -23,9 +23,12 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         
+        <!-- for fast html escaping but only if its on classpath, otherwise
+           rocker will use its internal version -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- test -->
