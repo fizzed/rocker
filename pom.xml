@@ -8,8 +8,8 @@
 
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.15</version>
+        <artifactId>maven-parent</artifactId>
+        <version>2.1.0</version>
     </parent>
     
     <scm>
