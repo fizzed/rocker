@@ -8,7 +8,7 @@ Rocker Templates by Fizzed
  - NOTE: some significant changes under-the-hood. Templates will be source
    compatible with older versions, but will likely have runtime issues (e.g.
    templates compiled with v0.12.0 will likely have runtime errors with v0.13.0)
-   Easy solution is to compile all your templats with v0.13.0+.
+   We recommend you recompile all your templates with v0.13.0+.
  - NOTE: default html escaping now uses an internal version rather than apache
    commons.  This internal version is slightly faster, but also only escapes
    only 5 entities (matches the entities Guava encodes, btw).  The previous 
