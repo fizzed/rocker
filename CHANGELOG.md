@@ -1,17 +1,33 @@
 Rocker Templates by Fizzed
 ==========================
 
-#### 0.13.0 - ????
+#### 0.13.0 - 2016-09-19
  
- - Major built-in support for null safe handling.  New present operator `?`
-   allowed on various expression and keyword types to enable null safety.
- - New `@()` expression evaluates values such as Java strings, literals,
-   variables, or statements.   
- - New `@?value` expression will render nothing if the value is null
- - New `@?(value : fallback)` expression will render either the value, or
-   the fallback, or nothing if both are null.
- - New `@with?` expression will skip the block if the variable assignment is
-   null. 
+ - Major built-in support for null safe handling!  This release will help you
+   avoid NullPointerExceptions in numerous areas.
+ - NOTE: some significant changes under-the-hood. Templates will be source
+   compatible with older versions, but will likely have runtime issues (e.g.
+   templates compiled with v0.12.0 will likely have runtime errors with v0.13.0)
+   Easy solution is to compile all your templats with v0.13.0+.
+ - NOTE: default html escaping now uses an internal version rather than apache
+   commons.  This internal version is slightly faster, but also only escapes
+   only 5 entities (matches the entities Guava encodes, btw).  The previous 
+   version used Apache commons lang3 which included many other entities that are
+   irrelevant with modern widespread usage of utf-8.
+ - New `@()` eval expression will evaluate the expression and then render it
+ - New `@?value` expression will only render the value if its not null
+ - New `@value?:defaultValue` null ternary expression will either render the
+   value if not null or will render the defaultValue.  The defaultValue can
+   include strings or literals.  The ternary operation also follows short-circuit
+   evaluation so defaultValue is only evaluated if value was null.
+ - New `@with?` expression will either render the with block or you can optionally
+   include an `else` block that will be rendered instead.
+ - If guava is on the classpath, its html escaper will be used instead of 
+   Rocker's internal default version.  Its about 3-4x faster.  Its such a large
+   dependency, its only optional, so simply add guava to your classpath to
+   activate.
+ - `rocker-runtime` no longer depends on Apache commons lang3.  Its now only a
+   dependency of `rocker-compiler`.
  - Antlr dependency from v4.5 to v4.5.3
 
 #### 0.12.3 - 2016-07-16
