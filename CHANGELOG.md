@@ -28,6 +28,7 @@ Rocker Templates by Fizzed
    activate.
  - `rocker-runtime` no longer depends on Apache commons lang3.  Its now only a
    dependency of `rocker-compiler`.
+ - More efficient `@for` loops that use primitive array types.
  - Antlr dependency from v4.5 to v4.5.3
 
 #### 0.12.3 - 2016-07-16

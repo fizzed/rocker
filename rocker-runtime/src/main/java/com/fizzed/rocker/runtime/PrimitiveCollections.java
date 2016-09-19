@@ -182,6 +182,11 @@ public class PrimitiveCollections {
                     index++;
                     return t;
                 }
+
+                @Override
+                public void remove() {
+                    // do nothing
+                }
             };
         }
         
