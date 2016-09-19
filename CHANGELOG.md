@@ -11,7 +11,7 @@ Rocker Templates by Fizzed
    We recommend you recompile all your templates with v0.13.0+.
  - NOTE: default html escaping now uses an internal version rather than apache
    commons.  This internal version is slightly faster, but also only escapes
-   only 5 entities (matches the entities Guava encodes, btw).  The previous 
+   5 entities (matches the entities Guava encodes by default).  The previous 
    version used Apache commons lang3 which included many other entities that are
    irrelevant with modern widespread usage of utf-8.
  - New `@()` eval expression will evaluate the expression and then render it
