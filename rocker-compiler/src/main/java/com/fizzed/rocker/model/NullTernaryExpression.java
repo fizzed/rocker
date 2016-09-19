@@ -16,19 +16,17 @@
 package com.fizzed.rocker.model;
 
 /**
- * Model for @?(var : fallback)
+ * Model for @var?:"fallback"
  */
-public class ElvisExpression extends TemplateUnit implements NullSafety {
+public class NullTernaryExpression extends TemplateUnit {
     
     private final String leftExpression;
     private final String rightExpression;
-    private final boolean nullSafe;
     
-    public ElvisExpression(SourceRef sourceRef, String leftExpression, String rightExpression, boolean nullSafe) {
+    public NullTernaryExpression(SourceRef sourceRef, String leftExpression, String rightExpression) {
         super(sourceRef);
         this.leftExpression = leftExpression;
         this.rightExpression = rightExpression;
-        this.nullSafe = nullSafe;
     }
 
     public String getLeftExpression() {
@@ -37,11 +35,6 @@ public class ElvisExpression extends TemplateUnit implements NullSafety {
 
     public String getRightExpression() {
         return rightExpression;
-    }
-    
-    @Override
-    public boolean isNullSafe() {
-        return this.nullSafe;
     }
     
 }

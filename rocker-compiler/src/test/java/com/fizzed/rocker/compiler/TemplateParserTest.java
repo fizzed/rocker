@@ -22,7 +22,7 @@ import com.fizzed.rocker.model.Comment;
 import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.NullTernaryExpression;
 import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -43,6 +43,8 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  *
@@ -687,63 +689,44 @@ public class TemplateParserTest {
         EvalExpression eval = model.getUnit(1, EvalExpression.class);
         
         assertThat(eval.isNullSafe(), is(false));
-        assertThat(eval.getExpression(), is("a"));
+        assertThat(eval.getExpression(), is("(a)"));
         
         eval = model.getUnit(3, EvalExpression.class);
         
         assertThat(eval.isNullSafe(), is(false));
-        assertThat(eval.getExpression(), is("a + \"more\""));
+        assertThat(eval.getExpression(), is("(a + \"more\")"));
         
         eval = model.getUnit(5, EvalExpression.class);
         
         assertThat(eval.isNullSafe(), is(false));
-        assertThat(eval.getExpression(), is("a + \"more\"+\"even more\"+0"));
+        assertThat(eval.getExpression(), is("(a + \"more\"+\"even more\"+0)"));
     }
     
     @Test
-    public void evalNullSafe() throws Exception {
+    public void nullTernary() throws Exception {
         TemplateParser parser = createParser();
-        File f = findTemplate("rocker/parser/EvalNullSafe.rocker.html");
+        File f = findTemplate("rocker/parser/NullTernary.rocker.html");
         
         TemplateModel model = parser.parse(f);
         
-        EvalExpression eval = model.getUnit(1, EvalExpression.class);
+        NullTernaryExpression nullTernary = model.getUnit(1, NullTernaryExpression.class);
         
-        assertThat(eval.isNullSafe(), is(true));
-        assertThat(eval.getExpression(), is("s"));
-    }
-    
-    @Test(expected=ParserException.class)
-    public void evalElvisIllegal() throws Exception {
-        TemplateParser parser = createParser();
-        File f = findTemplate("rocker/parser/EvalElvisIllegal.rocker.html");
+        assertThat(nullTernary.getLeftExpression(), is("a"));
+        assertThat(nullTernary.getRightExpression(), is("b"));
         
-        parser.parse(f);
-    }
-    
-    @Test
-    public void elvis() throws Exception {
-        TemplateParser parser = createParser();
-        File f = findTemplate("rocker/parser/Elvis.rocker.html");
+        nullTernary = model.getUnit(3, NullTernaryExpression.class);
         
-        TemplateModel model = parser.parse(f);
+        assertThat(nullTernary.getLeftExpression(), is("a"));
+        assertThat(nullTernary.getRightExpression(), is("\"default\""));
         
-        ElvisExpression elvis = model.getUnit(1, ElvisExpression.class);
+        nullTernary = model.getUnit(5, NullTernaryExpression.class);
         
-        assertThat(elvis.isNullSafe(), is(true));
-        assertThat(elvis.getLeftExpression(), is("a"));
-        assertThat(elvis.getRightExpression(), is("b"));
+        assertThat(nullTernary.getLeftExpression(), is("a"));
+        assertThat(nullTernary.getRightExpression(), is("0"));
         
-        elvis = model.getUnit(3, ElvisExpression.class);
+        nullTernary = model.getUnit(7, NullTernaryExpression.class);
         
-        assertThat(elvis.isNullSafe(), is(true));
-        assertThat(elvis.getLeftExpression(), is("a"));
-        assertThat(elvis.getRightExpression(), is("b"));
-        
-        elvis = model.getUnit(5, ElvisExpression.class);
-        
-        assertThat(elvis.isNullSafe(), is(true));
-        assertThat(elvis.getLeftExpression(), is("a + 0"));
-        assertThat(elvis.getRightExpression(), is("b + \"joe\""));
+        assertThat(nullTernary.getLeftExpression(), is("a"));
+        assertThat(nullTernary.getRightExpression(), is("0L"));
     }
 }

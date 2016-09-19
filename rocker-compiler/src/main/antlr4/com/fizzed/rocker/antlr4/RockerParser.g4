@@ -51,7 +51,7 @@ argumentsStatement
     ;
 
 templateContent
-    :   (comment | block | plain | contentClosure | valueClosure | value | eval)
+    :   (comment | block | plain | contentClosure | valueClosure | value | nullTernary | eval)
     ;
 
 block
@@ -102,10 +102,18 @@ valueExpression
     :   MV_VALUE
     ;
 
+nullTernary
+    :   AT nullTernaryExpression
+    ;
+
+nullTernaryExpression
+    :   MV_NULL_TERNARY_LH MV_NULL_TERNARY_RH
+    ;
+
 eval
-    :   AT MV_EVAL_OPEN evalExpression EVAL_CLOSE
+    :   AT evalExpression
     ;
 
 evalExpression
-    :   EVAL_LH_EXPR EVAL_RH_EXPR?
+    :   MV_EVAL
     ;

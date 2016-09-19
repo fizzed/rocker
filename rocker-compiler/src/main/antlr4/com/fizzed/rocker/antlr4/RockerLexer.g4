@@ -69,8 +69,12 @@ MV_VALUE_CLOSURE
     :   VariableExpression Ws? '->' Ws? '{'                         -> popMode
     ;
 
-MV_EVAL_OPEN
-    :   '?'? '('                                                    -> pushMode(EVAL_EXPR)
+MV_EVAL
+    :   Parentheses                                                 -> popMode
+    ;
+
+MV_NULL_TERNARY_LH
+    :   VariableExpression '?:'                                     -> pushMode(NULL_TERNARY_EXPR)
     ;
 
 MV_VALUE 
@@ -78,19 +82,12 @@ MV_VALUE
     ;
 
 
-mode EVAL_EXPR;
+mode NULL_TERNARY_EXPR;
 
-EVAL_RH_EXPR
-    :   ':' Ws? ValueExpressions Ws? 
+MV_NULL_TERNARY_RH
+    :   ValueExpression                                             -> popMode, popMode
     ;
 
-EVAL_LH_EXPR
-    :   Ws? ValueExpressions Ws? 
-    ;
-
-EVAL_CLOSE
-    :   ')'                                                         -> popMode, popMode
-    ;
 
 //
 // fragments used everywhere else
@@ -100,7 +97,7 @@ fragment ValueExpressions
     :   ValueExpression (Ws? Op Ws? ValueExpression)*
     ;
 
-// "joe" or variable expression
+// variable or literals such as strings and primitives
 fragment ValueExpression
     :   JavaString | JavaLiteral | VariableExpression
     ;

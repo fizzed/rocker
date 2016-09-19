@@ -28,7 +28,7 @@ import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.NullTernaryExpression;
 import com.fizzed.rocker.model.EvalExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
@@ -55,6 +55,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -177,7 +179,15 @@ public class TemplateParser {
             // just for debugging lexer
             tokens.fill();
             for (Token token : tokens.getTokens()) {
-                log.trace("{}", token);
+                String tokenName = null;
+                final Integer type = token.getType();
+                for (Map.Entry<String,Integer> values : lexer.getTokenTypeMap().entrySet()) {
+                    if (Objects.equals(values.getValue(), type)) {
+                        tokenName = values.getKey();
+                    }
+                }
+
+                log.trace("{}: {}", tokenName, token);
             }
         }
         
@@ -722,6 +732,22 @@ public class TemplateParser {
                 model.getUnits().add(new ValueExpression(sourceRef, expr, nullSafety));
             }
         }
+        
+        @Override
+        public void enterNullTernary(RockerParser.NullTernaryContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            // we only care about the expressions
+            RockerParser.NullTernaryExpressionContext nullTernaryExpr = ctx.nullTernaryExpression();
+            
+            String leftExpr = nullTernaryExpr.MV_NULL_TERNARY_LH().getText();
+            // chop off trailing "?:"
+            leftExpr = leftExpr.substring(0, leftExpr.length()-2);
+            
+            String rightExpr = nullTernaryExpr.MV_NULL_TERNARY_RH().getText();
+            
+            model.getUnits().add(new NullTernaryExpression(sourceRef, leftExpr, rightExpr));
+        }
 
         @Override
         public void enterEval(RockerParser.EvalContext ctx) {
@@ -730,23 +756,9 @@ public class TemplateParser {
             // we only care about the expression
             RockerParser.EvalExpressionContext evalExpr = ctx.evalExpression();
             
-            boolean nullSafe = ctx.MV_EVAL_OPEN().getText().startsWith("?");
+            String expr = evalExpr.getText();
             
-            String leftValueExpr = evalExpr.EVAL_LH_EXPR().getText().trim();
-            
-            if (evalExpr.EVAL_RH_EXPR() != null) {
-                // elvis can only be used if nullSafe is true
-                if (!nullSafe) {
-                    throw TemplateParser.buildParserException(sourceRef, templatePath, "Elvis can only be used if null safe true (e.g. '@?(a : b)')");
-                }
-                
-                String rightValueExpr = evalExpr.EVAL_RH_EXPR().getText();
-                // chop off leading ':'
-                rightValueExpr = rightValueExpr.substring(1).trim();
-                model.getUnits().add(new ElvisExpression(sourceRef, leftValueExpr, rightValueExpr, nullSafe));
-            } else {
-                model.getUnits().add(new EvalExpression(sourceRef, leftValueExpr, nullSafe));
-            }
+            model.getUnits().add(new EvalExpression(sourceRef, expr, false));
         }
 
         @Override

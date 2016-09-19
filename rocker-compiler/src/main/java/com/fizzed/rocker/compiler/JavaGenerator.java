@@ -26,7 +26,7 @@ import com.fizzed.rocker.model.ContentClosureBegin;
 import com.fizzed.rocker.model.ContentClosureEnd;
 import com.fizzed.rocker.model.ContinueStatement;
 import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.NullTernaryExpression;
 import com.fizzed.rocker.model.ForBlockBegin;
 import com.fizzed.rocker.model.ForBlockEnd;
 import com.fizzed.rocker.model.ForStatement;
@@ -34,7 +34,6 @@ import com.fizzed.rocker.model.IfBlockBegin;
 import com.fizzed.rocker.model.IfBlockEnd;
 import com.fizzed.rocker.model.JavaImport;
 import com.fizzed.rocker.model.JavaVariable;
-import com.fizzed.rocker.model.JavaVersion;
 import com.fizzed.rocker.model.PlainText;
 import com.fizzed.rocker.model.PostProcessorException;
 import com.fizzed.rocker.model.TemplateModel;
@@ -78,6 +77,30 @@ import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
 import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 import com.fizzed.rocker.model.WithBlockElse;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
+import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
 
 /**
  *
@@ -518,18 +541,18 @@ public class JavaGenerator {
                         .append(", ").append(""+value.isNullSafe())
                         .append(");").append(CRLF);
             }
-            else if (unit instanceof ElvisExpression) {
-                ElvisExpression elvis = (ElvisExpression)unit;
+            else if (unit instanceof NullTernaryExpression) {
+                NullTernaryExpression nullTernary = (NullTernaryExpression)unit;
                 tab(w, depth+indent)
                    .append("{").append(CRLF);
                 tab(w, depth+indent+1)
-                   .append("final Object __v = ").append(elvis.getLeftExpression()).append(";").append(CRLF);
+                   .append("final Object __v = ").append(nullTernary.getLeftExpression()).append(";").append(CRLF);
                 tab(w, depth+indent+1)
                    .append("if (__v != null) { __internal.renderValue(__v, false); }").append(CRLF);
-                if (elvis.getRightExpression() != null) {
+                if (nullTernary.getRightExpression() != null) {
                     tab(w, depth+indent+1)
                         .append("else {__internal.renderValue(")
-                        .append(elvis.getRightExpression())
+                        .append(nullTernary.getRightExpression())
                         .append(", true); }").append(CRLF);
                 }
                 tab(w, depth+indent)

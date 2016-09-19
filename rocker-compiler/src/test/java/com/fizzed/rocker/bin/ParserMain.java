@@ -39,7 +39,8 @@ import com.fizzed.rocker.compiler.RockerConfiguration;
 import com.fizzed.rocker.compiler.RockerUtil;
 import com.fizzed.rocker.compiler.TemplateParser;
 import com.fizzed.rocker.model.BreakStatement;
-import com.fizzed.rocker.model.ElvisExpression;
+import com.fizzed.rocker.model.ContinueStatement;
+import com.fizzed.rocker.model.NullTernaryExpression;
 
 public class ParserMain {
     static private final Logger log = LoggerFactory.getLogger(ParserMain.class);
@@ -112,12 +113,13 @@ public class ParserMain {
             } else if (unit instanceof ValueExpression) {
                 ValueExpression valueExpr = (ValueExpression)unit;
                 log.info("value: {}", valueExpr.getExpression());
-            } else if (unit instanceof ElvisExpression) {
-                ElvisExpression elvisExpr = (ElvisExpression)unit;
-                log.info("elvis: {} : {}", elvisExpr.getLeftExpression(), elvisExpr.getRightExpression());
+            } else if (unit instanceof NullTernaryExpression) {
+                NullTernaryExpression nullTernaryExpr = (NullTernaryExpression)unit;
+                log.info("nullTernary: {} ?: {}", nullTernaryExpr.getLeftExpression(), nullTernaryExpr.getRightExpression());
             } else if (unit instanceof BreakStatement) {
-                BreakStatement breakExpr = (BreakStatement)unit;
                 log.info("break");
+            } else if (unit instanceof ContinueStatement) {
+                log.info("continue");
             } else if (unit instanceof ForBlockBegin) {
                 ForBlockBegin block = (ForBlockBegin)unit;
                 log.info("for begin: {}", block.getExpression());

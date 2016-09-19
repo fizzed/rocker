@@ -763,8 +763,8 @@ public class CompiledTemplateTest {
     }
     
     @Test
-    public void valueElvis() throws Exception {
-        String html = new rocker.ValueElvis()
+    public void nullTernary() throws Exception {
+        String html = new rocker.NullTernary()
             .a(null)
             .b("b")
             .render()
@@ -773,7 +773,7 @@ public class CompiledTemplateTest {
         
         assertThat(html, is("b"));
         
-        html = new rocker.ValueElvis()
+        html = new rocker.NullTernary()
             .a("a")
             .b("b")
             .render()
@@ -784,8 +784,8 @@ public class CompiledTemplateTest {
     }
     
     @Test
-    public void valueElvisChained() throws Exception {
-        String html = new rocker.ValueElvisChained()
+    public void nullTernaryChained() throws Exception {
+        String html = new rocker.NullTernaryChained()
             .a(Arrays.asList("a", null))
             .a1(1)
             .b(Arrays.asList("a", null))
@@ -798,8 +798,9 @@ public class CompiledTemplateTest {
     }
     
     @Test
-    public void valueElvisRightSideNeverEvaluated() throws Exception {    
-        String html = new rocker.ValueElvisChained()
+    public void nullTernaryShortCircuit() throws Exception {
+        // right hand expression never evaluated if var is not null
+        String html = new rocker.NullTernaryChained()
             .a(Arrays.asList("a", null))
             .a1(0)
             .b(null)
@@ -812,35 +813,15 @@ public class CompiledTemplateTest {
     }
     
     @Test
-    public void valueElvisStringAndLiterals() throws Exception {    
-        String html = new rocker.ValueElvisStringAndLiterals()
-            .a(null)
-            .render()
-            .toString()
-            .trim();
-        
-        assertThat(html, is("or a\nor &quot;a&quot;\n0\n0\n0.0"));
-    }
-    
-    @Test
-    public void valueElvisNoTertiary() throws Exception {
-        String html = new rocker.ValueElvisNoTertiary()
+    public void nullTernaryAdvanced() throws Exception {    
+        String html = new rocker.NullTernaryAdvanced()
             .a(null)
             .b("b")
             .render()
             .toString()
             .trim();
         
-        assertThat(html, is(""));
-        
-        html = new rocker.ValueElvisNoTertiary()
-            .a("a")
-            .b("b")
-            .render()
-            .toString()
-            .trim();
-        
-        assertThat(html, is("a"));
+        assertThat(html, is("or a\nor &quot;a&quot;\n0\n0\n0.0\nb?dude"));
     }
     
     @Test
