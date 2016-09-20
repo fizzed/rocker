@@ -65,7 +65,7 @@ public class blaze {
     }
     
     @Task(order=99, value="Use by maintainers only. Updates REAME.md with latest git tag.")
-    public void after_release() throws IOException {
+    public void after_release() throws Exception {
         Integer exitValue
             = exec("git", "diff-files", "--quiet")
                 .exitValues(0,1)
@@ -94,7 +94,7 @@ public class blaze {
         return latestTag;
     }
     
-    private void update_readme() throws IOException {
+    public void update_readme() throws Exception {
         Path readmeFile = withBaseDir("../README.md");
         Path newReadmeFile = withBaseDir("../README.md.new");
         
@@ -146,7 +146,8 @@ public class blaze {
         
         // replace readme with updated version
         Files.delete(readmeFile);
-        Files.move(newReadmeFile, readmeFile, StandardCopyOption.REPLACE_EXISTING);
+        Thread.sleep(2000L);
+        Files.move(newReadmeFile, readmeFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
     
 }
