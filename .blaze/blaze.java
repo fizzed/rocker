@@ -145,6 +145,7 @@ public class blaze {
         }
         
         // replace readme with updated version
+        Files.delete(readmeFile);
         Files.move(newReadmeFile, readmeFile, StandardCopyOption.REPLACE_EXISTING);
     }
     
