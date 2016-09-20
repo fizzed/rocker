@@ -41,43 +41,61 @@ public class DefaultHtmlStringify extends RawStringify {
             return str;
         }
         
-        int replaced = 0;
-        StringBuilder sb = new StringBuilder(str.length());
-        
-        // switches are incredibly fast in java
         int size = str.length();
-        for (int i = 0; i < size; i++) {
-            char c = str.charAt(i);
+        
+        // if empty string immediately return it
+        if (size == 0) {
+            return str;
+        }
+        
+        char c;
+        String r;
+        int lastPos = 0;
+        StringBuilder sb = null;
+        
+        // switches are one of fastest ways to do replacements in java
+        for (int pos = 0; pos < size; pos++) {
+            c = str.charAt(pos);
             switch (c) {
                 case '"':
-                    sb.append("&quot;");
-                    replaced++;
+                    r = "&quot;";
                     break;
                 case '\'':
-                    sb.append("&#39;"); // Note: "&apos;" is not defined in HTML 4.01.
-                    replaced++;
+                    r = "&#39;"; // Note: "&apos;" is not defined in HTML 4.01.
                     break;
                 case '&':
-                    sb.append("&amp;");
-                    replaced++;
+                    r = "&amp;";
                     break;
                 case '<':
-                    sb.append("&lt;");
-                    replaced++;
+                    r = "&lt;";
                     break;
                 case '>':
-                    sb.append("&gt;");
-                    replaced++;
+                    r = "&gt;";
                     break;
                 default:
-                    sb.append(c);
+                    r = null;
                     break;
+            }
+            
+            if (r != null) {
+                // lazily instantiate just in case no replacements are needed
+                if (sb == null) {
+                    // room for the replacement at least
+                    sb = new StringBuilder(size + r.length() - 1);
+                }
+                sb.append(str, lastPos, pos);
+                sb.append(r);
+                lastPos = pos + 1;
             }
         }
         
-        if (replaced == 0) {
-            // more efficient than creating a new string if nothing was actually modified
+        if (sb == null) {
             return str;
+        }
+        
+        // anything not appended?
+        if (lastPos < size) {
+            sb.append(str, lastPos, size);
         }
         
         return sb.toString();

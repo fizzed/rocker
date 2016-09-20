@@ -15,13 +15,15 @@
  */
 package com.fizzed.rocker;
 
+import com.fizzed.rocker.runtime.DefaultHtmlStringify;
 import com.fizzed.rocker.runtime.RawStringify;
 import com.fizzed.rocker.runtime.RockerRuntime;
 
 public interface RockerStringify {
     
     static public final RockerStringify RAW = new RawStringify();
-    static public final RockerStringify HTML = RockerRuntime.createDefaultHtmlStringify();
+    //static public final RockerStringify HTML = RockerRuntime.createDefaultHtmlStringify();
+    static public final RockerStringify HTML = new DefaultHtmlStringify();
     
     String s(String str);
     
