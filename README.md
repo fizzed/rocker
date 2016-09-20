@@ -8,16 +8,19 @@ Rocker Templates by Fizzed
 
 ## Overview
 
-Rocker is a Java 8 optimized (compat with 6+), near zero-copy rendering, speedy template engine
-that produces statically typed, plain java object templates that are compiled along
-with the rest of your project.  No more "warm-up" time in production, slow
-reflection-based logic, or nasty surprises that should have been caught during development.
+Rocker is a Java 8 optimized (runtime compat with 6+), near zero-copy rendering,
+speedy template engine that produces statically typed, plain java object templates
+that are compiled along with the rest of your project.  No more "warm-up" time
+in production, slow reflection-based logic, or nasty surprises that should have
+been caught during development.
 
-Write your templates using an [intuitive, **tagless** syntax](docs/SYNTAX.md) with standard Java expressions
-for logic, iteration, and values. All the heavy lifting is done by the Rocker
-parser during development -- which keeps the runtime dependencies down to just a
-handful of classes.  Rocker will parse your templates and generate well-documented
-Java source files (so you can easily inspect and understand how it works).
+Write your templates using an [intuitive, **tagless** syntax](docs/SYNTAX.md)
+with standard Java expressions for logic, iteration, and values.  Use Rocker's
+special `?` presence operator for null-safe evaluation. All the heavy
+lifting is done by the Rocker parser during development -- which keeps the runtime
+dependencies down to just a handful of classes.  Rocker will parse your templates
+and generate well-documented Java source files (so you can easily inspect and
+understand how it works).
 
 ## Performance
 
@@ -97,11 +100,10 @@ Once you generate the Java sources and peek inside the code, it's simple
 to see how this works. The views.index class creates a views.main template instance
 and hands off rendering to it -- while also passing a block of itself that
 it will render when views.main calls the `@content` variable.  The syntax is 
-identical to how a lambda is defined in Java 8 -- because it literally is a lambda in 
-Java code (implemented with anonymous inner classes in Java 6/7).  Rocker
-does a few things behind the scenes to make sure templates that create other
-templates share the same rendering context (output buffer, application-specific
-context/implicit state).
+identical to how a lambda is defined in Java 8 (implemented with lambdas for Java 8
+and anonymous inner classes for Java 6/7).  Rocker does a number of things behind
+the scenes to make sure templates that create other templates share the same
+rendering context (output buffer, application-specific context/implicit state).
 
 ## Features
 
@@ -115,6 +117,9 @@ context/implicit state).
 
  * [Elegant, intuitive, tagless syntax](docs/SYNTAX.md) that infers when your logic ends for control / dynamic
    content.  All dynamic / control code uses standard Java syntax.
+
+ * A special `?` presence operator extends syntax for simplified handling of
+   null values.
 
  * Parsed templates become normal POJOs with defined arguments -- allowing you
    to tap into your IDEs code completion, syntax highlighting, etc.
@@ -432,6 +437,20 @@ static public void main(String[] args) {
         .template("World")
         .render()
         .toString();
+
+}
+```
+
+### Use optimized output
+
+```java
+import com.fizzed.rocker.runtime.ArrayOfByteArraysOutput;
+
+static public void main(String[] args) {
+
+    ArrayOfByteArraysOutput output = views.HelloWorld
+        .template("World")
+        .render(ArrayOfByteArraysOutput.FACTORY);
 
 }
 ```

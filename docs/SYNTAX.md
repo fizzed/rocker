@@ -29,25 +29,25 @@ Each template starts with an optional preamble.  The preamble is where you defin
 Java imports, options, and arguments.  All of these are optional.  Your template
 body is considered to begin after the last preamble statement.
 
-### Import declarations
+### Import declarations (@import)
 
 These are standard Java import statements that are added to the top of generated
-Java source code.  These start with @import and end with a newline (do not end
+Java source code.  These start with `@import` and end with a newline (do not end
 them with a semi-colon).  Both static and wildcard imports are supported. Since
 these are declared at the top of generated Java code, they apply to the template
 arguments declaration for resolution.  Also, remember that other templates
-are also placed into Java packages, so you can import other templates
-if you want to shorten their syntax.
+are also placed into Java packages, so you can import other templates if you want
+to shorten their syntax.
 
     @import java.util.*
     @import static java.lang.Math.*
-    @import views.CommonPage
+    @import views.index
 
     @args (Map<String,String> map)
 
-    @CommonPage.template()
+    @index.template()
 
-### Option declarations
+### Option declarations (@option)
 
 Options control how templates are parsed and generated. These normally
 should be globally set (e.g. in the maven plugin configuration), but there are times
@@ -63,7 +63,7 @@ than the global default.
 
 A full list of options is below.
 
-### Arguments declaration
+### Arguments declaration (@args)
 
 A single arguments statement declares the parameters to the template. If this
 statement is not included, then the template has no arguments.  However, we
@@ -81,12 +81,12 @@ generally find it's still helpful to include an empty list for readability sake.
 The template body begins after the last preamble statement.  The body includes
 a mix of plain static text and dynamic code.
 
-### Value expressions
+### Value expressions (@value)
 
 Outputs the value during the render. Rocker does not require you to explicitly
 provide an end tag, the end of the expression is inferred from standard Java
 constraints on variable/method names.  Let's say you have a User object with
-a String property getName() that returns "John Smith".
+a String property `getName()` that returns "John Smith".
 
     @args (User user)
 
@@ -96,6 +96,35 @@ The value expression ```@user.getName().substring(0, 4)``` will return ```John``
 since Rocker inferred the entire chained call was all part of the same expression.
 All sorts of value expressions will work exactly as you would expect. You can
 call static or instance methods, chained methods, and pass arguments.
+
+### Null-safe value expressions (@?value)
+
+Rocker will throw a `NullPointerException` if an expression evalutes to a null
+during the rendering process.  As of v0.13.0 Rocker supports the `@?value`
+syntax to skip rendering the value if its null.  Let's say you have a User object
+with a String property `getName()` that returns null.
+
+    @args (User user)
+
+    Name: @?user.getName()
+
+Rocker will render `Name:` and will skip rendering `user.getName()` since `getName()`
+returned null.
+
+### Null-safe ternary operator (@value?:other)
+
+Rocker v0.13.0 supports a null ternary operator that either renders a value if
+its not null or will render a default/fallback value instead.  Unlike Java 8's
+`Optional`, Rocker allows the default/fallback value to be of an entirely different
+type than the primary value.  Rocker also uses efficient assignment with short-
+circuit semantics so that the default value won't be evaluated if the primary
+value exists.  Let's say you have a User object with a String property `getName()`
+that returns null.
+
+    Name: @user.getName()?:"None"
+
+Since `getName()` returned null then Rocker would render `None`.  Unlike value
+expressions, Rocker supports values, strings, or literals as fallback values.
 
 ### Automatic escaping
 
@@ -133,7 +162,7 @@ The rendered output is
 <html>
 ```
 
-### If-else blocks
+### If-else blocks (@if)
 
 Standard Java if-else control flow.  The left curly character ```{``` indicates
 the start of the block and the right curly character ```}``` marks the end.
@@ -148,9 +177,9 @@ Note that Rocker has intelligence to skip template content that includes ```{```
 and ```}``` characters such as JavaScript or CSS.  You will not need to escape
 these characters as long as you have matching left and right curly brackets.
 
-### With blocks (set a variable)
+### With blocks (set a variable) (@with)
 
-As of v0.12.0, sets a variable to a value within a scoped block. Once the block
+As of v0.12.0 a `@with` block sets a variable to a value within a scoped block. Once the block
 exits the variable is no longer available.  Variable names cannot conflict with
 other variable names (e.g. arguments) and they will be checked by the Java compiler.
 
@@ -166,7 +195,41 @@ For Java 6/7
         @s
     }
 
-### Iteration
+### Null-safe with blocks (@with?)
+
+As of v0.13.0 a `@with?` block with a `?` presence operator at the end will
+function identical to a `@with` block no presence operator, but if the value
+set is null, then the `@with` block will be skipped.  You can also define an
+optional `} else {` block to be executed if the main `@with` block is skipped.
+Let's say you have a User object that has a `getName()` property that returns
+null (Java 8 syntax below):
+
+    @with? (name = user.getName()) {
+      Name: @name
+    } else {
+      None
+    }
+
+Since `getName()` returns null and the `?` presence operator was added to
+`@with` then Rocker would end up rendering `None`.  Null-safe with blocks are
+incredibly powerful to add prefixes and postfixes to data that may or may not
+exist.
+
+### Eval expression (@())
+
+As of v0.13.0 a `@( )` expression will evaluate the expression between the
+parentheses and then render the value.  The eval expression is a cousin to the
+`@value` expression.  For example, if you iterating thru a loop with zero-based
+indexes, the eval expression can let you easily increment the index by 1 and
+render the value:
+
+    @for (int i = 0; i < size; i++) {
+      @(i+1): @list.get(i)<br/>
+    }
+
+For a list with an item at 0 of "Joe" this would render `1: Joe<br/>`
+
+### Iteration (@for)
 
 Standard Java for loops as well as enhanced syntax for Java 6 & 7 and
 fancier syntax for Java 8 (where types are inferred).  Since iteration is such
@@ -341,7 +404,7 @@ This would render
         i am in the body
     Footer
 
-## Comments
+## Comments (@* *@)
 
 Server side comments can be used anywhere (preamble or body)
 
