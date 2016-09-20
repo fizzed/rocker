@@ -201,17 +201,16 @@ As of v0.13.0 a `@with?` block with a `?` presence operator at the end will
 function identical to a `@with` block no presence operator, but if the value
 set is null, then the `@with` block will be skipped.  You can also define an
 optional `} else {` block to be executed if the main `@with` block is skipped.
-Let's say you have a User object that has a `getName()` property that returns
-null (Java 8 syntax below):
+Let's say the `list` below at index 0 returns null:
 
-    @with? (name = user.getName()) {
-      Name: @name
+    @with? (s = list.get(0)) {
+        @name
     } else {
-      None
+        None!
     }
 
-Since `getName()` returns null and the `?` presence operator was added to
-`@with` then Rocker would end up rendering `None`.  Null-safe with blocks are
+Since `list.get(0)` returns null and the `?` presence operator was added to
+`@with` then Rocker would end up rendering `None!`.  Null-safe with blocks are
 incredibly powerful to add prefixes and postfixes to data that may or may not
 exist.
 
@@ -224,7 +223,7 @@ indexes, the eval expression can let you easily increment the index by 1 and
 render the value:
 
     @for (int i = 0; i < size; i++) {
-      @(i+1): @list.get(i)<br/>
+        @(i+1): @list.get(i)<br/>
     }
 
 For a list with an item at 0 of "Joe" this would render `1: Joe<br/>`
