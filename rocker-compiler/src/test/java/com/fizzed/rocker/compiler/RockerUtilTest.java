@@ -16,41 +16,12 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.compiler.RockerUtil;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author joelauer
- */
 public class RockerUtilTest {
-    
-    /**
-    @Test
-    public void relativePath() throws Exception {
-        File bd = new File("src/test/resources");
-        String rp;
-        
-        rp = RockerUtil.relativePath(bd, new File("src/test/resources/templates/KitchenSink.rocker.html"));
-        Assert.assertEquals("templates/KitchenSink.rocker.html", rp);
-        
-        try {
-            rp = RockerUtil.relativePath(new File("src/test/java"), new File("src/test/resources/templates/KitchenSink.rocker.html"));
-            Assert.fail("Invalid relative path");
-        } catch (IOException e) {
-            // expected
-        }
-        
-        // no base dir just returns the file path
-        File f = new File("src/test/resources/templates/KitchenSink.rocker.html");
-        Assert.assertEquals(f.getPath(), RockerUtil.relativePath(null, f));
-    }
-    */
     
     @Test
     public void pathToPackageName() throws Exception {
@@ -115,12 +86,12 @@ public class RockerUtilTest {
     @Test
     public void getTextAsJavaByteArrayInitializer() throws Exception {
         Assert.assertEquals("new byte[] { 'h', 't', 'm', 'l' };", RockerUtil.getTextAsJavaByteArrayInitializer("html", "UTF-8", 4096).get(0));
-        Assert.assertEquals("new byte[] { (byte)0xE2, (byte)0x82, (byte)0xAC };", RockerUtil.getTextAsJavaByteArrayInitializer("\u20AC", "UTF-8", 4096).get(0));
+        Assert.assertEquals("new byte[] { (byte)0xe2, (byte)0x82, (byte)0xac };", RockerUtil.getTextAsJavaByteArrayInitializer("\u20AC", "UTF-8", 4096).get(0));
         
         List<String> byteArrays = RockerUtil.getTextAsJavaByteArrayInitializer("\u20AC", "UTF-8", 1);
-        Assert.assertEquals("new byte[] { (byte)0xE2 };", byteArrays.get(0));
+        Assert.assertEquals("new byte[] { (byte)0xe2 };", byteArrays.get(0));
         Assert.assertEquals("new byte[] { (byte)0x82 };", byteArrays.get(1));
-        Assert.assertEquals("new byte[] { (byte)0xAC };", byteArrays.get(2));
+        Assert.assertEquals("new byte[] { (byte)0xac };", byteArrays.get(2));
     }
     
     @Test

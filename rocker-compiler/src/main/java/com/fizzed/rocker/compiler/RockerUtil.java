@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.xml.bind.DatatypeConverter;
+//import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
@@ -277,11 +277,11 @@ public class RockerUtil {
                 sb.append("'").append((char)b).append("'");
             } else {
                 // no cast needed
-                sb.append("0x").append(javax.xml.bind.DatatypeConverter.printHexBinary(new byte[] { b }));
+                sb.append("0x").append(byteArrayToHex(new byte[] { b }));
             }
         } else {
             // cast needed
-            sb.append("(byte)0x").append(javax.xml.bind.DatatypeConverter.printHexBinary(new byte[] { b }));
+            sb.append("(byte)0x").append(byteArrayToHex(new byte[] { b }));
         }
     }
     
@@ -289,10 +289,18 @@ public class RockerUtil {
         try {
             byte[] b = Files.readAllBytes(f.toPath());
             byte[] hash = MessageDigest.getInstance("MD5").digest(b);
-            return DatatypeConverter.printHexBinary(hash);
+            return byteArrayToHex(hash);
         } catch (NoSuchAlgorithmException e) {
             throw new IOException(e.getMessage(), e);
         }
+    }
+    
+    static public String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
     }
 
     /**
