@@ -56,6 +56,26 @@ public class Java8FeaturesTest {
     }
     
     @Test
+    public void forBlockEnhancedUntypedArray() throws Exception {
+        String html = new rocker.ForBlockEnhancedUntypedArray()
+            .booleans(new boolean[] { false })
+            .chars(new char[] { 'a' })
+            .bytes(new byte[] { (byte)0x40 })
+            .shorts(new short[] { (short)1 })
+            .ints(new int[] { 2 })
+            .longs(new long[] { 3L })
+            .floats(new float[] { 1.1f })
+            .doubles(new double[] { 2.2d })
+            .strings(new String[] { "hello" })
+            .objects(new Object[] { new Object() { @Override public String toString() { return "obj"; } } })
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("false\na\n64\n1\n2\n3\n1.1\n2.2\nhello\nobj"));
+    }
+    
+    @Test
     public void forBlockEnhancedUntypedCollection() throws Exception {
         
         String html = new rocker.ForBlockEnhancedUntypedCollection()

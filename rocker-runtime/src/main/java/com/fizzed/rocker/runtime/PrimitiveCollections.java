@@ -173,7 +173,7 @@ public class PrimitiveCollections {
                 
                 @Override
                 public boolean hasNext() {
-                    return (index + 1) < size;
+                    return index < size;
                 }
 
                 @Override

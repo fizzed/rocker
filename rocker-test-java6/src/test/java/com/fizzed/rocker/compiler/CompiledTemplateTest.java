@@ -508,15 +508,22 @@ public class CompiledTemplateTest {
     @Test
     public void forBlockEnhancedTypedArray() throws Exception {
 
-        String html = new rocker.ForBlockEnhancedTypedCollection()
-            .items(Arrays.asList("a", "b", "c"))
+        String html = new rocker.ForBlockEnhancedTypedArray()
+            .booleans(new boolean[] { false })
+            .chars(new char[] { 'a' })
+            .bytes(new byte[] { (byte)0x40 })
+            .shorts(new short[] { (short)1 })
+            .ints(new int[] { 2 })
+            .longs(new long[] { 3L })
+            .floats(new float[] { 1.1f })
+            .doubles(new double[] { 2.2d })
+            .strings(new String[] { "hello" })
+            .objects(new Object[] { new Object() { @Override public String toString() { return "obj"; } } })
             .render()
             .toString()
             .trim();
         
-        // in reverse order
-        Assert.assertEquals("abc", html);
-        
+        assertThat(html, is("false\na\n64\n1\n2\n3\n1.1\n2.2\nhello\nobj"));
     }
     
     @Test
