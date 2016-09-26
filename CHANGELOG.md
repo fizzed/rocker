@@ -1,6 +1,13 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.13.1 - 2016-09-26
+
+ - Fixed off by 1 error with iterating primitive collections
+ - Support for iterating String and Object primitive arrays
+ - Significantly faster HTML escaping for case where String requires zero
+   replacements.
+
 #### 0.13.0 - 2016-09-19
  
  - Major built-in support for null safe handling!  This release will help you
