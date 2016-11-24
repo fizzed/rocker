@@ -17,60 +17,18 @@ package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerContent;
-import static com.fizzed.rocker.compiler.RockerUtil.isJava8Plus;
-import com.fizzed.rocker.runtime.RockerRuntime;
-import com.fizzed.rocker.model.Argument;
-import com.fizzed.rocker.model.BreakStatement;
-import com.fizzed.rocker.model.Comment;
-import com.fizzed.rocker.model.ContentClosureBegin;
-import com.fizzed.rocker.model.ContentClosureEnd;
-import com.fizzed.rocker.model.ContinueStatement;
-import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.NullTernaryExpression;
-import com.fizzed.rocker.model.ForBlockBegin;
-import com.fizzed.rocker.model.ForBlockEnd;
-import com.fizzed.rocker.model.ForStatement;
-import com.fizzed.rocker.model.IfBlockBegin;
-import com.fizzed.rocker.model.IfBlockEnd;
-import com.fizzed.rocker.model.JavaImport;
-import com.fizzed.rocker.model.JavaVariable;
-import com.fizzed.rocker.model.PlainText;
-import com.fizzed.rocker.model.PostProcessorException;
-import com.fizzed.rocker.model.TemplateModel;
-import com.fizzed.rocker.model.TemplateModelPostProcessor;
-import com.fizzed.rocker.model.TemplateUnit;
-import com.fizzed.rocker.model.ValueClosureBegin;
-import com.fizzed.rocker.model.ValueClosureEnd;
-import com.fizzed.rocker.model.ValueExpression;
-import com.fizzed.rocker.model.WithBlockBegin;
-import com.fizzed.rocker.model.WithBlockEnd;
-import com.fizzed.rocker.model.WithStatement;
-import com.fizzed.rocker.runtime.BreakException;
-import com.fizzed.rocker.runtime.ContinueException;
-import com.fizzed.rocker.runtime.Java8Iterator;
-import com.fizzed.rocker.runtime.WithBlock;
-import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.file.Path;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.fizzed.rocker.model.*;
+import com.fizzed.rocker.runtime.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fizzed.rocker.model.WithBlockElse;
-import static com.fizzed.rocker.compiler.RockerUtil.qualifiedClassName;
-import static com.fizzed.rocker.compiler.RockerUtil.unqualifiedClassName;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.util.*;
+
+import static com.fizzed.rocker.compiler.RockerUtil.*;
 
 public class JavaGenerator {
     static private final Logger log = LoggerFactory.getLogger(JavaGenerator.class);
@@ -793,8 +751,10 @@ public class JavaGenerator {
                         // create unique variable name for iterator
                         String forIteratorVarName = "__forIterator" + (++varCounter);
 
-                        // ForIterator for collection
+                        // ForIterator for collection and make it final to assure nested anonymous
+                        // blocks can access it as well.
                         tab(w, depth+indent)
+                            .append("final ")
                             .append(com.fizzed.rocker.runtime.CollectionForIterator.class.getName())
                             .append("<").append(iterateeType).append(">")
                             .append(" ")
@@ -814,9 +774,11 @@ public class JavaGenerator {
                             .append(".hasNext()) {")
                             .append(CRLF);
 
-                        // if forIterator request assign to local var
+                        // if forIterator request assign to local var and make it final to assure nested anonymous
+                        // blocks can access it as well.
                         if (forIterator) {
                             tab(w, depth+indent+1)
+                                .append("final ")
                                 .append(com.fizzed.rocker.ForIterator.class.getName())
                                 .append(" ")
                                 .append(stmt.getArguments().get(0).getName())
@@ -827,8 +789,10 @@ public class JavaGenerator {
                         }
 
                         if (stmt.getArguments().size() == collectionCount) {
-                            // assign item to local var
+                            // assign item to local var and make it final to assure nested anonymous
+                            // blocks can access it as well.
                             tab(w, depth+indent+1)
+                                .append("final ")
                                 .append(stmt.getArguments().get(collectionCount - 1).toString())
                                 .append(" = ")
                                 .append(forIteratorVarName)
@@ -841,6 +805,7 @@ public class JavaGenerator {
 
                             // assign map entry to local var
                             tab(w, depth+indent+1)
+                                .append("final ")
                                 .append(iterateeType)
                                 .append(" ")
                                 .append(entryVarName)
@@ -849,12 +814,15 @@ public class JavaGenerator {
                                 .append(".next();")
                                 .append(CRLF);
 
-                            // assign entry to local values
+                            // assign entry to local values  make it final to assure nested anonymous
+                            // blocks can access it as well.
                             tab(w, depth+indent+1)
+                                .append("final ")
                                 .append(stmt.getArguments().get(mapCount - 2).toString())
                                 .append(" = ").append(entryVarName).append(".getKey();").append(CRLF);
 
                             tab(w, depth+indent+1)
+                                .append("final ")
                                 .append(stmt.getArguments().get(mapCount - 1).toString())
                                 .append(" = ").append(entryVarName).append(".getValue();").append(CRLF);
                         }
