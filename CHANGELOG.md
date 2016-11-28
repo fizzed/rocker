@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.14.0 - 2016-11-28
+
+ - Variables from enhanced @for loops are now `final`.  This allows them to be
+   used in nested `@with` blocks. (@mreuvers)
+
 #### 0.13.1 - 2016-09-26
 
  - Fixed off by 1 error with iterating primitive collections
