@@ -59,6 +59,10 @@ public class StringBuilderOutput extends AbstractRockerOutput<StringBuilderOutpu
         this.buffer = new StringBuilder(intialSize);
     }
     
+    public StringBuilder getBuffer() {
+        return this.buffer;
+    }
+    
     @Override
     public StringBuilderOutput w(String string) throws IOException {
         this.buffer.append(string);
@@ -71,16 +75,6 @@ public class StringBuilderOutput extends AbstractRockerOutput<StringBuilderOutpu
         this.buffer.append(s);
         return this;
     }
-
-    /**
-     * @return 
-    @Override
-    public StringBuilderOutput w(byte[] bytes, int offset, int length) throws IOException {
-        String s = new String(bytes, offset, length, charset);
-        this.buffer.append(s);
-        return this;
-    }
-    */
 
     @Override
     public String toString() {
