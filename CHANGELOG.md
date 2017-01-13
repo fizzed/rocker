@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.15.0 - 2017-01-13
+
+ - `@with` blocks now support multiple variables to be set in a single statement.
+   Excellent work by @mreuvers to make it functional.
+
 #### 0.14.0 - 2016-11-28
 
  - Variables from enhanced @for loops are now `final`.  This allows them to be
