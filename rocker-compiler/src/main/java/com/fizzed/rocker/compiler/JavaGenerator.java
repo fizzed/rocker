@@ -43,7 +43,7 @@ public class JavaGenerator {
     private final RockerConfiguration configuration;
     //private File outputDirectory;
     private PlainTextStrategy plainTextStrategy;
-    
+
     public JavaGenerator(RockerConfiguration configuration) {
         this.configuration = configuration;
         //this.outputDirectory = RockerConfiguration.getInstance().getOutputDirectory();
@@ -156,7 +156,10 @@ public class JavaGenerator {
                 throw new GeneratorException("Error during post-processing of model.", ppe);
             }
         }
-        
+
+        // Used to register any withstatements we encounter, so we can generate all dynamic consumers at the end.
+        final WithStatementConsumerGenerator withStatementConsumerGenerator = new WithStatementConsumerGenerator();
+
         // simple increment to help create unique var names
         int varCounter = -1;
         
@@ -639,30 +642,79 @@ public class JavaGenerator {
             else if (unit instanceof WithBlockBegin) {
                 WithBlockBegin block = (WithBlockBegin)unit;
                 WithStatement stmt = block.getStatement();
-                
+
+                String statementConsumerName = withStatementConsumerGenerator.register(stmt);
+
+                final List<WithStatement.VariableWithExpression> variables = stmt.getVariables();
+
                 if (isJava8Plus(model)) {
-                
                     tab(w, depth+indent)
-                        .append(qualifiedClassName(WithBlock.class))
-                        .append(".with(").append(stmt.getValueExpression())
-                        .append(", ").append(stmt.isNullSafe()+"")
-                        .append(", (").append(stmt.getVariable().toString()).append(") -> {").append(CRLF);
-                
-                    depth++;
-                
-                    blockEnd.push("});");
-                
-                } else {
-                    
-                    tab(w, depth+indent)
-                        .append(qualifiedClassName(WithBlock.class))
-                        .append(".with(").append(stmt.getValueExpression())
-                        .append(", ").append(stmt.isNullSafe()+"")
-                        .append(", (new ").append(qualifiedClassName(WithBlock.Consumer1.class)).append("<").append(stmt.getVariable().getType()).append(">() { ")
-                        .append("@Override public void accept(final ").append(stmt.getVariable().toString()).append(") throws IOException {").append(CRLF);
+                        .append(variables.size() == 1 ? qualifiedClassName(WithBlock.class) : WithStatementConsumerGenerator.WITH_BLOCKS_GENERATED_CLASS_NAME)
+                        .append(".with(");
+                        // All expressions
+                        for(int i = 0; i < variables.size(); i++) {
+                            final WithStatement.VariableWithExpression var = variables.get(i);
+                            if(i > 0) {
+                                w.append(", ");
+                            }
+                            w.append(var.getValueExpression());
+                        }
+                        w.append(", ").append(stmt.isNullSafe()+"")
+                        .append(", (");
+                        for(int i = 0; i < variables.size(); i++) {
+                            final WithStatement.VariableWithExpression var = variables.get(i);
+                            if(i > 0) {
+                                w.append(", ");
+                            }
+                            w.append(var.getVariable().getName());
+                        }
+                        w.append(") -> {").append(CRLF);
 
                     depth++;
-                
+
+                    blockEnd.push("});");
+
+                }
+                else {
+                    tab(w, depth+indent)
+                        // Note for standard 1 variable with block we use the predefined consumers.
+                        // Otherwise we fallback to the generated ones.
+                        .append(variables.size() == 1 ? qualifiedClassName(WithBlock.class) : WithStatementConsumerGenerator.WITH_BLOCKS_GENERATED_CLASS_NAME)
+                        .append(".with(");
+
+                    // All expressions
+                    for(int i = 0; i < variables.size(); i++) {
+                        final WithStatement.VariableWithExpression var = variables.get(i);
+                        if(i > 0) {
+                            w.append(", ");
+                        }
+                        w.append(var.getValueExpression());
+                    }
+                    w.append(", ").append(stmt.isNullSafe()+"")
+                        .append(", (new ").append(statementConsumerName).append('<');
+
+                    // Types for the .with(..)
+                    for(int i = 0; i < variables.size(); i++) {
+                        final JavaVariable variable = variables.get(i).getVariable();
+                        if(i > 0) {
+                            w.append(", ");
+                        }
+                        w.append(variable.getType());
+                    }
+                    w.append(">() {").append(CRLF);
+                    tab(w, depth+indent+1)
+                        .append("@Override public void accept(");
+                    for(int i = 0; i < variables.size(); i++) {
+                        final JavaVariable variable = variables.get(i).getVariable();
+                        if(i > 0) {
+                            w.append(", ");
+                        }
+                        w.append("final ").append(variable.toString());
+                    }
+                    w.append(") throws IOException {").append(CRLF);
+
+                    depth++;
+
                     blockEnd.push("}}));");
                 }
             }
@@ -896,8 +948,10 @@ public class JavaGenerator {
         
         // end of template class
         tab(w, indent).append("}").append(CRLF);
-        
-        
+
+        // Generate class with all gathered consumer interfaces for all withblocks
+        withStatementConsumerGenerator.generate(this, w);
+
         if (this.plainTextStrategy == PlainTextStrategy.STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS &&
                 !plainTextMap.isEmpty()) {
             
@@ -949,7 +1003,7 @@ public class JavaGenerator {
         // create a list of post-processor class names. by setting up this list with copies of the
         // configured class names before any post-processors run, no changes made by post-processors
         // to the templateModel's list of post-processors will be honoured. 
-        List<String> postProcessorClassNames = new ArrayList<String>();
+        List<String> postProcessorClassNames = new ArrayList<>();
 
         // consider global list of post-processors from Maven's pom.xml first.
         if ( getConfiguration().getOptions().getPostProcessing() != null ) {
