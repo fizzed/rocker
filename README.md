@@ -443,17 +443,48 @@ static public void main(String[] args) {
 
 ### Use optimized output
 
+Rocker is heavily optimized (by default) to output templates as byte arrays.
+The default `RockerOutput` a template will render to is of the type
+`com.fizzed.rocker.runtime.ArrayOfByteArraysOutput`.  This is an excellent choice
+for byte arrays or asynchronous IO. However, the framework has the capability
+for optimized rendering to Strings (or other custom outputs).
+
+To efficiently render to a String:
+
 ```java
-import com.fizzed.rocker.runtime.ArrayOfByteArraysOutput;
+import com.fizzed.rocker.runtime.StringBuilderOutput;
 
 static public void main(String[] args) {
 
-    ArrayOfByteArraysOutput output = views.HelloWorld
+    StringBuilderOutput output = views.HelloWorld
         .template("World")
-        .render(ArrayOfByteArraysOutput.FACTORY);
+        .render(StringBuilderOutput.FACTORY);
+
+    String text = output.toString();
 
 }
 ```
+
+To efficiently render to an OutputStream:
+
+```java
+import com.fizzed.rocker.runtime.OutputStreamOutput;
+
+static public void main(String[] args) throws Exception {
+
+    final OutputStream os = new FileOutputStream(new File("test"));
+
+    OutputStreamOutput output = views.HelloWorld
+        .template("World")
+        .render((contentType, charsetName) -> new OutputStreamOutput(contentType, os, charsetName));
+
+}
+```
+
+Please note that if there is an exception during the render the OutputStream
+would have a partial template rendered (up to the point of the exception).  In
+most cases it would be better to render to the default `com.fizzed.rocker.runtime.ArrayOfByteArraysOutput`
+and write its buffer of byte arrays out directly to your OutputStream.
 
 ## Ninja framework integration (or other third party frameworks)
 

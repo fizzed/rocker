@@ -59,14 +59,5 @@ public class OutputStreamOutput extends AbstractRockerOutput<OutputStreamOutput>
         this.byteLength += bytes.length;
         return this;
     }
-
-    /**
-    @Override
-    public OutputStreamOutput w(byte[] bytes, int offset, int length) throws IOException {
-        stream.write(bytes, offset, length);
-        this.byteLength += length;
-        return this;
-    }
-    */
     
 }

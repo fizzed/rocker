@@ -82,7 +82,7 @@ public class ArrayOfByteArraysOutput extends AbstractRockerOutput<ArrayOfByteArr
      * of this output and then copying each underlying byte array into this new
      * byte array.  Lots of memory copying...
      * 
-     * @return 
+     * @return A new byte array
      */
     public byte[] toByteArray() {
         byte[] bytes = new byte[this.byteLength];
@@ -97,7 +97,8 @@ public class ArrayOfByteArraysOutput extends AbstractRockerOutput<ArrayOfByteArr
     @Override
     public String toString() {
         // super inneffecient method to convert to string
-        // since byte arrays are guaranteed to be split real chars we need to
+        // since byte arrays are not guaranteed to end with a complete char
+        // (e.g. a unicode char that requireds multiple bytes) -- we need to
         // construct the entire array first before doing final convert to string
         byte[] bytes = toByteArray();
         return new String(bytes, this.charset);
@@ -167,16 +168,5 @@ public class ArrayOfByteArraysOutput extends AbstractRockerOutput<ArrayOfByteArr
             }
         };
     }
-    
-    /**
-    @Override
-    public ArrayOfByteArraysOutput w(byte[] bytes, int offset, int length) throws IOException {
-        // slightly
-        
-        stream.write(bytes, offset, length);
-        this.byteLength += length;
-        return this;
-    }
-    */
     
 }
