@@ -177,10 +177,10 @@ Note that Rocker has intelligence to skip template content that includes ```{```
 and ```}``` characters such as JavaScript or CSS.  You will not need to escape
 these characters as long as you have matching left and right curly brackets.
 
-### With blocks (set a variable) (@with)
+### With blocks (set one or more variables) (@with)
 
 As of v0.12.0 a `@with` block sets a variable to a value within a scoped block. Once the block
-exits the variable is no longer available.  Variable names cannot conflict with
+exits the variable is no longer available. Variable names cannot conflict with
 other variable names (e.g. arguments) and they will be checked by the Java compiler.
 
 For Java 8 (note this is statically typed and checked at compile time)
@@ -193,6 +193,24 @@ For Java 6/7
 
     @with (String s = list.get(0)) {
         @s
+    }
+    
+As of v0.15.0 a @with block can set more than one variable within the scoped block. Once the block
+exits the variables are no longer available. Variable names cannot conflict with
+other variable names (e.g. arguments) and they will be checked by the Java compiler.
+
+For Java 8 (note this is statically typed and checked at compile time)
+
+    @with (s1 = list.get(0), s2=map.get("key").subList(0,3)) {
+        @s1
+        @s2.get(0)
+    }
+
+For Java 6/7
+
+    @with (String s1 = list.get(0), List<String> s2=map.get("key").subList(0,3)) {
+        @s1
+        @s2.get(0)
     }
 
 ### Null-safe with blocks (@with?)
@@ -213,6 +231,9 @@ Since `list.get(0)` returns null and the `?` presence operator was added to
 `@with` then Rocker would end up rendering `None!`.  Null-safe with blocks are
 incredibly powerful to add prefixes and postfixes to data that may or may not
 exist.
+
+Note: Nullsafe with blocks are not allowed if the with block has multiple arguments.
+      Doing so will result in a compile error.
 
 ### Eval expression (@())
 
