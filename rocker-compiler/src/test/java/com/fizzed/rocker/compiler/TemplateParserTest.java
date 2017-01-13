@@ -15,36 +15,22 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.model.Argument;
-import com.fizzed.rocker.model.Comment;
-import com.fizzed.rocker.model.ContentClosureBegin;
-import com.fizzed.rocker.model.ContentClosureEnd;
-import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.NullTernaryExpression;
-import com.fizzed.rocker.model.EvalExpression;
-import com.fizzed.rocker.model.ForBlockBegin;
-import com.fizzed.rocker.model.ForBlockEnd;
-import com.fizzed.rocker.model.ForStatement;
-import com.fizzed.rocker.model.IfBlockBegin;
-import com.fizzed.rocker.model.IfBlockEnd;
-import com.fizzed.rocker.model.JavaVariable;
-import com.fizzed.rocker.model.JavaVersion;
-import com.fizzed.rocker.model.PlainText;
-import com.fizzed.rocker.model.TemplateModel;
-import com.fizzed.rocker.model.ValueClosureBegin;
-import com.fizzed.rocker.model.ValueClosureEnd;
-import com.fizzed.rocker.model.ValueExpression;
-import java.io.File;
-import static org.hamcrest.CoreMatchers.is;
+import com.fizzed.rocker.model.*;
+import com.fizzed.rocker.runtime.ParserException;
 import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -213,7 +199,7 @@ public class TemplateParserTest {
         
         try {
             parser.parse(f);
-            Assert.fail("Expected parsing failure");
+            fail("Expected parsing failure");
         } catch (ParserException e) {
             //log.error("", e);
             // confirm position of error
@@ -315,7 +301,7 @@ public class TemplateParserTest {
             File f = findTemplate("rocker/parser/PlainTextIncludesStyleWithNoMatchingRightCurly.rocker.html");
             TemplateModel model = parser.parse(f);
             
-            Assert.fail("expected exception");
+            fail("expected exception");
         }
         catch (Exception e) {
             // expected
@@ -522,7 +508,7 @@ public class TemplateParserTest {
         
         try {
             parser.parse(f);
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (ParserException e) {
             // expected
         }
@@ -612,7 +598,7 @@ public class TemplateParserTest {
         
         try {
             TemplateModel model = parser.parse(f);
-            Assert.fail();
+            fail();
         } catch (ParserException e) {
             Assert.assertEquals(2, e.getLineNumber());
         }
@@ -626,7 +612,7 @@ public class TemplateParserTest {
         
         try {
             TemplateModel model = parser.parse(f);
-            Assert.fail();
+            fail();
         } catch (ParserException e) {
             Assert.assertEquals(1, e.getLineNumber());
         }
@@ -728,5 +714,47 @@ public class TemplateParserTest {
         
         assertThat(nullTernary.getLeftExpression(), is("a"));
         assertThat(nullTernary.getRightExpression(), is("0L"));
+    }
+
+    @Test
+    public void withStatementMultipleArguments() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/WithBlockMultipleArguments.rocker.html");
+
+        TemplateModel model = parser.parse(f);
+
+        WithBlockBegin withBlockBegin = model.getUnit(1, WithBlockBegin.class);
+        assertNotNull("Must be non null", withBlockBegin);
+        assertThat(withBlockBegin.getExpression(), is("(String b = a.get(0), List<String> list = map.get(\"abc\"), Long value = Long.valueOf(a.get(0)))"));
+
+        List<WithStatement.VariableWithExpression> variableWithExpressions = withBlockBegin.getStatement().getVariables();
+        WithStatement.VariableWithExpression variableWithExpression = variableWithExpressions.get(0);
+        assertThat(variableWithExpression.getVariable().getName(), is("b"));
+        assertThat(variableWithExpression.getVariable().getType(), is("String"));
+        assertThat(variableWithExpression.getValueExpression(), is("a.get(0)"));
+
+        variableWithExpression = variableWithExpressions.get(1);
+        assertThat(variableWithExpression.getVariable().getName(), is("list"));
+        assertThat(variableWithExpression.getVariable().getType(), is("List<String>"));
+        assertThat(variableWithExpression.getValueExpression(), is("map.get(\"abc\")"));
+
+        variableWithExpression = variableWithExpressions.get(2);
+        assertThat(variableWithExpression.getVariable().getName(), is("value"));
+        assertThat(variableWithExpression.getVariable().getType(), is("Long"));
+        assertThat(variableWithExpression.getValueExpression(), is("Long.valueOf(a.get(0))"));
+    }
+
+    @Test
+    public void withStatementNullSafeNotAllowedMultipleArguments() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/WithBlockMultipleArgumentsNullSafeFails.rocker.html");
+
+        try {
+            parser.parse(f);
+            fail("Expected ParserException");
+        }
+        catch(ParserException e) {
+            assertThat(e.getMessage(), containsString("Nullsafe option not allowed for with block with multiple arguments"));
+        }
     }
 }

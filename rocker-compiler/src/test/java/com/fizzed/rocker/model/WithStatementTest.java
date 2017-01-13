@@ -16,11 +16,15 @@
 package com.fizzed.rocker.model;
 
 import com.fizzed.rocker.compiler.TokenException;
+import com.fizzed.rocker.runtime.ParserException;
+import org.junit.Test;
+
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import org.junit.Test;
 
 public class WithStatementTest {
     
@@ -28,7 +32,7 @@ public class WithStatementTest {
     public void notStartOrEndWithParenthese() throws Exception {
         try {
             // missing starting parenthese
-            WithStatement.parse("String s = \"test\"");
+            WithStatement.parse("String s = \"test\"", "template-path");
             fail("Expected exception");
         } catch (TokenException e) {
             assertThat(e.getMessage(), containsString("start with parenthese"));
@@ -36,7 +40,7 @@ public class WithStatementTest {
         
         try {
             // missing ending parenthese
-            WithStatement.parse("(String s = \"test\"");
+            WithStatement.parse("(String s = \"test\"", "template-path");
             fail("Expected exception");
         } catch (TokenException e) {
             assertThat(e.getMessage(), containsString("end with parenthese"));
@@ -47,7 +51,7 @@ public class WithStatementTest {
     public void noEqualsChar() throws Exception {
         try {
             // missing starting parenthese
-            WithStatement.parse("(String s -> \"test\")");
+            WithStatement.parse("(String s -> \"test\")", "template-path");
             fail("Expected exception");
         } catch (TokenException e) {
             assertThat(e.getMessage(), containsString("no equals symbol"));
@@ -58,20 +62,34 @@ public class WithStatementTest {
     public void multipleEqualsChar() throws Exception {
         try {
             // missing starting parenthese
-            WithStatement.parse("(String s = \"test\"; String t = \"test\")");
+            WithStatement.parse("(String s = \"test\"; String t = \"test\")", "template-path");
             fail("Expected exception");
         } catch (TokenException e) {
             assertThat(e.getMessage(), containsString("multiple equals symbol"));
         }
     }
-    
+
+    @Test
+    public void endsWithComma() throws Exception {
+        try {
+            WithStatement.parse(("(String s = \"test\",)"), "template-path");
+            fail("Expected exception");
+        }
+        catch(ParserException e) {
+            assertThat(e.getMessage(), containsString("template-path:[1,18] missing ARGUMENT at '<EOF>'"));
+        }
+    }
+
     @Test
     public void works() throws Exception {
-        WithStatement with = WithStatement.parse("(String s = \"test\")");
-        
-        assertThat(with.getVariable().getName(), is("s"));
-        assertThat(with.getVariable().getType(), is("String"));
-        assertThat(with.getValueExpression(), is("\"test\""));
+        WithStatement with = WithStatement.parse("(String s = \"test\")", "template-path");
+
+        final List<WithStatement.VariableWithExpression> variablesWithExpressions = with.getVariables();
+        final WithStatement.VariableWithExpression variableWithExpression = variablesWithExpressions.get(0);
+
+        assertThat(variableWithExpression.getVariable().getName(), is("s"));
+        assertThat(variableWithExpression.getVariable().getType(), is("String"));
+        assertThat(variableWithExpression.getValueExpression(), is("\"test\""));
     }
     
 }

@@ -1,0 +1,7 @@
+@import java.util.List
+@import java.util.Map
+@args (List<String> a, Map<String, List<String>> map)
+@with? (String b = a.get(0), List<String> list = map.get("abc")) {
+  @b
+  @list.get(0)
+}

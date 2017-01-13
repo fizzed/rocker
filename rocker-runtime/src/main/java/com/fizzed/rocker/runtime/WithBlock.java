@@ -18,12 +18,12 @@ package com.fizzed.rocker.runtime;
 import java.io.IOException;
 
 public class WithBlock {
-    
-    static public interface Consumer0 {
+
+    public interface Consumer0 {
         void accept() throws IOException;
     }
     
-    static public interface Consumer1<V> {
+    public interface Consumer1<V> {
         void accept(V v) throws IOException;
     }
     

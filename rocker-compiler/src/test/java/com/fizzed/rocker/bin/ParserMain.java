@@ -15,32 +15,17 @@
  */
 package com.fizzed.rocker.bin;
 
-import com.fizzed.rocker.runtime.ParserException;
-import com.fizzed.rocker.model.Argument;
-import com.fizzed.rocker.model.Comment;
-import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.ForBlockBegin;
-import com.fizzed.rocker.model.ForBlockEnd;
-import com.fizzed.rocker.model.WithBlockBegin;
-import com.fizzed.rocker.model.WithBlockEnd;
-import com.fizzed.rocker.model.IfBlockBegin;
-import com.fizzed.rocker.model.IfBlockEnd;
-import com.fizzed.rocker.model.JavaImport;
-import com.fizzed.rocker.model.PlainText;
-import com.fizzed.rocker.model.TemplateModel;
-import com.fizzed.rocker.model.TemplateUnit;
-import com.fizzed.rocker.model.ValueExpression;
-import java.io.File;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import com.fizzed.rocker.compiler.RockerConfiguration;
 import com.fizzed.rocker.compiler.RockerUtil;
 import com.fizzed.rocker.compiler.TemplateParser;
-import com.fizzed.rocker.model.BreakStatement;
-import com.fizzed.rocker.model.ContinueStatement;
-import com.fizzed.rocker.model.NullTernaryExpression;
+import com.fizzed.rocker.model.*;
+import com.fizzed.rocker.runtime.ParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ParserMain {
     static private final Logger log = LoggerFactory.getLogger(ParserMain.class);
@@ -127,7 +112,7 @@ public class ParserMain {
                 log.info("for end:");
             } else if (unit instanceof WithBlockBegin) {
                 WithBlockBegin block = (WithBlockBegin)unit;
-                log.info("with begin: isNullSafe={} ({} = {})", block.getStatement().isNullSafe(), block.getStatement().getVariable(), block.getStatement().getValueExpression());
+                log.info("with begin: isNullSafe={} ({} = {})", block.getStatement().isNullSafe(), block.getStatement().getVariables());
             } else if (unit instanceof WithBlockEnd) {
                 log.info("with end:");
             } else if (unit instanceof IfBlockBegin) {

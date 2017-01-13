@@ -15,57 +15,27 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.runtime.ParserException;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.antlr4.RockerLexer;
 import com.fizzed.rocker.antlr4.RockerParser;
 import com.fizzed.rocker.antlr4.RockerParserBaseListener;
-import static com.fizzed.rocker.compiler.RockerUtil.isJava8Plus;
-import com.fizzed.rocker.model.Argument;
-import com.fizzed.rocker.model.BreakStatement;
-import com.fizzed.rocker.model.Comment;
-import com.fizzed.rocker.model.ContentClosureBegin;
-import com.fizzed.rocker.model.ContentClosureEnd;
-import com.fizzed.rocker.model.ContinueStatement;
-import com.fizzed.rocker.model.IfBlockElse;
-import com.fizzed.rocker.model.NullTernaryExpression;
-import com.fizzed.rocker.model.EvalExpression;
-import com.fizzed.rocker.model.ForBlockBegin;
-import com.fizzed.rocker.model.ForBlockEnd;
-import com.fizzed.rocker.model.ForStatement;
-import com.fizzed.rocker.model.IfBlockBegin;
-import com.fizzed.rocker.model.IfBlockEnd;
-import com.fizzed.rocker.model.JavaImport;
-import com.fizzed.rocker.model.JavaVariable;
-import com.fizzed.rocker.model.JavaVersion;
-import com.fizzed.rocker.model.Option;
-import com.fizzed.rocker.model.PlainText;
-import com.fizzed.rocker.model.SourcePosition;
-import com.fizzed.rocker.model.SourceRef;
-import com.fizzed.rocker.model.TemplateModel;
-import com.fizzed.rocker.model.TemplateUnit;
-import com.fizzed.rocker.model.ValueClosureBegin;
-import com.fizzed.rocker.model.ValueClosureEnd;
-import com.fizzed.rocker.model.ValueExpression;
-import com.fizzed.rocker.model.WithBlockBegin;
-import com.fizzed.rocker.model.WithBlockElse;
-import com.fizzed.rocker.model.WithBlockEnd;
-import com.fizzed.rocker.model.WithStatement;
+import com.fizzed.rocker.model.*;
+import com.fizzed.rocker.runtime.ParserException;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Stack;
+
+import static com.fizzed.rocker.compiler.RockerUtil.isJava8Plus;
 
 /**
  *
@@ -226,7 +196,7 @@ public class TemplateParser {
         }
     }
     
-    public ParserException unwrapParserRuntimeException(String templatePath, ParserRuntimeException e) {
+    public static ParserException unwrapParserRuntimeException(String templatePath, ParserRuntimeException e) {
         return new ParserException(e.getLine(), e.getPosInLine(), templatePath, e.getMessage(), e.getCause());
     }
     
@@ -374,6 +344,11 @@ public class TemplateParser {
         private final ANTLRInputStream input;
         private final TemplateModel model;
         private final String templatePath;
+
+        // We need to forbid an else { } for a @with block that has multiple arguments.
+        // So using a stack to pop & push this so we can find the matching WithStatement
+        // in the WithElse part.
+        private final Stack<WithStatement> withStatements = new Stack<>();
         
         public TemplateParserListener(ANTLRInputStream input, TemplateModel model, String templatePath) {
             this.input = input;
@@ -803,24 +778,38 @@ public class TemplateParser {
             expr = expr.substring(4, expr.length() - 1).trim();
             
             try {
-                WithStatement statement = WithStatement.parse(expr);
+                WithStatement statement = WithStatement.parse(expr, templatePath);
 
                 // any Java 1.8+ features used?
-                if (!isJava8Plus(model) && statement.getVariable().getType() == null) {
+                if (!isJava8Plus(model) && statement.hasAnyVariableNullType()) {
                     throw new TokenException("Untyped variables cannot be used with Java " + model.getOptions().getJavaVersion().getLabel() + " (only allowed with Java 1.8+)");
                 }
                 
                 model.getUnits().add(new WithBlockBegin(sourceRef, expr, statement));
+
+                // Put it on the stack for checking in the exitWithBlock part.
+                withStatements.push(statement);
             } catch (TokenException e) {
                 throw TemplateParser.buildParserException(sourceRef, templatePath, e.getMessage(), e);
             }
         }
-        
+
         @Override
         public void enterWithElseBlock(RockerParser.WithElseBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
             model.getUnits().add(new WithBlockElse(sourceRef));
+
+            // Check that the withStatement is only with one argument or the else is not allowed.
+            // Also if the statement has 1 argument, but is not an null-safe it is not allowed either.
+            WithStatement withStatement = withStatements.peek();
+
+            if(withStatement.getVariables().size() > 1) {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "Cannot have an else statement for a @with block with multiple arguments");
+            }
+            else if(!withStatement.isNullSafe()) {
+                throw TemplateParser.buildParserException(sourceRef, templatePath, "Cannot have an else statement for a @with block that is not null-safe");
+            }
         }
 
         @Override
@@ -828,6 +817,8 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             model.getUnits().add(new WithBlockEnd(sourceRef));
+
+            withStatements.pop();
         }
         
         @Override
