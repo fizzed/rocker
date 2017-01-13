@@ -232,7 +232,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.14.0</version>
+    <version>0.15.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -284,14 +284,14 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.14.0</version>
+    <version>0.15.0</version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.14.0</version>
+    <version>0.15.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -317,7 +317,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.14.0</version>
+            <version>0.15.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
