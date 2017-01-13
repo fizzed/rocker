@@ -54,7 +54,7 @@ public class WithStatementConsumerGenerator {
                 if (i > 0) {
                     w.append(", ");
                 }
-                w.append("V" + i);
+                w.append("V").append(String.valueOf(i));
             }
             w.append('>').append(" { ").append(CRLF).append(CRLF);
             generator.tab(w, 3)
@@ -64,7 +64,7 @@ public class WithStatementConsumerGenerator {
                 if (i > 0) {
                     w.append(", ");
                 }
-                w.append("V" + i).append(" v" + i);
+                w.append("V").append(String.valueOf(i)).append(" v").append(String.valueOf(i));
             }
             w.append(") throws IOException;").append(CRLF).append(CRLF);
             generator.tab(w, 2)
@@ -81,23 +81,31 @@ public class WithStatementConsumerGenerator {
                 if (i > 0) {
                     w.append(", ");
                 }
-                w.append("V" + i);
+                w.append("V").append(String.valueOf(i));
             }
             w.append("> void with (");
             for (int i = 0; i < typeCount; i++) {
                 if (i > 0) {
                     w.append(", ");
                 }
-                w.append("V" + i).append(" v" + i);
+                w.append("V").append(String.valueOf(i)).append(" v").append(String.valueOf(i));
             }
-            w.append(", boolean nullSafe, ").append(className).append(" consumer) throws IOException {").append(CRLF);
+            w.append(", boolean nullSafe, ");
+            w.append(className).append('<');
+            for (int i = 0; i < typeCount; i++) {
+                if (i > 0) {
+                    w.append(", ");
+                }
+                w.append("V").append(String.valueOf(i));
+            }
+            w.append("> consumer) throws IOException {").append(CRLF);
             generator.tab(w, 3)
                 .append("consumer.accept(");
                 for (int i = 0; i < typeCount; i++) {
                     if (i > 0) {
                         w.append(", ");
                     }
-                    w.append("v" + i);
+                    w.append("v").append(String.valueOf(i));
                 }
                 w.append(");").append(CRLF);
             generator.tab(w, 2)
@@ -107,27 +115,3 @@ public class WithStatementConsumerGenerator {
         generator.tab(w, 1).append("}").append(CRLF);
     }
 }
-
-/*
-    public interface Consumer0 {
-        void accept() throws IOException;
-    }
-
-    public interface Consumer1<V> {
-        void accept(V v) throws IOException;
-    }
-
-    static public <V> void with(V v, boolean nullSafe, Consumer1<V> consumer) throws IOException {
-        if (!nullSafe || v != null) {
-            consumer.accept(v);
-        }
-    }
-
-    static public <V> void with(V v, boolean nullSafe, Consumer1<V> consumer, Consumer0 elseConsumer) throws IOException {
-        if (!nullSafe || v != null) {
-            consumer.accept(v);
-        } else {
-            elseConsumer.accept();
-        }
-    }
- */

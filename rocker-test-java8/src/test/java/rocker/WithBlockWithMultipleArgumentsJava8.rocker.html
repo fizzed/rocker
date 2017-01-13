@@ -1,0 +1,57 @@
+@import java.util.ArrayList
+@import java.util.List
+@import java.util.Map
+@import java.util.HashMap
+
+@args(List<String> strings)
+
+@with (s = strings.get(0), s2=strings.get(1), lower=strings.get(2).toLowerCase()) {
+  @s
+  @s2
+  @lower
+}
+
+@with (s = strings.get(0), value=new Long(100)) {
+  @s
+  @value
+  multiple
+}
+
+@with (s = strings.get(0), value=new Long(100)) {
+  @s
+  @value
+  @with (v = s.toLowerCase(),
+         subs = strings.subList(1,2),
+         anotherSubs=strings.subList(0,1).subList(0,1),
+         t = "hello, world",
+         region="".regionMatches(true, 0, ",e,,\n,",5,3),
+         escapeSelf=",,,") {
+    // Nested
+    @v
+    @subs.toString()
+    @anotherSubs
+    @t
+    @region
+    @escapeSelf
+    @s
+    @value
+  }
+}
+
+
+@with (s=strings.get(0)) {
+  @s
+}
+
+
+@with? (s=strings.get(0)) {
+  @s
+}
+else {
+  else is allowed with nullsafe.
+}
+
+
+@with (s=strings.get(0), value = new HashMap<String,List<Map<String,Long>>>(), list = new ArrayList<String[]>(5)) {
+  @s @value
+}

@@ -645,14 +645,30 @@ public class JavaGenerator {
 
                 String statementConsumerName = withStatementConsumerGenerator.register(stmt);
 
-                if (isJava8Plus(model)) {
+                final List<WithStatement.VariableWithExpression> variables = stmt.getVariables();
 
-                    // TODO: MRE needs multi vars still
+                if (isJava8Plus(model)) {
                     tab(w, depth+indent)
-                        .append(qualifiedClassName(WithBlock.class))
-                        .append(".with(").append(stmt.getVariables().get(0).getValueExpression())
-                        .append(", ").append(stmt.isNullSafe()+"")
-                        .append(", (").append(stmt.getVariables().get(0).getVariable().getName()).append(") -> {").append(CRLF);
+                        .append(variables.size() == 1 ? qualifiedClassName(WithBlock.class) : WithStatementConsumerGenerator.WITH_BLOCKS_GENERATED_CLASS_NAME)
+                        .append(".with(");
+                        // All expressions
+                        for(int i = 0; i < variables.size(); i++) {
+                            final WithStatement.VariableWithExpression var = variables.get(i);
+                            if(i > 0) {
+                                w.append(", ");
+                            }
+                            w.append(var.getValueExpression());
+                        }
+                        w.append(", ").append(stmt.isNullSafe()+"")
+                        .append(", (");
+                        for(int i = 0; i < variables.size(); i++) {
+                            final WithStatement.VariableWithExpression var = variables.get(i);
+                            if(i > 0) {
+                                w.append(", ");
+                            }
+                            w.append(var.getVariable().getName());
+                        }
+                        w.append(") -> {").append(CRLF);
 
                     depth++;
 
@@ -660,9 +676,6 @@ public class JavaGenerator {
 
                 }
                 else {
-
-                    final List<WithStatement.VariableWithExpression> variables = stmt.getVariables();
-
                     tab(w, depth+indent)
                         // Note for standard 1 variable with block we use the predefined consumers.
                         // Otherwise we fallback to the generated ones.
@@ -990,7 +1003,7 @@ public class JavaGenerator {
         // create a list of post-processor class names. by setting up this list with copies of the
         // configured class names before any post-processors run, no changes made by post-processors
         // to the templateModel's list of post-processors will be honoured. 
-        List<String> postProcessorClassNames = new ArrayList<String>();
+        List<String> postProcessorClassNames = new ArrayList<>();
 
         // consider global list of post-processors from Maven's pom.xml first.
         if ( getConfiguration().getOptions().getPostProcessing() != null ) {

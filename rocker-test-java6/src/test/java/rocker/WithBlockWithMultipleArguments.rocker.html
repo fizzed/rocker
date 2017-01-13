@@ -1,6 +1,7 @@
 @import java.util.ArrayList
 @import java.util.List
 @import java.util.Map
+@import java.util.HashMap
 
 @args(List<String> strings)
 
@@ -51,6 +52,6 @@ else {
 }
 
 
-@with (String s=strings.get(0), Map<String,List<Map<String,Long>>> value = null, List<String[]> list = new ArrayList<String[]>(5)) {
+@with (String s=strings.get(0), Map<String,List<Map<String,Long>>> value = new HashMap<String,List<Map<String,Long>>>(), List<String[]> list = new ArrayList<String[]>(5)) {
   @s @value
 }
