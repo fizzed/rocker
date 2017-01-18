@@ -140,6 +140,11 @@ rendering context (output buffer, application-specific context/implicit state).
    exceptions at runtime (during render()) that let you track down the problematic line
    in the original template source file.
 
+## Syntax
+
+Checkout the [SYNTAX.md](docs/SYNTAX.md) file for a comprehensive deep dive on
+the rocker syntax.
+
 ## Near zero-copy rendering
 
 Static (plain text) for each Rocker template is (by default) stored internally as
