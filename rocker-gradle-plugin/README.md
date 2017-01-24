@@ -31,7 +31,8 @@ rocker {
     templateDirectory = file('src/main/java/')
     // Directory where java files are created
     outputDirectory = file(project.buildDir.toString() + "/generated/source/apt/main")
-    // Directory where the java classes are generated and stores rocker-compiler.conf (used by RockerRuntime.getInstance().setReloading(true))
+    // Directory where the java classes are generated and stores 
+    // rocker-compiler.conf (used by RockerRuntime.getInstance().setReloading(true))
     classDirectory = file(project.buildDir.toString() + "/classes/main")
 
     failOnError true
@@ -55,7 +56,7 @@ repositories {
 buildscript {
     repositories {
         maven {
-            url uri('../repo')
+            url uri('../repo') // same absolute path as exported with uploadArchives
         }
         jcenter() // Needed for plugin's dependencies
     }
@@ -88,4 +89,4 @@ dependencies {
 ## Building the standalone plugin
 This build has been tested in Intellij Community addition.
 
-By running `./gradlew uploadArchives` you will export the plugin to `../../repo`
+By running `./gradlew uploadArchives` you will export the plugin to `../../repo`. The absolute path in the project that uses the plugin must be the same.
