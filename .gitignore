@@ -1,1 +1,7 @@
 target
+.idea/
+rocker-gradle-plugin/.gradle/
+rocker-gradle-plugin/gradle/
+rocker-gradle-plugin/gradlew
+rocker-gradle-plugin/gradlew.bat
+rocker-gradle-plugin/build/
