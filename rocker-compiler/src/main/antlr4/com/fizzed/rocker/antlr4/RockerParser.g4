@@ -59,7 +59,11 @@ block
     ;
 
 ifBlock
-    :   AT MV_IF templateContent* (RCURLY | ifElseBlock)
+    :   AT MV_IF templateContent* (RCURLY | ifElseIfBlock?) ifElseBlock?
+    ;
+
+ifElseIfBlock
+    :   ELSE_IF MV_ELSE_IF templateContent* (RCURLY | ifElseIfBlock?)
     ;
 
 ifElseBlock

@@ -1,0 +1,20 @@
+@args(String value)
+@if(value.equals("hello")){
+hello
+}
+@else if(value.equals("dance")) {
+dance
+}
+@else if(value.equals("x") && value.indexOf("a") != -1) {
+dddd
+}@else if(value.equals("nope")) {
+  @if(value.hashCode() == 1) {
+    Really it is 1?
+  }
+  else {
+    Nope it is not 1.
+  }
+}
+else{
+else
+}

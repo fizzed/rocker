@@ -7,6 +7,13 @@ ELSE
     :   '}' Ws? 'else' Ws? '{'
     ;
 
+// Note the @ in front of here, there's no other way but to capture it like this, so we still push like we normally do
+// for the AT since we care about the matching afterwards. The { after the expression is dealt with by the parser.
+// So in short @else if(expression) { (see MV_ELSE_IF, which captures the rest what we care about)
+ELSE_IF
+    :   '}' Ws? '@else if' Ws?                                      -> pushMode(MV)
+    ;
+
 LCURLY
     :   '{'
     ;
@@ -51,6 +58,11 @@ MV_ARGS
 
 MV_IF
     :   'if' Ws? Parentheses Ws? '{'                                -> popMode
+    ;
+
+// See ELSE_IF above (content mode) for details.
+MV_ELSE_IF
+    :   Parentheses Ws? '{'                                         -> popMode
     ;
 
 MV_FOR
