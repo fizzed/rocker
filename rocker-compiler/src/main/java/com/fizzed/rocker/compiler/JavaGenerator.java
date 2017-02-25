@@ -622,6 +622,17 @@ public class JavaGenerator {
                 blockEnd.push("}");
                 depth++;
             }
+            else if(unit instanceof IfBlockElseIf) {
+                final IfBlockElseIf block = (IfBlockElseIf) unit;
+
+                // This keeps else-if nicely formatted in generated code.
+                tab(w, depth+indent-1)
+                        .append("} else if ")
+                        .append(block.getExpression())
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+            }
             else if (unit instanceof IfBlockElse) {
                 depth--;
                 

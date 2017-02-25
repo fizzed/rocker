@@ -162,16 +162,34 @@ The rendered output is
 <html>
 ```
 
-### If-else blocks (@if)
+### If- else if -else blocks (@if and @else if)
 
-Standard Java if-else control flow.  The left curly character ```{``` indicates
+Standard Java if-else if-else control flow. The left curly character ```{``` indicates
 the start of the block and the right curly character ```}``` marks the end.
+
+The @else if option is available as of v0.16.0.
 
     @if (booleanVar) {
         i am in if block!
     } else {
         i am in else block!
     }
+    
+With @else if.
+
+    
+    @if (val.equals("abc")) {
+        abc!
+    @else if (val.equals("def")) {
+        def!
+    @else if (val.equals("ghi")) {
+        ghi!
+    } else {
+        i am in else block!
+    }    
+
+Please be aware that else if branches need to start with @ (like the if), since
+we care about the expression they evaluate.
     
 Note that Rocker has intelligence to skip template content that includes ```{```
 and ```}``` characters such as JavaScript or CSS.  You will not need to escape

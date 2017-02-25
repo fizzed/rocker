@@ -843,6 +843,19 @@ public class TemplateParser {
         }
 
         @Override
+        public void enterIfElseIfBlock(RockerParser.IfElseIfBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+
+            // We need else if (x) {
+            // As MV_ELSE_IF is modeled like: Parentheses Ws? '{'
+            // we only need to get rid of { and trailing spaces.
+            final String expr = ctx.MV_ELSE_IF().getText();
+            final String result = expr.substring(0, expr.length() - 1).trim();
+
+            model.getUnits().add(new IfBlockElseIf(sourceRef, result));
+        }
+
+        @Override
         public void enterIfElseBlock(RockerParser.IfElseBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             

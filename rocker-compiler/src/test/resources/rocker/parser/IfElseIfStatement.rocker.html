@@ -1,0 +1,19 @@
+@args (String s)
+@if(s.equals("a")) {
+a
+}@else if(s.equals("b")){no spaces}
+@else if ( s.equals("c") ) { with spaces }
+@else if(s.equals("d")) {
+  <script type="text/javascript">
+    if(a > 100 && b <= 10) {
+      doSomething();
+    }
+    else if(b === 1000) {
+      doSomethingElse("@@if escaped");
+    }
+    else {
+      Dance!
+    }
+  </script>
+}
+else {else}
