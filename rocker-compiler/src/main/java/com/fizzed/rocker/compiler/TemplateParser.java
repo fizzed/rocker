@@ -843,6 +843,13 @@ public class TemplateParser {
         }
 
         @Override
+        public void enterIfElseIfBlock(RockerParser.IfElseIfBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            
+            model.getUnits().add(new IfBlockElseIf(sourceRef));
+        }
+        
+        @Override
         public void enterIfElseBlock(RockerParser.IfElseBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             

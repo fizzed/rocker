@@ -118,6 +118,8 @@ public class ParserMain {
             } else if (unit instanceof IfBlockBegin) {
                 IfBlockBegin block = (IfBlockBegin)unit;
                 log.info("if begin: {}", block.getExpression());
+            } else if (unit instanceof IfBlockElseIf) {
+                log.info("else if begin:");
             } else if (unit instanceof IfBlockElse) {
                 log.info("else begin:");
             } else if (unit instanceof IfBlockEnd) {
