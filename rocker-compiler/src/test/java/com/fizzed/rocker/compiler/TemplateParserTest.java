@@ -20,25 +20,18 @@ import com.fizzed.rocker.model.*;
 import com.fizzed.rocker.runtime.ParserException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author joelauer
  */
 public class TemplateParserTest {
-    static private final Logger log = LoggerFactory.getLogger(TemplateParserTest.class);
 
     File baseDir = new File("src/test/resources");
 
@@ -172,25 +165,33 @@ public class TemplateParserTest {
           "            ";
         Assert.assertEquals(plainText5, model.getUnit(9, PlainText.class).getText());
 
-        Assert.assertEquals(IfBlockElse.class, model.getUnit(10, IfBlockElse.class).getClass());
+        Assert.assertEquals("(valueForElseIfTrue)", model.getUnit(10, IfBlockElseIf.class).getExpression());
 
         String plainText6 = "\n" +
-          "                else-block\n" +
+          "                else-if-block\n" +
           "            ";
+
         Assert.assertEquals(plainText6, model.getUnit(11, PlainText.class).getText());
 
-        Assert.assertEquals(IfBlockEnd.class, model.getUnit(12, IfBlockEnd.class).getClass());
+        Assert.assertEquals(IfBlockElse.class, model.getUnit(12, IfBlockElse.class).getClass());
 
         String plainText7 = "\n" +
-          "        ";
+          "                else-block\n" +
+          "            ";
         Assert.assertEquals(plainText7, model.getUnit(13, PlainText.class).getText());
 
-        Assert.assertEquals(ForBlockEnd.class, model.getUnit(14, ForBlockEnd.class).getClass());
+        Assert.assertEquals(IfBlockEnd.class, model.getUnit(14, IfBlockEnd.class).getClass());
 
         String plainText8 = "\n" +
+          "        ";
+        Assert.assertEquals(plainText8, model.getUnit(15, PlainText.class).getText());
+
+        Assert.assertEquals(ForBlockEnd.class, model.getUnit(16, ForBlockEnd.class).getClass());
+
+        String plainText9 = "\n" +
           "    </body>\n" +
           "</html>";
-        Assert.assertEquals(plainText8, model.getUnit(15, PlainText.class).getText());
+        Assert.assertEquals(plainText9, model.getUnit(17, PlainText.class).getText());
     }
 
     @Test
@@ -826,7 +827,7 @@ public class TemplateParserTest {
 
         try {
             model.findUnitByOccurrence(IfBlockElse.class, 4);
-            fail("Should not have found a fourth @else if occurrence!");
+            fail("Should not have found a fourth 'else if' occurrence!");
         }
         catch (RuntimeException e) {
             // Expected
@@ -834,7 +835,7 @@ public class TemplateParserTest {
 
         try {
             model.findUnitByOccurrence(IfBlockElse.class, 2);
-            fail("Should not have found a second else occurrence!");
+            fail("Should not have found a second 'else' occurrence!");
         }
         catch (RuntimeException e) {
             // Expected

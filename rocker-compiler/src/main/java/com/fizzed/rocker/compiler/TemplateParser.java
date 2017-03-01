@@ -583,7 +583,7 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we simply want to keep the right token for the end of this block
-            String text = null;
+            String text;
             
             if (ctx.RCURLY() != null) {
                 text = ctx.RCURLY().getText();
@@ -594,13 +594,20 @@ public class TemplateParser {
             
             model.getUnits().add(new PlainText(sourceRef, text));
         }
-        
+
+        @Override
+        public void enterPlainElseIfBlock(final RockerParser.PlainElseIfBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+
+            model.getUnits().add(new PlainText(sourceRef, ctx.ELSE_IF().getText()));
+        }
+
         @Override
         public void enterPlainElseBlock(RockerParser.PlainElseBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we simply want to keep the left token for the start of this block
-            String text = null;
+            String text;
             
             if (ctx.ELSE() != null) {
                 text = ctx.ELSE().getText();
@@ -616,7 +623,7 @@ public class TemplateParser {
             SourceRef sourceRef = createSourceRef(ctx);
             
             // we simply want to keep the right token for the end of this block
-            String text = null;
+            String text;
             
             if (ctx.RCURLY() != null) {
                 text = ctx.RCURLY().getText();
@@ -846,13 +853,15 @@ public class TemplateParser {
         public void enterIfElseIfBlock(RockerParser.IfElseIfBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
 
-            // We need else if (x) {
-            // As MV_ELSE_IF is modeled like: Parentheses Ws? '{'
-            // we only need to get rid of { and trailing spaces.
-            final String expr = ctx.MV_ELSE_IF().getText();
-            final String result = expr.substring(0, expr.length() - 1).trim();
+            // ELSE_IF
+            //    :   '}' Ws? 'else' Ws? 'if' Ws? Parentheses Ws? '{'
 
-            model.getUnits().add(new IfBlockElseIf(sourceRef, result));
+            // Find the parentheses (first and last)
+            final String text = ctx.ELSE_IF().getText();
+            final int idxFirst = text.indexOf('(');
+            final int idxLast = text.lastIndexOf(')');
+            final String expression = text.substring(idxFirst, idxLast+1);
+            model.getUnits().add(new IfBlockElseIf(sourceRef, expression));
         }
 
         @Override

@@ -116,8 +116,12 @@ public class ParserMain {
             } else if (unit instanceof WithBlockEnd) {
                 log.info("with end:");
             } else if (unit instanceof IfBlockBegin) {
-                IfBlockBegin block = (IfBlockBegin)unit;
+                IfBlockBegin block = (IfBlockBegin) unit;
                 log.info("if begin: {}", block.getExpression());
+            }
+            else if (unit instanceof IfBlockElseIf) {
+                IfBlockElseIf block = (IfBlockElseIf) unit;
+                log.info("else if begin:", block.getExpression());
             } else if (unit instanceof IfBlockElse) {
                 log.info("else begin:");
             } else if (unit instanceof IfBlockEnd) {
