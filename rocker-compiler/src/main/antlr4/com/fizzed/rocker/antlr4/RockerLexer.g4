@@ -1,6 +1,5 @@
 lexer grammar RockerLexer;
 
-
 // content mode (by default)
 
 ELSE_IF

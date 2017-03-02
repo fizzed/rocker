@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.16.0 - 2017-03-02
+  
+ - Support for `else if` in if-else blocks. (@mreuvers)
+
 #### 0.15.0 - 2017-01-13
 
  - `@with` blocks now support multiple variables to be set in a single statement.
