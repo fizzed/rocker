@@ -116,6 +116,21 @@ public class TemplateModel {
     public <T extends TemplateUnit> T getUnit(int index, Class<T> type) {
         return (T)units.get(index);
     }
+
+    public <T extends TemplateUnit> T findUnitByOccurrence(Class<T> type, int occurrence) {
+        if(occurrence < 1) {
+            throw new IllegalArgumentException("Occurrence needs to be >= 1");
+        }
+        int foundSoFar = 0;
+        for (TemplateUnit unit: units) {
+            if(type == unit.getClass()) {
+                if(++foundSoFar == occurrence) {
+                    return (T) unit;
+                }
+            }
+        }
+        throw new RuntimeException("Failed to find occurrence: " + occurrence + " for TemplateUnit of type: " + type.getName());
+    }
     
     public LinkedHashMap<String,LinkedHashMap<String,String>> createPlainTextMap(int chunkSize) {        
         // optimize static plain text constants
