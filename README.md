@@ -153,6 +153,15 @@ rendering context (output buffer, application-specific context/implicit state).
 Checkout the [SYNTAX.md](docs/SYNTAX.md) file for a comprehensive deep dive on
 the rocker syntax.
 
+## Framework integrations
+
+Rocker has a growing list of frameworks that it has been seamlessly integrated with.
+If you want to link to a new framework added, please file an issue or submit a PR:
+
+ * Ninja Framework: https://github.com/fizzed/ninja-rocker
+ * Jooby: http://jooby.org/doc/rocker
+ * Spark Framework: https://github.com/perwendel/spark-template-engines
+
 ## Near zero-copy rendering
 
 Static (plain text) for each Rocker template is (by default) stored internally as
@@ -498,11 +507,6 @@ Please note that if there is an exception during the render the OutputStream
 would have a partial template rendered (up to the point of the exception).  In
 most cases it would be better to render to the default `com.fizzed.rocker.runtime.ArrayOfByteArraysOutput`
 and write its buffer of byte arrays out directly to your OutputStream.
-
-## Ninja framework integration (or other third party frameworks)
-
-Looking to integrate Rocker into your own application/framework?  Check out
-[Rocker's integration into the Ninja web framework](https://github.com/fizzed/ninja-rocker) for ideas.
 
 ## Other demos?
 
