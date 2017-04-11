@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.17.0 - 2017-04-11
+
+ - Issue #56: fix nested else-if blocks failing to compile
+ - Issue $57: allow rocker template filenames with a length of 1
+
 #### 0.16.0 - 2017-03-02
   
  - Support for `else if` in if-else blocks. (@mreuvers)
