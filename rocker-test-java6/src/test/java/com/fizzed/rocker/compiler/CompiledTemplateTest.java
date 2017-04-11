@@ -18,7 +18,6 @@ package com.fizzed.rocker.compiler;
 import com.fizzed.rocker.RenderingException;
 import com.fizzed.test.User;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rocker.NoHeader;
 
 public class CompiledTemplateTest {
     static private final Logger log = LoggerFactory.getLogger(CompiledTemplateTest.class);
