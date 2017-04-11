@@ -625,13 +625,15 @@ public class JavaGenerator {
             else if(unit instanceof IfBlockElseIf) {
                 final IfBlockElseIf block = (IfBlockElseIf) unit;
 
+                depth--;
+                
                 // This keeps else-if nicely formatted in generated code.
-                tab(w, depth+indent-1)
+                tab(w, depth+indent)
                         .append("} else if ")
                         .append(block.getExpression())
                         .append(" {").append(CRLF);
 
-                blockEnd.push("}");
+                depth++;
             }
             else if (unit instanceof IfBlockElse) {
                 depth--;

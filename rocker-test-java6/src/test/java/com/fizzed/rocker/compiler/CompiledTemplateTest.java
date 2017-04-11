@@ -452,6 +452,16 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void ifElseIfBlockInWithBlock() throws Exception {
+        String html = new rocker.IfElseIfBlockInWithBlock()
+            .values(Arrays.asList(1))
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("else-if-block"));
+    }
+    
+    @Test
     public void forBlock() throws Exception {
 
         String html = new rocker.ForBlock()
