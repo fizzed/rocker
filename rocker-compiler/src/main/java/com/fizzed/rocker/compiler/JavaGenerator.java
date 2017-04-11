@@ -217,7 +217,12 @@ public class JavaGenerator {
         tab(w, indent).append("static public final String TEMPLATE_NAME = \"").append(model.getTemplateName()).append("\";").append(CRLF);
         tab(w, indent).append("static public final String TEMPLATE_PACKAGE_NAME = \"").append(model.getPackageName()).append("\";").append(CRLF);
         tab(w, indent).append("static public final String HEADER_HASH = \"").append(model.createHeaderHash()+"").append("\";").append(CRLF);
-        tab(w, indent).append("static public final long MODIFIED_AT = ").append(model.getModifiedAt()+"").append("L;").append(CRLF);
+
+        // Don't include MODIFIED_AT header when optimized compiler is used since this implicitly disables hot reloading anyhow
+        if (!model.getOptions().getOptimize()) {
+            tab(w, indent).append("static public final long MODIFIED_AT = ").append(model.getModifiedAt() + "").append("L;").append(CRLF);
+        }
+
         tab(w, indent).append("static public final String[] ARGUMENT_NAMES = {");
         StringBuilder argNameList = new StringBuilder();
         for (Argument arg : model.getArgumentsWithoutRockerBody()) {
