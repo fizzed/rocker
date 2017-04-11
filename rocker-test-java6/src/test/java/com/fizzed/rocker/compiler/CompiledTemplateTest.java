@@ -74,6 +74,16 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void singleLetterFile() throws Exception {
+        String html = new rocker.A()
+            .s("test")
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("test"));
+    }
+    
+    @Test
     public void args() throws Exception {
         String html = new rocker.Args()
             .s("string")

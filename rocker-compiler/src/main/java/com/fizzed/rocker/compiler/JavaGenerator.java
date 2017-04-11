@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.fizzed.rocker.compiler;
-
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerContent;
 import com.fizzed.rocker.model.*;
