@@ -7,7 +7,7 @@ main build script.
 
 ```
 apply plugin: 'java'
-apply plugin: 'rocker'
+apply plugin: 'rocker-gradle-plugin'
 apply plugin: 'idea'
 apply plugin: 'application'
 
