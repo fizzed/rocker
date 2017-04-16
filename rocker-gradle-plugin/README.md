@@ -1,7 +1,7 @@
 # A gradle plugin for Rocker.
 
-This gradle plugin creates a task `rockerCompile` which is run before compileJava.
-The plugin is loosely modelled after the Antlr plugin.
+This gradle plugin that creates `generateRockerTemplateSource` tasks that are 
+run before `compileJava`. The plugin is loosely modeled after the Antlr plugin.
 
 ## Example gradle script using this plugin:
 
@@ -21,17 +21,18 @@ sourceSets {
 }
 
 rocker {
-    // The settings are shown with their defaults:
-
+    // (All settings are shown with their defaults)
+    // 
     // Skips building templates all together
     skip false
     // Base directory for generated java sources, actual target is sub directory 
-    // with source set name. The value is passed through project.file(). 
+    // with the name of the source set. The value is passed through project.file(). 
     outputBaseDirectory = project.buildDir.toString() + "/generated-src/rocker"
-    // Base directory where the java classes are generated and stores 
-    // rocker-compiler.conf (used by RockerRuntime.getInstance().setReloading(true)),
-    // actual target is sub directory with source set name. The value is passed 
-    // through project.file().
+    // Base directory for the directory where the hot reload feature 
+    // will (re)compile classes to at runtime (and where `rocker-compiler.conf`
+    // is generated, which is used by RockerRuntime.getInstance().setReloading(true)).
+    // The actual target is a sub directory with the name of the source set. 
+    // The value is passed through project.file().
     classBaseDirectory = project.buildDir.toString() + "/classes"
 
     failOnError true
@@ -93,6 +94,7 @@ dependencies {
 ```
 
 ## Building the standalone plugin
-This build has been tested in Intellij Community addition.
+This build has been tested in Eclipse and in Intellij Community addition.
 
-By running `./gradlew uploadArchives` you will export the plugin to `../../repo`. The absolute path in the project that uses the plugin must be the same.
+By running `./gradlew publishToMavenLocal` you can make the plugin available
+locally.
