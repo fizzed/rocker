@@ -25,7 +25,7 @@ gradlePlugin {
 	plugins {
 		simplePlugin {
 			id = "rocker-gradle-plugin"
-			implementationClass = "com.fizzed.rocker.gradle.RockerGradlePlugin"
+			implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
 		}
 	}
 }

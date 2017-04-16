@@ -1,15 +1,11 @@
 package com.fizzed.rocker.gradle;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -19,18 +15,19 @@ public class RockerGradlePluginTest {
     @Test
     public void testCompileTaskExists() {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
+        project.getPluginManager().apply(RockerPlugin.class);
         Task rocker = project.getTasks().getByName("rockerCompile");
-        assertTrue(rocker instanceof RockerGradleTask);
+        assertTrue(rocker instanceof RockerTask);
     }
 
     @Test
     public void testJavaFileIsCreatedInOutputDirectory() throws ClassNotFoundException {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        setUpDirectories(project);
+        project.getPluginManager().apply(RockerPlugin.class);
 
-        RockerGradleTask.doCompileRocker(project);
+        RockerTask.doCompileRocker(project, new File("src/test/java"),
+        		new File("build/generated/source/apt/main"),
+        		new File("build/classes/main"));
         File templateFile =
                 new File("build/generated/source/apt/main/com/fizzed/rocker/gradle/views/HelloTemplate.java");
         assertTrue(templateFile.exists());
@@ -39,10 +36,11 @@ public class RockerGradlePluginTest {
     @Test
     public void testRockerCompilerConfIsGeneratedInClassesDirectory() throws ClassNotFoundException {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        setUpDirectories(project);
+        project.getPluginManager().apply(RockerPlugin.class);
 
-        RockerGradleTask.doCompileRocker(project);
+        RockerTask.doCompileRocker(project, new File("src/test/java"),
+        		new File("build/generated/source/apt/main"),
+        		new File("build/classes/main"));
         File templateFile =
                 new File("build/classes/main/rocker-compiler.conf");
         assertTrue(templateFile.exists());
@@ -51,15 +49,12 @@ public class RockerGradlePluginTest {
     @Test
     public void testNullOutputDirectoryThrowsException() {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-
-        extensions.outputDirectory = null;
-        extensions.classDirectory = new File("build/classes/main");
-        extensions.templateDirectory = new File("src/test/java");
+        project.getPluginManager().apply(RockerPlugin.class);
 
         try {
-            RockerGradleTask.doCompileRocker(project);
+            RockerTask.doCompileRocker(project, new File("src/test/java"),
+            		null,
+            		new File("build/classes/main"));
         } catch (RockerGradleException e) {
             assertTrue(e.getMessage().contains("outputDirectory"));
             return;
@@ -70,15 +65,12 @@ public class RockerGradlePluginTest {
     @Test
     public void testNullClassDirectoryThrowsException() {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-
-        extensions.outputDirectory = new File("build/generated/source/apt/main");
-        extensions.classDirectory =  null;
-        extensions.templateDirectory = new File("src/test/java");
+        project.getPluginManager().apply(RockerPlugin.class);
 
         try {
-            RockerGradleTask.doCompileRocker(project);
+            RockerTask.doCompileRocker(project, new File("src/test/java"),
+            		new File("build/generated/source/apt/main"),
+            		null);
         } catch (RockerGradleException e) {
             assertTrue(e.getMessage().contains("classDirectory"));
             return;
@@ -89,15 +81,12 @@ public class RockerGradlePluginTest {
     @Test
     public void testNullTemplateDirectoryThrowsException() {
         Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-
-        extensions.outputDirectory = new File("build/generated/source/apt/main");
-        extensions.classDirectory = new File("build/classes/main");
-        extensions.templateDirectory = null;
+        project.getPluginManager().apply(RockerPlugin.class);
 
         try {
-            RockerGradleTask.doCompileRocker(project);
+            RockerTask.doCompileRocker(project, null,
+            		new File("build/generated/source/apt/main"),
+            		new File("build/classes/main"));
         } catch (RockerGradleException e) {
             assertTrue(e.getMessage().contains("templateDirectory"));
             return;
@@ -105,50 +94,4 @@ public class RockerGradlePluginTest {
         fail("Exception not thrown for templateDirectory");
     }
 
-    @Test
-    public void testAddAsSourcesThrowsException() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-
-        extensions.outputDirectory = new File("build/generated/source/apt/main");
-        extensions.classDirectory = new File("build/classes/main");
-        extensions.templateDirectory = new File("src/test/java");
-        extensions.addAsSources = true;
-
-        try {
-            RockerGradleTask.doCompileRocker(project);
-        } catch (RockerGradleException e) {
-            assertTrue(e.getMessage().contains("addAsSources"));
-            return;
-        }
-        fail("Exception not thrown for addAsSources");
-    }
-
-    @Test
-    public void testAddAsTestSourcesThrowsException() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerGradlePlugin.class);
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-
-        extensions.outputDirectory = new File("build/generated/source/apt/main");
-        extensions.classDirectory = new File("build/classes/main");
-        extensions.templateDirectory = new File("src/test/java");
-        extensions.addAsTestSources = true;
-
-        try {
-            RockerGradleTask.doCompileRocker(project);
-        } catch (RockerGradleException e) {
-            assertTrue(e.getMessage().contains("addAsTestSources"));
-            return;
-        }
-        fail("Exception not thrown for addAsTestSources");
-    }
-
-    private void setUpDirectories(Project project) {
-        RockerGradleExtension extensions = (RockerGradleExtension) project.getExtensions().getByName("rocker");
-        extensions.outputDirectory = new File("build/generated/source/apt/main");
-        extensions.classDirectory = new File("build/classes/main");
-        extensions.templateDirectory = new File("src/test/java");
-    }
 }

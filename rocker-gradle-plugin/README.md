@@ -1,39 +1,38 @@
 # A gradle plugin for Rocker.
 
-This gradle plugin creates a task `rockerCompile` which should be run before your projects
-main build script.
+This gradle plugin creates a task `rockerCompile` which is run before compileJava.
+The plugin is loosely modelled after the Antlr plugin.
 
 ## Example gradle script using this plugin:
 
-```
+```groovy
 apply plugin: 'java'
-apply plugin: 'rocker-gradle-plugin'
-apply plugin: 'idea'
-apply plugin: 'application'
+apply plugin: 'rocker-gradle-plugin'// actually implies java plugin
 
-mainClassName = 'com.example.MainClass' // change to your main class
 sourceCompatibility = 1.8
 
 sourceSets {
     main {
-        java {
-            srcDir('src')
-            srcDir(project.buildDir.toString() + '/generated/source/apt/main')
-            srcDir(project.buildDir.toString() + "/classes/main")
+        rocker {
+            // Directory that has your Template.rocker.html files
+            srcDir('rocker-templates')
         }
     }
 }
 
 rocker {
-    // skips building templates all together
+    // The settings are shown with their defaults:
+
+    // Skips building templates all together
     skip false
-    // Directory that has your Template.rocker.html files
-    templateDirectory = file('src/main/java/')
-    // Directory where java files are created
-    outputDirectory = file(project.buildDir.toString() + "/generated/source/apt/main")
-    // Directory where the java classes are generated and stores 
-    // rocker-compiler.conf (used by RockerRuntime.getInstance().setReloading(true))
-    classDirectory = file(project.buildDir.toString() + "/classes/main")
+    // Base directory for generated java sources, actual target is sub directory 
+    // with source set name. The value is passed through project.file(). 
+    outputBaseDirectory = project.buildDir.toString() + "/generated-src/rocker"
+    // Base directory where the java classes are generated and stores 
+    // rocker-compiler.conf (used by RockerRuntime.getInstance().setReloading(true)),
+    // actual target is sub directory with source set name. The value is passed 
+    // through project.file().
+    classBaseDirectory = project.buildDir.toString() + "/classes"
 
     failOnError true
     skipTouch true
@@ -62,8 +61,8 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'com.fizzed.rocker',
-                name: 'rockergradleplugin',
+        classpath group: 'com.fizzed',
+                name: 'rocker-gradle-plugin',
                 version: '1.0-SNAPSHOT'
 
     }
@@ -72,11 +71,11 @@ buildscript {
 dependencies {
     compile group: 'com.fizzed',
             name: 'rocker-compiler',
-            version: '0.14.0'
+            version: '0.18.0'
 
     compile group: 'com.fizzed',
             name: 'rocker-runtime',
-            version: '0.14.0'
+            version: '0.18.0'
 
     compile group: 'org.slf4j',
             name: 'slf4j-simple',
