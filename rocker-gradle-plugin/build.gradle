@@ -1,8 +1,11 @@
-group 'com.fizzed.rocker'
-version '1.0-SNAPSHOT'
+plugins {
+	id "java-gradle-plugin"
+	id "maven-publish"
+}
 
-apply plugin: 'maven'
-apply plugin: 'java'
+group 'com.fizzed'
+archivesBaseName = 'rocker-gradle-plugin'
+version = '1.0.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -11,19 +14,27 @@ repositories {
 }
 
 dependencies {
-    compile gradleApi()
-
     compile group: 'com.fizzed',
             name: 'rocker-compiler',
-            version: '0.14.0'
+            version: '+'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('../../repo')) // change this to your local directory
-        }
-    }
+gradlePlugin {
+	plugins {
+		simplePlugin {
+			id = "rocker-gradle-plugin"
+			implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
+		}
+	}
 }
+
+publishing {
+
+	// Required information added by java-gradle-plugin.
+	// Optionally add url for local repository if you
+	// don't want to use the default.
+		
+}
+

@@ -1,58 +1,59 @@
 package com.fizzed.rocker.gradle;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.gradle.api.Project;
 
 /**
  * Bean for the configuration options of Rocker Compiler
  */
-@SuppressWarnings("unused")
-public class RockerGradleExtension {
+public class RockerExtension {
 
-    boolean skip = false;
-
-    boolean failOnError = true;
-
-    boolean skipTouch = true;
-
-    String touchFile;
-
-    boolean addAsSources = false;
-
-    boolean addAsTestSources = false;
-
-    String javaVersion;
-
-    String extendsClass;
-
-    String extendsModelClass;
-
-    Boolean optimize;
-
-    Boolean discardLogicWhitespace;
-
-    String targetCharset;
-
-    String suffixRegex;
+	private Project project;
+    private boolean skip = false;
+    private boolean failOnError = true;
+    private boolean skipTouch = true;
+    private String touchFile;
+    private String javaVersion;
+    private String extendsClass;
+    private String extendsModelClass;
+    private Boolean optimize;
+    private Boolean discardLogicWhitespace;
+    private String targetCharset;
+    private String suffixRegex;
+    private File outputBaseDirectory;
+    private File classBaseDirectory;
+    private String[] postProcessing;
 
     /**
-     * Directory containing templates. The base directory to search -- which is
-     * also how their "package" name is determined.
+     * Generate a map that reflects the current state of all properties
+     * that are relevant as input for the incremental build.
+     * 
+     * @return the map
      */
-    File templateDirectory;
-
+    Map<String,?> inputProperties() {
+    	Map<String,? super Object> result = new HashMap<>();
+    	result.put("javaVersion", javaVersion);
+    	result.put("extendsClass", extendsClass);
+    	result.put("extendsModelClass", extendsModelClass);
+    	result.put("optimize", optimize);
+    	result.put("discardLogicWhitespace", discardLogicWhitespace);
+    	result.put("targetCharset", targetCharset);
+    	result.put("suffixRegex", suffixRegex);
+    	result.put("postProcessinf", postProcessing);
+    	return result;
+    }
+    
     /**
-     * Directory to output generated Java source files.
-     */
-    File outputDirectory;
+	 * @param project the project to set
+	 */
+	public void setProject(Project project) {
+		this.project = project;
+	}
 
-    /**
-     * Directory where classes are compiled to (for placing rocker config file).
-     */
-    File classDirectory;
-
-    String[] postProcessing;
-
-    public boolean isSkip() {
+	public boolean isSkip() {
         return skip;
     }
 
@@ -82,22 +83,6 @@ public class RockerGradleExtension {
 
     public void setTouchFile(String touchFile) {
         this.touchFile = touchFile;
-    }
-
-    public boolean isAddAsSources() {
-        return addAsSources;
-    }
-
-    public void setAddAsSources(boolean addAsSources) {
-        this.addAsSources = addAsSources;
-    }
-
-    public boolean isAddAsTestSources() {
-        return addAsTestSources;
-    }
-
-    public void setAddAsTestSources(boolean addAsTestSources) {
-        this.addAsTestSources = addAsTestSources;
     }
 
     public String getJavaVersion() {
@@ -156,28 +141,20 @@ public class RockerGradleExtension {
         this.suffixRegex = suffixRegex;
     }
 
-    public File getTemplateDirectory() {
-        return templateDirectory;
+    public File getOutputBaseDirectory() {
+        return outputBaseDirectory;
     }
 
-    public void setTemplateDirectory(File templateDirectory) {
-        this.templateDirectory = templateDirectory;
+    public void setOutputBaseDirectory(File outputBaseDirectory) {
+        this.outputBaseDirectory = project.file(outputBaseDirectory);
     }
 
-    public File getOutputDirectory() {
-        return outputDirectory;
+    public File getClassBaseDirectory() {
+        return classBaseDirectory;
     }
 
-    public void setOutputDirectory(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
-    }
-
-    public File getClassDirectory() {
-        return classDirectory;
-    }
-
-    public void setClassDirectory(File classDirectory) {
-        this.classDirectory = classDirectory;
+    public void setClassBaseDirectory(File classBaseDirectory) {
+        this.classBaseDirectory = project.file(classBaseDirectory);
     }
 
     public String[] getPostProcessing() {
