@@ -1,7 +1,7 @@
 # A gradle plugin for Rocker.
 
 This gradle plugin that creates `generateRockerTemplateSource` tasks that are 
-run before `compileJava`. The plugin is loosely modeled after the Antlr plugin.
+run before `compileJava`. 
 
 ## Example gradle script using this plugin:
 

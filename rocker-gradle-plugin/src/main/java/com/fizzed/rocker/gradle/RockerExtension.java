@@ -10,8 +10,7 @@ import org.gradle.api.Project;
  * Bean for the configuration options of Rocker Compiler
  */
 public class RockerExtension {
-
-	private Project project;
+    private Project project;
     private boolean skip = false;
     private boolean failOnError = true;
     private boolean skipTouch = true;
@@ -34,26 +33,26 @@ public class RockerExtension {
      * @return the map
      */
     Map<String,?> inputProperties() {
-    	Map<String,? super Object> result = new HashMap<>();
-    	result.put("javaVersion", javaVersion);
-    	result.put("extendsClass", extendsClass);
-    	result.put("extendsModelClass", extendsModelClass);
-    	result.put("optimize", optimize);
-    	result.put("discardLogicWhitespace", discardLogicWhitespace);
-    	result.put("targetCharset", targetCharset);
-    	result.put("suffixRegex", suffixRegex);
-    	result.put("postProcessinf", postProcessing);
-    	return result;
+        Map<String,? super Object> result = new HashMap<>();
+        result.put("javaVersion", javaVersion);
+        result.put("extendsClass", extendsClass);
+        result.put("extendsModelClass", extendsModelClass);
+        result.put("optimize", optimize);
+        result.put("discardLogicWhitespace", discardLogicWhitespace);
+        result.put("targetCharset", targetCharset);
+        result.put("suffixRegex", suffixRegex);
+        result.put("postProcessinf", postProcessing);
+        return result;
     }
-    
-    /**
-	 * @param project the project to set
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-	}
 
-	public boolean isSkip() {
+    /**
+     * @param project the project to set
+     */
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public boolean isSkip() {
         return skip;
     }
 
@@ -164,5 +163,4 @@ public class RockerExtension {
     public void setPostProcessing(String[] postProcessing) {
         this.postProcessing = postProcessing;
     }
-
 }

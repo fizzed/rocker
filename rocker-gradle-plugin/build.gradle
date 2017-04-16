@@ -1,6 +1,6 @@
 plugins {
-	id "java-gradle-plugin"
-	id "maven-publish"
+    id "java-gradle-plugin"
+    id "maven-publish"
 }
 
 group 'com.fizzed'
@@ -22,19 +22,19 @@ dependencies {
 }
 
 gradlePlugin {
-	plugins {
-		simplePlugin {
-			id = "rocker-gradle-plugin"
-			implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
-		}
-	}
+    plugins {
+        simplePlugin {
+            id = "rocker-gradle-plugin"
+            implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
+        }
+    }
 }
 
 publishing {
-
-	// Required information added by java-gradle-plugin.
-	// Optionally add url for local repository if you
-	// don't want to use the default.
-		
+    // Required information added by java-gradle-plugin.
+    // Optionally add url for local repository if you
+    // don't want to use the default.
+    // e.g.
+    //
 }
 

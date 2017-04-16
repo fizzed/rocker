@@ -13,16 +13,16 @@ import groovy.lang.Closure;
 public class RockerSourceSetProperty {
 
     private final TemplateDirectorySet templateDirs;
-    
-    /**
-	 * @param project
-	 */
-	public RockerSourceSetProperty(Project project) {
-		super();
-		templateDirs = new TemplateDirectorySet(project);
-	}
 
-	public TemplateDirectorySet getRocker() {
+    /**
+     * @param project - main gradle project
+     */
+    public RockerSourceSetProperty(Project project) {
+        super();
+        templateDirs = new TemplateDirectorySet(project);
+    }
+
+    public TemplateDirectorySet getRocker() {
         return templateDirs;
     }
 
@@ -32,10 +32,8 @@ public class RockerSourceSetProperty {
     }
 
     public RockerSourceSetProperty rocker(
-    		Action<? super TemplateDirectorySet> configureAction) {
+        Action<? super TemplateDirectorySet> configureAction) {
         configureAction.execute(getRocker());
-    	System.out.println("Called with action");
         return this;
     }
-
 }

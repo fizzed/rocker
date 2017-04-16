@@ -24,69 +24,69 @@ public class RockerTask extends DefaultTask {
     private File classDir;
 
     /**
-	 * @return the sourceSet
-	 */
-	public SourceSet getSourceSet() {
-		return sourceSet;
-	}
+     * @return the sourceSet
+     */
+    public SourceSet getSourceSet() {
+        return sourceSet;
+    }
 
-	/**
-	 * @param sourceSet the sourceSet to set
-	 */
-	public void setSourceSet(SourceSet sourceSet) {
-		this.sourceSet = sourceSet;
-	}
+    /**
+     * @param sourceSet the sourceSet to set
+     */
+    public void setSourceSet(SourceSet sourceSet) {
+        this.sourceSet = sourceSet;
+    }
 
-	/**
-	 * @return the templateDirs
-	 */
-	public Set<File> getTemplateDirs() {
-		return templateDirs;
-	}
+    /**
+     * @return the templateDirs
+     */
+    public Set<File> getTemplateDirs() {
+        return templateDirs;
+    }
 
-	/**
-	 * @param templateDirs the templateDirs to set
-	 */
-	public void setTemplateDirs(Set<File> templateDirs) {
-		this.templateDirs = templateDirs;
-	}
+    /**
+     * @param templateDirs the templateDirs to set
+     */
+    public void setTemplateDirs(Set<File> templateDirs) {
+        this.templateDirs = templateDirs;
+    }
 
-	/**
-	 * @return the outputDir
-	 */
-	public File getOutputDir() {
-		return outputDir;
-	}
+    /**
+     * @return the outputDir
+     */
+    public File getOutputDir() {
+        return outputDir;
+    }
 
-	/**
-	 * @param outputDir the outputDir to set
-	 */
-	public void setOutputDir(File outputDir) {
-		this.outputDir = outputDir;
-	}
+    /**
+     * @param outputDir the outputDir to set
+     */
+    public void setOutputDir(File outputDir) {
+        this.outputDir = outputDir;
+    }
 
-	/**
-	 * @return the classDir
-	 */
-	public File getClassDir() {
-		return classDir;
-	}
+    /**
+     * @return the classDir
+     */
+    public File getClassDir() {
+        return classDir;
+    }
 
-	/**
-	 * @param classDir the classDir to set
-	 */
-	public void setClassDir(File classDir) {
-		this.classDir = classDir;
-	}
+    /**
+     * @param classDir the classDir to set
+     */
+    public void setClassDir(File classDir) {
+        this.classDir = classDir;
+    }
 
-	/**
+    /**
      * Sets up the logger and runs the rocker compiler
      */
     @TaskAction
     public void compileRocker() {
         logger = getProject().getLogger();
         for (File templateDir: templateDirs) {
-        	doCompileRocker(getProject(), templateDir, outputDir, classDir);
+            doCompileRocker(getProject(), templateDir, outputDir, classDir);
         }
     }
 
@@ -95,21 +95,21 @@ public class RockerTask extends DefaultTask {
      *
      * @param project - gradle project
      */
-    public static void doCompileRocker(Project project, 
-    		File templateDir, File outputDir, File classDir) {
-        RockerExtension ext = (RockerExtension) 
-        		project.getExtensions().findByName("rocker");
+    public static void doCompileRocker(Project project,
+                                       File templateDir, File outputDir, File classDir) {
+        RockerExtension ext = (RockerExtension)
+            project.getExtensions().findByName("rocker");
         runJavaGeneratorMain(ext, templateDir, outputDir, classDir);
     }
 
     /**
      * Run the Rocker compiler with the RockerGradleExtension as configuration 
      * options.
-     * 
+     *
      * @param ext the extension from the project object
      */
     private static void runJavaGeneratorMain(RockerExtension ext,
-    		File templateDir, File outputDir, File classDir) {
+                                             File templateDir, File outputDir, File classDir) {
         if (ext.isSkip()) {
             logInfo("Skip flag is on, will skip goal.");
             return;
@@ -118,8 +118,8 @@ public class RockerTask extends DefaultTask {
         if (ext.getJavaVersion() == null || ext.getJavaVersion().length() == 0) {
             // set to current jdk version
             ext.setJavaVersion(System.getProperty("java.version").substring(0, 3));
-            logInfo("Property rocker.javaVersion not set. Using your JDK version " 
-            		+ ext.getJavaVersion());
+            logInfo("Property rocker.javaVersion not set. Using your JDK version "
+                + ext.getJavaVersion());
         } else {
             logInfo("Targeting java version " + ext.getJavaVersion());
         }
@@ -136,8 +136,8 @@ public class RockerTask extends DefaultTask {
             if (ext.getSuffixRegex() != null) {
                 jgm.setSuffixRegex(ext.getSuffixRegex());
             }
-            RockerOptions rockerOptions 
-            	= jgm.getParser().getConfiguration().getOptions();
+            RockerOptions rockerOptions
+                = jgm.getParser().getConfiguration().getOptions();
             if (ext.getJavaVersion() != null) {
                 rockerOptions.setJavaVersion(ext.getJavaVersion());
             }
@@ -161,7 +161,7 @@ public class RockerTask extends DefaultTask {
             }
 
             jgm.run();
-            
+
         }
         catch (Exception e) {
             throw new RockerGradleException(e.getMessage(), e);
@@ -170,8 +170,8 @@ public class RockerTask extends DefaultTask {
         if (!ext.isSkipTouch()) {
             if (ext.getTouchFile().length() == 0) {
                 throw new RockerGradleException(
-                		"If skipTouch is equal to false, then "
-                		+ "touchFile must not be empty");
+                    "If skipTouch is equal to false, then "
+                        + "touchFile must not be empty");
             }
             if (ext.getTouchFile() != null) {
                 File f = new File(ext.getTouchFile());
@@ -180,9 +180,11 @@ public class RockerTask extends DefaultTask {
                     if (!f.exists()) {
                         new FileOutputStream(f).close();
                     }
-                    f.setLastModified(System.currentTimeMillis());
+                    if (!f.setLastModified(System.currentTimeMillis())) {
+                        throw new IOException("Could not set Last Modified");
+                    }
                 } catch (IOException e) {
-                    logDebug("Unable to touch file", e);
+                    logDebug("Unable to touch file: " + f.getAbsolutePath(), e);
                 }
             }
         }

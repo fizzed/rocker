@@ -21,38 +21,37 @@ import org.gradle.api.tasks.util.PatternFilterable;
  * the source in this context.
  */
 public class TemplateDirectorySet  {
-
-	private Project project;
+    private Project project;
     private final Set<File> templateDirs = new HashSet<>();
-	
+
     /**
      * Create a new instance. The project is used to immediately check
      * (with {@code project.file()} the validity of added directories.
-     * 
-	 * @param project the project
-	 */
-	public TemplateDirectorySet(Project project) {
-		super();
-		this.project = project;
-	}
+     *
+     * @param project the project
+     */
+    public TemplateDirectorySet(Project project) {
+        super();
+        this.project = project;
+    }
 
-	/**
-	 * Adds the given source directory to this set.
-	 * 
-	 * @param srcDir the directory
-	 * @return the template set for easy chaining
-	 */
-	public TemplateDirectorySet srcDir(Object srcDir) {
+    /**
+     * Adds the given source directory to this set.
+     *
+     * @param srcDir the directory
+     * @return the template set for easy chaining
+     */
+    public TemplateDirectorySet srcDir(Object srcDir) {
         templateDirs.add(project.file(srcDir, PathValidation.DIRECTORY));
         return this;
     }
 
-	/**
-	 * Adds the given source directories to this set.
-	 * 
-	 * @param srcDirs the directories
-	 * @return the template set for easy chaining
-	 */
+    /**
+     * Adds the given source directories to this set.
+     *
+     * @param srcDirs the directories
+     * @return the template set for easy chaining
+     */
     public TemplateDirectorySet srcDirs(Object... srcDirs) {
         for (Object srcDir : srcDirs) {
             srcDir(srcDir);
@@ -62,49 +61,45 @@ public class TemplateDirectorySet  {
 
     /**
      * Sets the source directories for this set.
-     * 
+     *
      * @param srcPaths the source directories
-	 * @return the template set for easy chaining
+     * @return the template set for easy chaining
      */
-	public TemplateDirectorySet setSrcDirs(Iterable<?> srcPaths) {
+    public TemplateDirectorySet setSrcDirs(Iterable<?> srcPaths) {
         templateDirs.clear();
         srcPaths.forEach(this::srcDir);
         return this;
     }
 
-	/**
-	 * Adds the given source to this set.
-	 * 
-	 * @param source the source
-	 * @return the template set for easy chaining
-	 */
+    /**
+     * Adds the given source to this set.
+     *
+     * @param source the source
+     * @return the template set for easy chaining
+     */
     public TemplateDirectorySet source(TemplateDirectorySet source) {
-    	source.getSrcDirs().forEach(this::srcDir);
+        source.getSrcDirs().forEach(this::srcDir);
         return this;
     }
 
     /**
      * Returns the source directories that make up this set.
-     * 
+     *
      * @return the directories
      */
     public Set<File> getSrcDirs() {
-    	return templateDirs;
+        return templateDirs;
     }
-    
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("TemplateDirectorySet [");
-		if (templateDirs != null) {
-			builder.append("templateDirs=");
-			builder.append(templateDirs);
-		}
-		builder.append("]");
-		return builder.toString();
-	}
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("TemplateDirectorySet [");
+        if (!templateDirs.isEmpty()) {
+            builder.append("templateDirs=");
+            builder.append(templateDirs);
+        }
+        builder.append("]");
+        return builder.toString();
+    }
 }
