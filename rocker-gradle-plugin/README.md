@@ -62,9 +62,7 @@ repositories {
 
 buildscript {
     repositories {
-        maven {
-            url uri('../repo') // same absolute path as exported with uploadArchives
-        }
+        mavenLocal() // Provided you have published the plugin there
         jcenter() // Needed for plugin's dependencies
     }
 
