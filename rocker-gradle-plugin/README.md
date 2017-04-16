@@ -48,6 +48,13 @@ rocker {
     postProcessing null
 }
 
+// For each source set "name" a task "generate<name>RockerTemplateSource"
+// is generated (with an empty "name" for the main source set). It is
+// possible to override the directories derived from the base names
+// by setting the tasks' properties "classDir" and "outputDir".
+
+// For a complete build.gradle you also need:
+
 repositories {
     mavenCentral()
 }

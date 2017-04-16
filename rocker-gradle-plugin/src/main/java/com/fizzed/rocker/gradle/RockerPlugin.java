@@ -12,13 +12,11 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 
 /**
- * A plugin that for gradle that runs provides the `rockerCompile` task
+ * A plugin that for gradle that provides the `generateRockerTemplateSource`
+ * tasks.
  */
 public class RockerPlugin implements Plugin<Project> {
 
-	public final static String ROCKER_OUTPUT_DIR = "rockerOutputDir";
-	public final static String ROCKER_CLASSES_DIR = "rockerClassesDir";
-	
     /**
      * Create `rockerCompile` task in group build and describe the task
      * 
@@ -46,18 +44,6 @@ public class RockerPlugin implements Plugin<Project> {
 			@Override
 			public void execute(SourceSet sourceSet) {
 				processSourceSet(project, sourceSet);
-//				SourceSetOutput outSet = sourceSet.getOutput();
-//				if (outSet instanceof ExtensionAware) {
-//					((ExtensionAware) outSet).getExtensions().add(
-//					        ROCKER_OUTPUT_DIR,
-//					        new File(project.getRootProject().getBuildDir(),
-//					        		"generated-sources/rocker/"
-//					                        + sourceSet.getName()
-//					                        + "/java"));
-//					// default set later, if not set explicitly
-//					((ExtensionAware) outSet).getExtensions()
-//					        .add(ROCKER_CLASSES_DIR, "");
-//				}
 			}
 		});
 
@@ -93,7 +79,7 @@ public class RockerPlugin implements Plugin<Project> {
         // 3) Set source set and sources for task (avoids lookup when executing)
         rockerTask.setSourceSet(sourceSet);
         rockerTask.setTemplateDirs(rockerProperty.getRocker().getSrcDirs());
-
+        
         // 4) Make sure that the rocker task is run run before compiling
         //    Java sources
         project.getTasks().getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME)
@@ -115,10 +101,21 @@ public class RockerPlugin implements Plugin<Project> {
     					rockerExtension.getOutputBaseDirectory(),
     					rockerTask.getSourceSet().getName()));
     		}
-    		// 2) Add output directory to java sources
+    		
+    		// 2) Inform gradle about outputs for incremental build
+    		rockerTask.getOutputs().dir(rockerTask.getOutputDir());
+    		
+    		// 3) Add input information for incremental build
+            for (File templateDir: rockerTask.getTemplateDirs()) {
+            	rockerTask.getInputs().dir(templateDir);
+            }
+            rockerTask.getInputs().properties(rockerExtension.inputProperties());
+            
+    		// 4) Add output directory to java sources
             rockerTask.getSourceSet().getJava().srcDir(
             		rockerTask.getOutputDir());
-            // 3) Check if classes directory was set
+            
+            // 5) Check if classes directory was set
     		if (rockerTask.getClassDir() == null) {
     			// else set to default
     			rockerTask.setClassDir(new File(

@@ -1,6 +1,8 @@
 package com.fizzed.rocker.gradle;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.gradle.api.Project;
 
@@ -25,6 +27,25 @@ public class RockerExtension {
     private File classBaseDirectory;
     private String[] postProcessing;
 
+    /**
+     * Generate a map that reflects the current state of all properties
+     * that are relevant as input for the incremental build.
+     * 
+     * @return the map
+     */
+    Map<String,?> inputProperties() {
+    	Map<String,? super Object> result = new HashMap<>();
+    	result.put("javaVersion", javaVersion);
+    	result.put("extendsClass", extendsClass);
+    	result.put("extendsModelClass", extendsModelClass);
+    	result.put("optimize", optimize);
+    	result.put("discardLogicWhitespace", discardLogicWhitespace);
+    	result.put("targetCharset", targetCharset);
+    	result.put("suffixRegex", suffixRegex);
+    	result.put("postProcessinf", postProcessing);
+    	return result;
+    }
+    
     /**
 	 * @param project the project to set
 	 */
