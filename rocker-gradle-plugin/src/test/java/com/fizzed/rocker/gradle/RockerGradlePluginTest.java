@@ -13,14 +13,6 @@ import static org.junit.Assert.fail;
 public class RockerGradlePluginTest {
 
     @Test
-    public void testCompileTaskExists() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPluginManager().apply(RockerPlugin.class);
-        Task rocker = project.getTasks().getByName("rockerCompile");
-        assertTrue(rocker instanceof RockerTask);
-    }
-
-    @Test
     public void testJavaFileIsCreatedInOutputDirectory() throws ClassNotFoundException {
         Project project = ProjectBuilder.builder().build();
         project.getPluginManager().apply(RockerPlugin.class);
