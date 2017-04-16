@@ -3,6 +3,9 @@ plugins {
 	id "maven-publish"
 }
 
+// Needed for jitpack
+apply plugin: 'maven'
+
 group 'com.fizzed'
 archivesBaseName = 'rocker-gradle-plugin'
 version = '1.0.0-SNAPSHOT'
