@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gradle.api.InvalidUserDataException;
+import org.gradle.api.PathValidation;
 import org.gradle.api.Project;
 
 /**
@@ -144,26 +146,24 @@ public class RockerExtension {
         return outputBaseDirectory;
     }
 
-    public void setOutputBaseDirectory(File outputBaseDirectory) {
+    public void setOutputBaseDirectory(Object outputBaseDirectory) {
         this.outputBaseDirectory = project.file(outputBaseDirectory);
     }
 
-    // Used to avoid explicit call to file() in build scripts
-    public void setOutputBaseDirectory(String outputBaseDirectory) {
-        this.outputBaseDirectory = project.file(outputBaseDirectory);
+    public void setOutputBaseDirectory(Object outputBaseDirectory, PathValidation pv) throws InvalidUserDataException {
+        this.outputBaseDirectory = project.file(outputBaseDirectory, pv);
     }
 
     public File getClassBaseDirectory() {
         return classBaseDirectory;
     }
 
-    public void setClassBaseDirectory(File classBaseDirectory) {
+    public void setClassBaseDirectory(Object classBaseDirectory) {
         this.classBaseDirectory = project.file(classBaseDirectory);
     }
 
-    // Used to avoid explicit call to file() in build scripts
-    public void setClassBaseDirectory(String classBaseDirectory) {
-        this.classBaseDirectory = project.file(classBaseDirectory);
+    public void setClassBaseDirectory(Object classBaseDirectory, PathValidation pv) throws InvalidUserDataException {
+        this.classBaseDirectory = project.file(classBaseDirectory, pv);
     }
 
     public String[] getPostProcessing() {
