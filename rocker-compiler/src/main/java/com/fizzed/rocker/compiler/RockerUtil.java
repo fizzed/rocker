@@ -128,7 +128,7 @@ public class RockerUtil {
     static public String templateNameToName(String templateName) {
         int pos = templateName.indexOf('.');
         // must be at least 1 char
-        if (pos < 2) {
+        if (pos < 1) {
             throw new IllegalArgumentException("Invalid template name format (unable find first dot character)");
         }
         return templateName.substring(0, pos);

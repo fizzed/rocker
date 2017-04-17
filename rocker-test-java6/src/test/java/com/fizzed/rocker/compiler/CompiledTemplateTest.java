@@ -74,6 +74,16 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void singleLetterFile() throws Exception {
+        String html = new rocker.A()
+            .s("test")
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("test"));
+    }
+    
+    @Test
     public void args() throws Exception {
         String html = new rocker.Args()
             .s("string")
@@ -449,6 +459,26 @@ public class CompiledTemplateTest {
 "        }\n" +
 "    }\n" +
 "</script>"));
+    }
+    
+    @Test
+    public void ifElseIfBlockInWithBlock() throws Exception {
+        String html = new rocker.IfElseIfBlockInWithBlock()
+            .values(Arrays.asList(1))
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("else-if-block"));
+    }
+    
+    @Test
+    public void ifElseIfBlockIncludeTemplate() throws Exception {
+        String html = new rocker.IfElseIfBlockIncludeTemplate()
+            .value(1)
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("else-if-block"));
     }
     
     @Test
@@ -873,5 +903,9 @@ public class CompiledTemplateTest {
         
         assertThat(html, is("b"));
     }
-    
+
+    @Test(expected = NoSuchFieldException.class)
+    public void optmizedCompilerOmitsModifedAtHeader() throws Exception {
+        rocker.A.class.getField("MODIFIED_AT");
+    }
 }

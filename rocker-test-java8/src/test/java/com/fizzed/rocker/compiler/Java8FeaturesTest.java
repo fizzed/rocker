@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
@@ -53,6 +54,16 @@ public class Java8FeaturesTest {
 
         // newlines don't really matter - just verify what it did
         Assert.assertEquals("a\ninside-a-closure\n1", html.trim().replace(" ", ""));
+    }
+    
+    @Test
+    public void ifElseIfBlockInWithBlock() throws Exception {
+        String html = new rocker.IfElseIfBlockInWithBlock()
+            .values(Arrays.asList(1))
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("else-if-block"));
     }
     
     @Test

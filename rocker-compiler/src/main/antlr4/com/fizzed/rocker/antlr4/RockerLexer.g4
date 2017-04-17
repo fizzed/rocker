@@ -1,7 +1,10 @@
 lexer grammar RockerLexer;
 
-
 // content mode (by default)
+
+ELSE_IF
+    :   '}' Ws? 'else' Ws? 'if' Ws? Parentheses Ws? '{'
+    ;
 
 ELSE
     :   '}' Ws? 'else' Ws? '{'

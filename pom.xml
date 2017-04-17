@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
-    <version>0.15.1-SNAPSHOT</version>
+    <version>0.18.1-SNAPSHOT</version>
 
     <parent>
         <groupId>com.fizzed</groupId>

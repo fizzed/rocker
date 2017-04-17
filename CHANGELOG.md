@@ -1,6 +1,20 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.18.0 - 2017-04-12
+
+ - Omit MODIFIED_AT header when 'optimize' option is true (@mark-vieira). 
+   Useful in cases you don't have hot reload enabled (e.g. CI environments)
+
+#### 0.17.0 - 2017-04-11
+
+ - Issue #56: fix nested else-if blocks failing to compile
+ - Issue $57: allow rocker template filenames with a length of 1
+
+#### 0.16.0 - 2017-03-02
+  
+ - Support for `else if` in if-else blocks. (@mreuvers)
+
 #### 0.15.0 - 2017-01-13
 
  - `@with` blocks now support multiple variables to be set in a single statement.

@@ -15,7 +15,11 @@ plain
     ;
 
 plainBlock
-    :   LCURLY templateContent* (RCURLY | plainElseBlock)
+    :   LCURLY templateContent* plainElseIfBlock* (RCURLY | plainElseBlock)
+    ;
+
+plainElseIfBlock
+    :   ELSE_IF templateContent*
     ;
 
 plainElseBlock
@@ -59,7 +63,11 @@ block
     ;
 
 ifBlock
-    :   AT MV_IF templateContent* (RCURLY | ifElseBlock)
+    :   AT MV_IF templateContent* (RCURLY | ifElseIfBlock | ifElseBlock)
+    ;
+
+ifElseIfBlock
+    :   ELSE_IF templateContent* (RCURLY | ifElseIfBlock | ifElseBlock)
     ;
 
 ifElseBlock

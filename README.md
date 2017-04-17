@@ -6,6 +6,14 @@ Rocker Templates by Fizzed
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
+## Sponsored by
+
+Rocker is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>.  We love the service and think you would too.
+
+<a href="https://www.greenback.com" title="Greenback - Expenses made simple"><img src="https://www.greenback.com/assets/images/logo-greenback.png" height="48" width="166" alt="Greenback"></a>
+
+<a href="https://www.greenback.com" title="Greenback - Expenses made simple">More engineering. Less paperwork. Expenses made simple.</a>
+
 ## Overview
 
 Rocker is a Java 8 optimized (runtime compat with 6+), near zero-copy rendering,
@@ -145,6 +153,15 @@ rendering context (output buffer, application-specific context/implicit state).
 Checkout the [SYNTAX.md](docs/SYNTAX.md) file for a comprehensive deep dive on
 the rocker syntax.
 
+## Framework integrations
+
+Rocker has a growing list of frameworks that it has been seamlessly integrated with.
+If you want to link to a new framework added, please file an issue or submit a PR:
+
+ * Ninja Framework: https://github.com/fizzed/ninja-rocker
+ * Jooby: http://jooby.org/doc/rocker
+ * Spark Framework: https://github.com/perwendel/spark-template-engines
+
 ## Near zero-copy rendering
 
 Static (plain text) for each Rocker template is (by default) stored internally as
@@ -237,7 +254,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.15.0</version>
+    <version>0.16.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -289,14 +306,14 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.15.0</version>
+    <version>0.16.0</version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.15.0</version>
+    <version>0.16.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -322,7 +339,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.15.0</version>
+            <version>0.16.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
@@ -490,11 +507,6 @@ Please note that if there is an exception during the render the OutputStream
 would have a partial template rendered (up to the point of the exception).  In
 most cases it would be better to render to the default `com.fizzed.rocker.runtime.ArrayOfByteArraysOutput`
 and write its buffer of byte arrays out directly to your OutputStream.
-
-## Ninja framework integration (or other third party frameworks)
-
-Looking to integrate Rocker into your own application/framework?  Check out
-[Rocker's integration into the Ninja web framework](https://github.com/fizzed/ninja-rocker) for ideas.
 
 ## Other demos?
 
