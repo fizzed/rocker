@@ -148,11 +148,21 @@ public class RockerExtension {
         this.outputBaseDirectory = project.file(outputBaseDirectory);
     }
 
+    // Used to avoid explicit call to file() in build scripts
+    public void setOutputBaseDirectory(String outputBaseDirectory) {
+        this.outputBaseDirectory = project.file(outputBaseDirectory);
+    }
+
     public File getClassBaseDirectory() {
         return classBaseDirectory;
     }
 
     public void setClassBaseDirectory(File classBaseDirectory) {
+        this.classBaseDirectory = project.file(classBaseDirectory);
+    }
+
+    // Used to avoid explicit call to file() in build scripts
+    public void setClassBaseDirectory(String classBaseDirectory) {
         this.classBaseDirectory = project.file(classBaseDirectory);
     }
 
