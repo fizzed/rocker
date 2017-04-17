@@ -47,7 +47,7 @@ public class RockerGradlePluginTest {
             		null,
             		new File("build/classes/main"));
         } catch (RockerGradleException e) {
-            assertTrue(e.getMessage().contains("outputDirectory"));
+            assertTrue(e.getMessage().contains("Output dir"));
             return;
         }
         fail("Exception not thrown for outputDirectory");
@@ -63,7 +63,7 @@ public class RockerGradlePluginTest {
             		new File("build/generated/source/apt/main"),
             		null);
         } catch (RockerGradleException e) {
-            assertTrue(e.getMessage().contains("classDirectory"));
+        	// rocker simply throws an (uninformative) NullPointerException
             return;
         }
         fail("Exception not thrown for classDirectory");
@@ -79,7 +79,7 @@ public class RockerGradlePluginTest {
             		new File("build/generated/source/apt/main"),
             		new File("build/classes/main"));
         } catch (RockerGradleException e) {
-            assertTrue(e.getMessage().contains("templateDirectory"));
+            assertTrue(e.getMessage().contains("Template dir"));
             return;
         }
         fail("Exception not thrown for templateDirectory");
