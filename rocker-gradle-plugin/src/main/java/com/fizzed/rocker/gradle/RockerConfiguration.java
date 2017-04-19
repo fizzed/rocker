@@ -29,12 +29,10 @@ public class RockerConfiguration {
     private File classBaseDirectory;
     private String[] postProcessing;
 
-    /**
-     * @param project the project to set
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
+    public RockerConfiguration(Project project) {
+		super();
+		this.project = project;
+	}
 
     @Internal
     public boolean isSkip() {

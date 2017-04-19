@@ -27,13 +27,13 @@ rocker {
     skip false
     // Base directory for generated java sources, actual target is sub directory 
     // with the name of the source set. The value is passed through project.file(). 
-    outputBaseDirectory = buildDir.toString() + "/generated-src/rocker"
+    outputBaseDirectory = "$buildDir/generated-src/rocker"
     // Base directory for the directory where the hot reload feature 
     // will (re)compile classes to at runtime (and where `rocker-compiler.conf`
     // is generated, which is used by RockerRuntime.getInstance().setReloading(true)).
     // The actual target is a sub directory with the name of the source set. 
     // The value is passed through project.file().
-    classBaseDirectory = buildDir.toString() + "/classes"
+    classBaseDirectory = "$buildDir/classes"
 
     failOnError true
     skipTouch true

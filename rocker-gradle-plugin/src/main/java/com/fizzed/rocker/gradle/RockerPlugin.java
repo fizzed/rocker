@@ -27,8 +27,7 @@ public class RockerPlugin implements Plugin<Project> {
 
         // Create own project extension (configuration)
         RockerConfiguration rockerConfig = project.getExtensions()
-            .create("rocker", RockerConfiguration.class);
-        rockerConfig.setProject(project);
+            .create("rocker", RockerConfiguration.class, project);
         rockerConfig.setOutputBaseDirectory(new File(
             project.getBuildDir(), "generated-src/rocker"));
         rockerConfig.setClassBaseDirectory(new File(
