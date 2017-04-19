@@ -2,7 +2,6 @@ package com.fizzed.rocker.gradle;
 
 import java.io.File;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.internal.plugins.DslObject;
@@ -27,24 +26,25 @@ public class RockerPlugin implements Plugin<Project> {
         project.getPluginManager().apply(JavaPlugin.class);
 
         // Create own project extension (configuration)
-        RockerExtension rockerExtension = project.getExtensions()
-            .create("rocker", RockerExtension.class);
-        rockerExtension.setProject(project);
-        rockerExtension.setOutputBaseDirectory(new File(
+        RockerConfiguration rockerConfig = project.getExtensions()
+            .create("rocker", RockerConfiguration.class);
+        rockerConfig.setProject(project);
+        rockerConfig.setOutputBaseDirectory(new File(
             project.getBuildDir(), "generated-src/rocker"));
-        rockerExtension.setClassBaseDirectory(new File(
+        rockerConfig.setClassBaseDirectory(new File(
             project.getBuildDir(), "classes"));
 
         // Create own source set extension
         SourceSetContainer sourceSets = project.getConvention().getPlugin(
             JavaPluginConvention.class).getSourceSets();
-        sourceSets.all(sourceSet -> processSourceSet(project, sourceSet));
+        sourceSets.all(sourceSet -> processSourceSet(project, sourceSet, rockerConfig));
 
         // Complete configuration after evaluation
         project.afterEvaluate(RockerPlugin::completeConfiguration);
     }
 
-    private static void processSourceSet(Project project, SourceSet sourceSet) {
+    private static void processSourceSet(Project project, SourceSet sourceSet,
+    		RockerConfiguration rockerConfig) {
         // for each source set we will:
         // 1) Add a new 'rocker' property to the source set
         RockerSourceSetProperty rockerProperty
@@ -61,6 +61,7 @@ public class RockerPlugin implements Plugin<Project> {
         rockerTask.setGroup("build");
         rockerTask.setDescription("Generate Sources from "
             + sourceSet.getName() + " Rocker Templates");
+        rockerTask.setRockerProjectConfig(rockerConfig);
 
         // 3) Set source set and sources for task (avoids lookup when executing)
         rockerTask.setSourceSet(sourceSet);
@@ -75,8 +76,8 @@ public class RockerPlugin implements Plugin<Project> {
     private static void completeConfiguration (Project project) {
         // Output directory and class directory can be configured on
         // a per (generated) task basis. So add them only if not set.
-        RockerExtension rockerExtension
-            = project.getExtensions().findByType(RockerExtension.class);
+        RockerConfiguration rockerConfig
+            = project.getExtensions().findByType(RockerConfiguration.class);
         for (RockerTask rockerTask:
             project.getTasks().withType(RockerTask.class)) {
             // For each rocker task
@@ -84,29 +85,26 @@ public class RockerPlugin implements Plugin<Project> {
             if (rockerTask.getOutputDir() == null) {
                 // else set to default
                 rockerTask.setOutputDir(new File(
-                    rockerExtension.getOutputBaseDirectory(),
-                    rockerTask.getSourceSet().getName()));
+                    rockerConfig.getOutputBaseDirectory(),
+                    rockerTask.sourceSet().getName()));
             }
 
-            // 2) Inform gradle about outputs for incremental build
-            rockerTask.getOutputs().dir(rockerTask.getOutputDir());
-
-            // 3) Add input information for incremental build
+            // 2) Add input information for incremental build
+            //    (there doesn't seem to be an @InputDirectories annotation)
             for (File templateDir: rockerTask.getTemplateDirs()) {
                 rockerTask.getInputs().dir(templateDir);
             }
-            rockerTask.getInputs().properties(rockerExtension.inputProperties());
 
-            // 4) Add output directory to java sources
-            rockerTask.getSourceSet().getJava().srcDir(
+            // 3) Add output directory to java sources
+            rockerTask.sourceSet().getJava().srcDir(
                 rockerTask.getOutputDir());
 
-            // 5) Check if classes directory was set
+            // 4) Check if classes directory was set
             if (rockerTask.getClassDir() == null) {
                 // else set to default
                 rockerTask.setClassDir(new File(
-                    rockerExtension.getClassBaseDirectory(),
-                    rockerTask.getSourceSet().getName()));
+                    rockerConfig.getClassBaseDirectory(),
+                    rockerTask.sourceSet().getName()));
             }
         }
     }

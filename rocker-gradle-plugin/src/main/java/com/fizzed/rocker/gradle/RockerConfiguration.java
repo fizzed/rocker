@@ -1,17 +1,18 @@
 package com.fizzed.rocker.gradle;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.PathValidation;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
 
 /**
  * Bean for the configuration options of Rocker Compiler
  */
-public class RockerExtension {
+public class RockerConfiguration {
     private Project project;
     private boolean skip = false;
     private boolean failOnError = true;
@@ -29,31 +30,13 @@ public class RockerExtension {
     private String[] postProcessing;
 
     /**
-     * Generate a map that reflects the current state of all properties
-     * that are relevant as input for the incremental build.
-     * 
-     * @return the map
-     */
-    Map<String,?> inputProperties() {
-        Map<String,? super Object> result = new HashMap<>();
-        result.put("javaVersion", javaVersion);
-        result.put("extendsClass", extendsClass);
-        result.put("extendsModelClass", extendsModelClass);
-        result.put("optimize", optimize);
-        result.put("discardLogicWhitespace", discardLogicWhitespace);
-        result.put("targetCharset", targetCharset);
-        result.put("suffixRegex", suffixRegex);
-        result.put("postProcessinf", postProcessing);
-        return result;
-    }
-
-    /**
      * @param project the project to set
      */
     public void setProject(Project project) {
         this.project = project;
     }
 
+    @Internal
     public boolean isSkip() {
         return skip;
     }
@@ -62,6 +45,7 @@ public class RockerExtension {
         this.skip = skip;
     }
 
+    @Internal
     public boolean isFailOnError() {
         return failOnError;
     }
@@ -70,6 +54,7 @@ public class RockerExtension {
         this.failOnError = failOnError;
     }
 
+    @Internal
     public boolean isSkipTouch() {
         return skipTouch;
     }
@@ -78,6 +63,8 @@ public class RockerExtension {
         this.skipTouch = skipTouch;
     }
 
+    @Optional
+    @Input
     public String getTouchFile() {
         return touchFile;
     }
@@ -86,6 +73,8 @@ public class RockerExtension {
         this.touchFile = touchFile;
     }
 
+    @Optional
+    @Input
     public String getJavaVersion() {
         return javaVersion;
     }
@@ -94,6 +83,8 @@ public class RockerExtension {
         this.javaVersion = javaVersion;
     }
 
+    @Optional
+    @Input
     public String getExtendsClass() {
         return extendsClass;
     }
@@ -102,6 +93,8 @@ public class RockerExtension {
         this.extendsClass = extendsClass;
     }
 
+    @Optional
+    @Input
     public String getExtendsModelClass() {
         return extendsModelClass;
     }
@@ -110,6 +103,8 @@ public class RockerExtension {
         this.extendsModelClass = extendsModelClass;
     }
 
+    @Optional
+    @Input
     public Boolean getOptimize() {
         return optimize;
     }
@@ -118,6 +113,8 @@ public class RockerExtension {
         this.optimize = optimize;
     }
 
+    @Optional
+    @Input
     public Boolean getDiscardLogicWhitespace() {
         return discardLogicWhitespace;
     }
@@ -126,6 +123,8 @@ public class RockerExtension {
         this.discardLogicWhitespace = discardLogicWhitespace;
     }
 
+    @Optional
+    @Input
     public String getTargetCharset() {
         return targetCharset;
     }
@@ -134,6 +133,8 @@ public class RockerExtension {
         this.targetCharset = targetCharset;
     }
 
+    @Optional
+    @Input
     public String getSuffixRegex() {
         return suffixRegex;
     }
@@ -142,6 +143,7 @@ public class RockerExtension {
         this.suffixRegex = suffixRegex;
     }
 
+    @Internal
     public File getOutputBaseDirectory() {
         return outputBaseDirectory;
     }
@@ -154,6 +156,7 @@ public class RockerExtension {
         this.outputBaseDirectory = project.file(outputBaseDirectory, pv);
     }
 
+    @Input // Neither input nor output directory, but generated rocker.conf depends on it
     public File getClassBaseDirectory() {
         return classBaseDirectory;
     }
@@ -166,6 +169,8 @@ public class RockerExtension {
         this.classBaseDirectory = project.file(classBaseDirectory, pv);
     }
 
+    @Optional
+    @Input
     public String[] getPostProcessing() {
         return postProcessing;
     }

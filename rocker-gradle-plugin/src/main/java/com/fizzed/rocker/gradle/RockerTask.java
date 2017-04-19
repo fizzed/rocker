@@ -6,6 +6,9 @@ import com.fizzed.rocker.compiler.RockerOptions;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
@@ -22,11 +25,30 @@ public class RockerTask extends DefaultTask {
     private Set<File> templateDirs = new HashSet<>();
     private File outputDir;
     private File classDir;
+    private RockerConfiguration rockerProjectConfig;
 
     /**
+	 * @return the config
+	 */
+    @Nested
+	public RockerConfiguration getRockerProjectConfig() {
+		return rockerProjectConfig;
+	}
+
+	/**
+	 * @param config the config to set
+	 */
+	public void setRockerProjectConfig(RockerConfiguration config) {
+		this.rockerProjectConfig = config;
+	}
+
+	/**
+	 * Internally used relationship to the task's source set. 
+	 * Not exposed as Java Bean property.
+	 * 
      * @return the sourceSet
      */
-    public SourceSet getSourceSet() {
+    public SourceSet sourceSet() {
         return sourceSet;
     }
 
@@ -40,6 +62,7 @@ public class RockerTask extends DefaultTask {
     /**
      * @return the templateDirs
      */
+    @Internal // Not really, handled programmatically as there is no @InputDirectories 
     public Set<File> getTemplateDirs() {
         return templateDirs;
     }
@@ -54,6 +77,7 @@ public class RockerTask extends DefaultTask {
     /**
      * @return the outputDir
      */
+    @OutputDirectory
     public File getOutputDir() {
         return outputDir;
     }
@@ -68,6 +92,7 @@ public class RockerTask extends DefaultTask {
     /**
      * @return the classDir
      */
+    @Internal("Used indirectly only")
     public File getClassDir() {
         return classDir;
     }
@@ -97,7 +122,7 @@ public class RockerTask extends DefaultTask {
      */
     public static void doCompileRocker(Project project,
                                        File templateDir, File outputDir, File classDir) {
-        RockerExtension ext = (RockerExtension)
+        RockerConfiguration ext = (RockerConfiguration)
             project.getExtensions().findByName("rocker");
         runJavaGeneratorMain(ext, templateDir, outputDir, classDir);
     }
@@ -108,7 +133,7 @@ public class RockerTask extends DefaultTask {
      *
      * @param ext the extension from the project object
      */
-    private static void runJavaGeneratorMain(RockerExtension ext,
+    private static void runJavaGeneratorMain(RockerConfiguration ext,
                                              File templateDir, File outputDir, File classDir) {
         if (ext.isSkip()) {
             logInfo("Skip flag is on, will skip goal.");
