@@ -140,7 +140,7 @@ public class JavaGeneratorMain {
             this.configuration.write(configFile);
             log.info("Generated rocker configuration " + configFile);
         } else {
-            log.info("Optimize flag off. Did not generate rocker configuration file");
+            log.info("Optimize flag on. Did not generate rocker configuration file");
         }
     }
     
