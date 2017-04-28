@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.19.0 - 2017-04-28
+
+ - Fix typo in log message (@mark-vieira)
+ - Beta gradle plugin!
+
 #### 0.18.0 - 2017-04-12
 
  - Omit MODIFIED_AT header when 'optimize' option is true (@mark-vieira). 
