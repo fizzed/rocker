@@ -1,0 +1,51 @@
+plugins {
+    id "java-gradle-plugin"
+    id "maven-publish"
+    id "com.gradle.plugin-publish" version "0.9.7"
+}
+
+group 'com.fizzed'
+archivesBaseName = 'rocker-gradle-plugin'
+version "${version}"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.fizzed', name: 'rocker-compiler', version: "${version}"
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+gradlePlugin {
+    plugins {
+        rockerPlugin {
+            id = "com.fizzed.rocker"
+            implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
+        }
+    }
+}
+
+publishing {
+    // Required information added by java-gradle-plugin.
+    // Optionally add url for local repository if you
+    // don't want to use the default.
+    // e.g.
+    //
+}
+
+pluginBundle {
+  website = 'https://github.com/fizzed/rocker'
+  vcsUrl = 'https://github.com/fizzed/rocker'
+  description = 'Java 8 optimized, memory efficient, speedy template engine producing statically typed, plain java objects'
+  tags = ['java', 'templates']
+
+  plugins {
+    rockerPlugin {
+      id = "com.fizzed.rocker"
+      displayName = "Rocker Templates"
+    }
+  }
+}
