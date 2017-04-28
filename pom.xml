@@ -35,6 +35,7 @@
         <module>rocker-runtime</module>
         <module>rocker-compiler</module>
         <module>rocker-maven-plugin</module>
+        <module>rocker-gradle-plugin</module>
         <module>rocker-test-java6</module>
         <module>rocker-test-reload</module>
     </modules>
@@ -53,6 +54,7 @@
                 <module>rocker-runtime</module>
                 <module>rocker-compiler</module>
                 <module>rocker-maven-plugin</module>
+                <module>rocker-gradle-plugin</module>
                 <module>rocker-test-java6</module>
                 <module>rocker-test-java8</module>
                 <module>rocker-test-reload</module>

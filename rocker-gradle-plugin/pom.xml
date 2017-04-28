@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rocker-gradle-plugin</artifactId>
+    <name>rocker-gradle-plugin</name>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.fizzed</groupId>
+        <artifactId>rocker</artifactId>
+        <version>0.18.1-SNAPSHOT</version>
+    </parent>
+    
+    <properties>
+        <gradle.version>3.5</gradle.version>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <skipMain>true</skipMain>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.fortasoft</groupId>
+                <artifactId>gradle-maven-plugin</artifactId>
+                <version>1.0.8</version>
+                <executions>
+                    <execution>
+                        <id>gradle-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <gradleVersion>${gradle.version}</gradleVersion>
+                            <args>
+                                <arg>-Pversion=${project.version}</arg> 
+                            </args>
+                            <tasks>
+                                <task>publishPlugins</task>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gradle-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <gradleVersion>${gradle.version}</gradleVersion>
+                            <tasks>
+                                <task>clean</task>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+        <!-- only to force correct build order in maven -->
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>rocker-compiler</artifactId>
+        </dependency>
+    </dependencies>
+</project>

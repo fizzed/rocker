@@ -1,11 +1,12 @@
 plugins {
     id "java-gradle-plugin"
     id "maven-publish"
+    id "com.gradle.plugin-publish" version "0.9.7"
 }
 
 group 'com.fizzed'
 archivesBaseName = 'rocker-gradle-plugin'
-version = '1.0.0-SNAPSHOT'
+version "${version}"
 
 sourceCompatibility = 1.8
 
@@ -14,17 +15,14 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.fizzed',
-            name: 'rocker-compiler',
-            version: '+'
-
+    compile group: 'com.fizzed', name: 'rocker-compiler', version: "${version}"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
 gradlePlugin {
     plugins {
-        simplePlugin {
-            id = "com.fizzed.rocker.gradle"
+        rockerPlugin {
+            id = "com.fizzed.rocker"
             implementationClass = "com.fizzed.rocker.gradle.RockerPlugin"
         }
     }
@@ -38,3 +36,16 @@ publishing {
     //
 }
 
+pluginBundle {
+  website = 'https://github.com/fizzed/rocker'
+  vcsUrl = 'https://github.com/fizzed/rocker'
+  description = 'Java 8 optimized, memory efficient, speedy template engine producing statically typed, plain java objects'
+  tags = ['java', 'templates']
+
+  plugins {
+    rockerPlugin {
+      id = "com.fizzed.rocker"
+      displayName = "Rocker Templates"
+    }
+  }
+}
