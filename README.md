@@ -258,7 +258,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.16.0</version>
+    <version>0.19.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -310,28 +310,34 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.16.0</version>
+    <version>0.19.0</version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.16.0</version>
+    <version>0.19.0</version>
     <scope>provided</scope>
 </dependency>
 ```
 
+To add as a dependency in Gradle:
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.fizzed', name: 'rocker-runtime', version: '0.19.0'
+    // add rocker-compiler dependency as needed
+}
+```
+
 ### Integrate parser/generator in build tool
 
-#### Not using maven?
-
-We welcome pull requests / contributions for integrating Rocker into other
-build tools.  In the meantime, you may find the command-line parser easy to
-integrate.  In the `rocker-compiler` module, you can call 
-`com.fizzed.rocker.compiler.JavaGeneratorMain` with the correct
-system properties.  Most build tools have some method of executing plain
-Java main methods.
+Rocker supports Maven and Gradle out-of-the box.
 
 #### Maven
 
@@ -343,7 +349,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.16.0</version>
+            <version>0.19.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
@@ -438,6 +444,56 @@ to Rocker's default value.
  * `suffixRegex` is the regular expression to use to find templates to
     parse.
     Defaults to Rocker's default.
+
+#### Gradle
+
+Thanks to `@victory` and `@mnlipp` for contributing the gradle plugin. `@etiennestuder`
+also had an [alternative Gradle plugin](https://github.com/etiennestuder/gradle-rocker-plugin)
+you may want to consider as well.  Rocker's gradle plugin is published to
+gradle.org. Just add the following to your build script:
+
+```groovy
+plugins {
+  id "com.fizzed.rocker" version "0.19.0"
+}
+
+sourceSets {
+    main {
+        rocker {
+            srcDir('src/main/java')
+        }
+    }
+}
+
+rocker {
+    // (All settings are shown with their defaults)
+    // 
+    // Skips building templates all together
+    skip false
+    // Base directory for generated java sources, actual target is sub directory 
+    // with the name of the source set. The value is passed through project.file(). 
+    outputBaseDirectory = "$buildDir/generated-src/rocker"
+    // Base directory for the directory where the hot reload feature 
+    // will (re)compile classes to at runtime (and where `rocker-compiler.conf`
+    // is generated, which is used by RockerRuntime.getInstance().setReloading(true)).
+    // The actual target is a sub directory with the name of the source set. 
+    // The value is passed through project.file().
+    classBaseDirectory = "$buildDir/classes"
+    failOnError true
+    skipTouch true
+    // must not be empty when skipTouch is equal to false
+    touchFile ""
+    javaVersion '1.8'
+    extendsClass null
+    extendsModelClass null
+    optimize null
+    discardLogicWhitespace null
+    targetCharset null
+    suffixRegex null
+    postProcessing null
+}
+
+```
 
 ### Create first template
 

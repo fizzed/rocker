@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.20.0 - 2017-05-02
+
+ - Gradle plugin! (@victory and @mnlipp)
+
 #### 0.19.0 - 2017-04-28
 
  - Fix typo in log message (@mark-vieira)
