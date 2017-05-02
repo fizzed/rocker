@@ -258,7 +258,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.19.0</version>
+    <version>0.20.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -310,14 +310,14 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>0.19.0</version>
+    <version>0.20.0</version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>0.19.0</version>
+    <version>0.20.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -330,7 +330,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.fizzed', name: 'rocker-runtime', version: '0.19.0'
+    compile group: 'com.fizzed', name: 'rocker-runtime', version: '0.20.0'
     // add rocker-compiler dependency as needed
 }
 ```
@@ -349,7 +349,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>0.19.0</version>
+            <version>0.20.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
@@ -454,7 +454,7 @@ gradle.org. Just add the following to your build script:
 
 ```groovy
 plugins {
-  id "com.fizzed.rocker" version "0.19.0"
+  id "com.fizzed.rocker" version "0.20.0"
 }
 
 sourceSets {
