@@ -4,6 +4,8 @@ Rocker Templates by Fizzed
 #### 0.20.0 - 2017-05-02
 
  - Gradle plugin! (@victory and @mnlipp)
+ - Issue #59: Add `@Generated` and `@SuppressWarnings` annotations to generated
+   source files
 
 #### 0.19.0 - 2017-04-28
 
