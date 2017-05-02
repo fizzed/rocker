@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static com.fizzed.rocker.compiler.RockerUtil.*;
+import javax.annotation.Generated;
 
 public class JavaGenerator {
     static private final Logger log = LoggerFactory.getLogger(JavaGenerator.class);
@@ -168,6 +169,7 @@ public class JavaGenerator {
        
         // imports regardless of template
         w.append(CRLF);
+        w.append("import ").append(Generated.class.getName()).append(";").append(CRLF);
         w.append("import ").append(java.io.IOException.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.ForIterator.class.getName()).append(";").append(CRLF);
         w.append("import ").append(com.fizzed.rocker.RenderingException.class.getName()).append(";").append(CRLF);
@@ -199,12 +201,16 @@ public class JavaGenerator {
         
         // MODEL CLASS
         
+        // annotations (https://github.com/fizzed/rocker/issues/59)
+        tab(w, indent).append("@Generated(\"com.fizzed.rocker.compiler.JavaGenerator\") @SuppressWarnings(\"unused\")")
+            .append(CRLF);
+        
         // class definition
         tab(w, indent).append("public class ")
-                .append(model.getName())
-                .append(" extends ")
-                .append(model.getOptions().getExtendsModelClass())
-                .append(" {").append(CRLF);
+            .append(model.getName())
+            .append(" extends ")
+            .append(model.getOptions().getExtendsModelClass())
+            .append(" {").append(CRLF);
         
         indent++;
         
