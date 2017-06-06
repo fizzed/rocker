@@ -280,7 +280,7 @@ import com.fizzed.rocker.runtime.RockerRuntime
 
 ...
 
-RockerRuntime.setReloading(true);
+RockerRuntime.getInstance().setReloading(true);
 ```
 
 ### Try out hot reloading
