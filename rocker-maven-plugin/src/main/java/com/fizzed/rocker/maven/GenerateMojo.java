@@ -1,9 +1,6 @@
 package com.fizzed.rocker.maven;
 
-import com.fizzed.rocker.compiler.JavaGeneratorMain;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.fizzed.rocker.compiler.JavaGeneratorRunnable;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -12,6 +9,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Maven plugin for parsing Rocker templates and generating Java source code.
@@ -120,41 +121,41 @@ public class GenerateMojo extends AbstractMojo {
         }
         
         try {
-            JavaGeneratorMain jgm = new JavaGeneratorMain();
+            JavaGeneratorRunnable jgr = new JavaGeneratorRunnable();
             
-            jgm.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
-            jgm.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
-            jgm.getGenerator().getConfiguration().setClassDirectory(classDirectory);
-            //jgm.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
-            jgm.setFailOnError(failOnError);
+            jgr.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
+            jgr.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
+            jgr.getGenerator().getConfiguration().setClassDirectory(classDirectory);
+            //jgr.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
+            jgr.setFailOnError(failOnError);
             
             // passthru other config
             if (suffixRegex != null) {
-                jgm.setSuffixRegex(suffixRegex);
+                jgr.setSuffixRegex(suffixRegex);
             }
             if (javaVersion != null) {
-                jgm.getParser().getConfiguration().getOptions().setJavaVersion(javaVersion);
+                jgr.getParser().getConfiguration().getOptions().setJavaVersion(javaVersion);
             }
             if (extendsClass != null) {
-                jgm.getParser().getConfiguration().getOptions().setExtendsClass(extendsClass);
+                jgr.getParser().getConfiguration().getOptions().setExtendsClass(extendsClass);
             }
             if (extendsModelClass != null) {
-                jgm.getParser().getConfiguration().getOptions().setExtendsModelClass(extendsModelClass);
+                jgr.getParser().getConfiguration().getOptions().setExtendsModelClass(extendsModelClass);
             }
             if (discardLogicWhitespace != null) {
-                jgm.getParser().getConfiguration().getOptions().setDiscardLogicWhitespace(discardLogicWhitespace);
+                jgr.getParser().getConfiguration().getOptions().setDiscardLogicWhitespace(discardLogicWhitespace);
             }
             if (targetCharset != null) {
-                jgm.getParser().getConfiguration().getOptions().setTargetCharset(targetCharset);
+                jgr.getParser().getConfiguration().getOptions().setTargetCharset(targetCharset);
             }
             if (optimize != null) {
-                jgm.getParser().getConfiguration().getOptions().setOptimize(optimize);
+                jgr.getParser().getConfiguration().getOptions().setOptimize(optimize);
             }
             if (postProcessing != null ) {
-            	jgm.getParser().getConfiguration().getOptions().setPostProcessing(postProcessing);
+            	jgr.getParser().getConfiguration().getOptions().setPostProcessing(postProcessing);
             }
             
-            jgm.run();
+            jgr.run();
         }
         catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
