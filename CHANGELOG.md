@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.21.0 - 2017-07-26
+
+ - Extract runner logic from JavaGeneratorMain into Runnable interface (@breskeby)
+
 #### 0.20.0 - 2017-05-02
 
  - Gradle plugin! (@victory and @mnlipp)
