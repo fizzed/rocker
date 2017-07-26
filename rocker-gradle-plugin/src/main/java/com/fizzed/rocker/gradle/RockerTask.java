@@ -1,6 +1,7 @@
 package com.fizzed.rocker.gradle;
 
 import com.fizzed.rocker.compiler.JavaGeneratorMain;
+import com.fizzed.rocker.compiler.JavaGeneratorRunnable;
 import com.fizzed.rocker.compiler.RockerOptions;
 
 import org.gradle.api.DefaultTask;
@@ -150,7 +151,7 @@ public class RockerTask extends DefaultTask {
         }
 
         try {
-            JavaGeneratorMain jgm = new JavaGeneratorMain();
+            JavaGeneratorRunnable jgm = new JavaGeneratorRunnable();
 
             jgm.getParser().getConfiguration().setTemplateDirectory(templateDir);
             jgm.getGenerator().getConfiguration().setOutputDirectory(outputDir);

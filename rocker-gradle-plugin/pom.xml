@@ -50,6 +50,40 @@
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
                 <executions>
+                    <!--
+                    <execution>
+                        <id>gradle-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <gradleVersion>${gradle.version}</gradleVersion>
+                            <args>
+                                <arg>-Pversion=${project.version}</arg> 
+                            </args>
+                            <tasks>
+                                <task>compileJava</task>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gradle-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <gradleVersion>${gradle.version}</gradleVersion>
+                            <args>
+                                <arg>-Pversion=${project.version}</arg> 
+                            </args>
+                            <tasks>
+                                <task>compileTestJava</task>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    -->
                     <execution>
                         <id>gradle-deploy</id>
                         <phase>deploy</phase>
