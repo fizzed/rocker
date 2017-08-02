@@ -249,14 +249,15 @@ public abstract class DefaultRockerTemplate extends RockerTemplate {
         //
         // methods for rendering value expressions
         //
-        
         public void renderValue(RockerContent c, boolean nullSafe) throws RenderingException, IOException {
+            if (nullSafe && c == null) {
+                return;
+            }
             // delegating rendering this chunk of content to itself
             c.render();
         }
         
         public void renderValue(DefaultRockerModel model, boolean nullSafe) throws RenderingException, IOException {
-            // delegating rendering this model to itself BUT under a context
             model.doRender(DefaultRockerTemplate.this, null, null);
         }
         
