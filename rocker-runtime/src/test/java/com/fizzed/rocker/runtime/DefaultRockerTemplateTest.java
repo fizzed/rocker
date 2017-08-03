@@ -17,15 +17,13 @@ package com.fizzed.rocker.runtime;
 
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RenderingException;
+import com.fizzed.rocker.RockerContent;
 import com.fizzed.rocker.RockerOutput;
-import com.fizzed.rocker.RockerOutputFactory;
-import java.io.IOException;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -137,6 +135,31 @@ public class DefaultRockerTemplateTest {
         assertThat(out.toString(), is("Hello!"));
         assertThat(out, instanceOf(StringBuilderOutput.class));
     }
-    
-    
+
+    @Test
+    public void nullSafeRockerContent() throws Exception {
+        // bare minimum model + template
+        DefaultRockerModel model = new DefaultRockerModel() {
+            @Override
+            protected DefaultRockerTemplate buildTemplate() throws RenderingException {
+                return new DefaultRockerTemplate(this) {
+                    // anonymous initializer!
+                    {
+                        this.__internal.setCharset("UTF-8");
+                        this.__internal.setContentType(ContentType.HTML);
+                    }
+
+                    @Override
+                    protected void __doRender() throws IOException, RenderingException {
+                        RockerContent c = null;
+                        this.__internal.renderValue(c, true);
+                    }
+                };
+            }
+        };
+
+        RockerOutput out = model.render();
+        assertThat(out.toString(), is(""));
+        assertThat(out, instanceOf(ArrayOfByteArraysOutput.class));
+    }
 }
