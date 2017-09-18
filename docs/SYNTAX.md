@@ -586,7 +586,7 @@ template.
 ```html
 @args ()
 
-@extracss -> {
+@extracss => {
     <link rel="stylesheet" href='/assets/css/main.css' >
 }
 
