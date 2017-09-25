@@ -394,7 +394,7 @@ Or as of v0.10.1 call another template dynamically (by name, not class)
 
     @import com.fizzed.rocker.Rocker
 
-    @Rocker("views/MyOther.rocker.html", "myArg1", "Another arg")
+    @Rocker.template("views/MyOther.rocker.html", "myArg1", "Another arg")
 
 ### Content blocks
 
