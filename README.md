@@ -6,10 +6,6 @@ Rocker Templates by Fizzed
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
-## Take our 2017 roadmap survey!
-
-Help map out what we work on next with Rocker.  Take 30 seconds to fill out our survey https://www.surveymonkey.com/r/VKXYG8P
-
 ## Sponsored by
 
 Rocker is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>.  We love the service and think you would too.
