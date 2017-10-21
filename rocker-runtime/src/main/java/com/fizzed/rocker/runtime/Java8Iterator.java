@@ -48,7 +48,7 @@ public class Java8Iterator {
         void accept(ForIterator i, K k, V v) throws RenderingException, IOException;
     }
     
-    static public <V> void forEach(Collection<V> items, ConsumeCollection<V> consumer)  throws RenderingException, IOException {
+    static public <V> void forEach(Iterable<V> items, ConsumeCollection<V> consumer)  throws RenderingException, IOException {
         for (V item : items) {
             consumer.accept(item);
         }
