@@ -53,7 +53,14 @@ public class Java8Iterator {
             consumer.accept(item);
         }
     }
-    
+
+    static public <V> void forEach(Iterable<V> iterable, ConsumeCollectionWithIterator<V> consumer) throws RenderingException, IOException {
+        IterableForIterator<V> it = new IterableForIterator<V>(iterable.iterator());
+        while (it.hasNext()) {
+            consumer.accept(it, it.next());
+        }
+    }
+
     static public <V> void forEach(Collection<V> items, ConsumeCollectionWithIterator<V> consumer) throws RenderingException, IOException {
         IndexOnlyForIterator it = new IndexOnlyForIterator(items.size());
         for (V item : items) {

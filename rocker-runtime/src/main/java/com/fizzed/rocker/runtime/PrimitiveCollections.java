@@ -20,16 +20,16 @@ import java.util.Iterator;
 
 public class PrimitiveCollections {
     
-    static public class ObjectCollection extends AbstractPrimitiveCollection<Object> {
-        private final Object[] array;
+    static public class ObjectCollection<T> extends AbstractPrimitiveCollection<Object> {
+        private final T[] array;
         
-        public ObjectCollection(Object[] array) {
+        public ObjectCollection(T[] array) {
             super(array.length);
             this.array = array;
         }
         
         @Override
-        public Object get(int index) {
+        public T get(int index) {
             return this.array[index];
         }
     }
