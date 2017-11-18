@@ -147,6 +147,19 @@ public class Java8FeaturesTest {
         Assert.assertEquals("first 0: 1=a, 1: 2=b, 2: 3=c", html);
         
     }
+
+    @Test
+    public void forBlockIterator() throws Exception {
+
+        String html = new rocker.ForBlockIterator()
+            .strings(Arrays.asList("1", "2", "3"))
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("123\n--\n[0:1,1:2,2:3]", html);
+
+    }
     
     @Test
     public void breakStatement() throws Exception {
