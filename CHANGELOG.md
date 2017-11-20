@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.23.0 - 2017-11-20
+
+ - @for loop will now work with any Iterable object (@bendem)
+
 #### 0.22.0 - 2017-08-03
  
  - Issue #68: null-safe operator support for RockerContent rendering (@breskeby)
