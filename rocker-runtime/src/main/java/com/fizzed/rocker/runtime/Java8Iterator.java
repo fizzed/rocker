@@ -28,6 +28,7 @@ import com.fizzed.rocker.runtime.PrimitiveCollections.ObjectCollection;
 import com.fizzed.rocker.runtime.PrimitiveCollections.ShortCollection;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Java8Iterator {
@@ -46,6 +47,20 @@ public class Java8Iterator {
     
     static public interface ConsumeMapWithIterator<K,V> {
         void accept(ForIterator i, K k, V v) throws RenderingException, IOException;
+    }
+    
+    static public <V> void forEach(Iterator<V> items, ConsumeCollection<V> consumer)  throws RenderingException, IOException {
+        while (items.hasNext()) {
+            V item = items.next();
+            consumer.accept(item);
+        }
+    }
+    
+    static public <V> void forEach(Iterator<V> items, ConsumeCollectionWithIterator<V> consumer)  throws RenderingException, IOException {
+        IterableForIterator<V> it = new IterableForIterator<V>(items);
+        while (it.hasNext()) {
+            consumer.accept(it, it.next());
+        }
     }
     
     static public <V> void forEach(Iterable<V> items, ConsumeCollection<V> consumer)  throws RenderingException, IOException {

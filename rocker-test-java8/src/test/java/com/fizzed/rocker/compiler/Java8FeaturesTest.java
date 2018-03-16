@@ -162,6 +162,28 @@ public class Java8FeaturesTest {
     }
     
     @Test
+    public void forBlockWithJavaIterator() throws Exception {
+        String html = new rocker.ForBlockWithJavaIterator()
+            .strings(Arrays.asList("1", "2", "3"))
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("123\n--\n[0:1,1:2,2:3]"));
+    }
+    
+    @Test
+    public void forBlockWithJavaStream() throws Exception {
+        String html = new rocker.ForBlockWithJavaStream()
+            .strings(Arrays.asList("1", "2", "3").stream())
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("[0:1,1:2,2:3]"));
+    }
+    
+    @Test
     public void breakStatement() throws Exception {
         String out = rocker.BreakStatement.template()
             .render()
