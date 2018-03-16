@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 0.24.0 - 2018-03-15
+
+ - Java 9 support! (@benjamin-demarteau)
+ - @for loop will now work with any Iterator object (works well with Stream.iterator() too) (@jjlauer)
+
 #### 0.23.0 - 2017-11-20
 
  - @for loop will now work with any Iterable object (@bendem)
