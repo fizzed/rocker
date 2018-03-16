@@ -107,8 +107,17 @@ public class TemplateCompiler {
 
         // under maven or other build tools, java.class.path is wrong
         // build our own from current context
+        // todo: there doesn't seem to be any test checking this assumption is correct.
         StringBuilder classpath = new StringBuilder();
-        URL[] classpathUrls = ((URLClassLoader)(Thread.currentThread().getContextClassLoader())).getURLs();
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        // starting in java 9, the class loader isn't necessarily an instance of URLClassLoader
+        URL[] classpathUrls = new URL[0];
+        if (contextClassLoader instanceof URLClassLoader) {
+            classpathUrls = ((URLClassLoader) contextClassLoader).getURLs();
+        } else {
+            classpath.append(System.getProperty("java.class.path"));
+        }
         for (URL url : classpathUrls) {
             if (classpath.length() > 0) {
                 classpath.append(File.pathSeparator);

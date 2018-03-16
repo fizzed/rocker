@@ -114,7 +114,18 @@ public class GenerateMojo extends AbstractMojo {
         
         if (javaVersion == null || javaVersion.length() == 0) {
             // set to current jdk version
-            javaVersion = System.getProperty("java.version").substring(0, 3);
+            String version = System.getProperty("java.version");
+            if (version.startsWith("1.")) {
+                javaVersion = version.substring(0, 3);
+            } else {
+                try {
+                    // javaVersion = String.valueOf(Runtime.version().major());
+                    Object runtimeVersion = Runtime.class.getMethod("version").invoke(null);
+                    javaVersion = runtimeVersion.getClass().getMethod("major").invoke(runtimeVersion).toString();
+                } catch (Exception e) {
+                    throw new MojoExecutionException("Could not infer java version, set the rocker.javaVersion property manually to fix this problem", e);
+                }
+            }
             getLog().info("Property rocker.javaVersion not set. Using your JDK version " + this.javaVersion);
         } else {
             getLog().info("Targeting java version " + this.javaVersion);
