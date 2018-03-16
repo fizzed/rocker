@@ -271,7 +271,7 @@ For a list with an item at 0 of "Joe" this would render `1: Joe<br/>`
 ### Iteration (@for)
 
 Standard Java for loops as well as enhanced syntax for Java 6 & 7 and
-fancier syntax for Java 8 (where types are inferred).  Since iteration is such
+fancier syntax for Java 8+ (where types are inferred).  Since iteration is such
 an important part of rendering templates, Rocker provides support for a special
 ```ForIterator``` object that can be included with for-loops.
 
@@ -349,6 +349,16 @@ And for Java 6/7
 
     @for ((ForIterator i, String key, String item) : itemMap) {
         @key: @item (at index @i.index())
+    }
+
+#### Java 8 Streams
+
+As of Rocker v0.24.0, `@for` loops accept a `java.util.Iterator` as an
+acceptable value to loop.  For looping against a `java.util.stream.Stream` of
+data:
+
+    @for (item : mystream.iterator()) {
+        @item
     }
 
 #### Break and continue
