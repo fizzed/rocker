@@ -25,7 +25,7 @@ public enum JavaVersion {
     v1_7 (7, "1.7"),
     v1_8 (8, "1.8"),
     V9   (9, "9"),
-    ;
+    V10  (10, "10");
 
     private final int version;
     private final String label;
