@@ -266,7 +266,7 @@ either with a system property or programmatically.  For activating
 hot reloading with a system property in maven.
 
 ```
-mvn -Drocker.reload=true ...rest of args...
+mvn -Drocker.reloading=true ...rest of args...
 ```
 
 Alternatively, you can activate hot reloading programmatically.
