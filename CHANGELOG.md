@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.0.0 - 2018-08-23
+
+ - Rocker templates have been battle tested for years -- time to officially do a v1 release!
+ - Work for Java 9 and 10 compat (@drauf)
+
 #### 0.24.0 - 2018-03-15
 
  - Java 9 support! (@benjamin-demarteau)
