@@ -215,25 +215,25 @@ public class JavaGenerator {
         w.append(CRLF);
         
         // static info about this template
-        tab(w, indent).append("static public final ")
-                .append(ContentType.class.getCanonicalName()).append(" CONTENT_TYPE = ")
-                .append(ContentType.class.getCanonicalName()).append(".").append(model.getContentType().toString()).append(";").append(CRLF);
-        tab(w, indent).append("static public final String TEMPLATE_NAME = \"").append(model.getTemplateName()).append("\";").append(CRLF);
-        tab(w, indent).append("static public final String TEMPLATE_PACKAGE_NAME = \"").append(model.getPackageName()).append("\";").append(CRLF);
-        tab(w, indent).append("static public final String HEADER_HASH = \"").append(model.createHeaderHash()+"").append("\";").append(CRLF);
+        tab(w, indent).append("static public ")
+                .append(ContentType.class.getCanonicalName()).append(" getContentType() { return ")
+                .append(ContentType.class.getCanonicalName()).append(".").append(model.getContentType().toString()).append("; }").append(CRLF);
+        tab(w, indent).append("static public String getTemplateName() { return \"").append(model.getTemplateName()).append("\"; }").append(CRLF);
+        tab(w, indent).append("static public String getTemplatePackageName() { return \"").append(model.getPackageName()).append("\"; }").append(CRLF);
+        tab(w, indent).append("static public String getHeaderHash() { return \"").append(model.createHeaderHash()+"").append("\"; }").append(CRLF);
 
-        // Don't include MODIFIED_AT header when optimized compiler is used since this implicitly disables hot reloading anyhow
+        // Don't include getModifiedAt header when optimized compiler is used since this implicitly disables hot reloading anyhow
         if (!model.getOptions().getOptimize()) {
-            tab(w, indent).append("static public final long MODIFIED_AT = ").append(model.getModifiedAt() + "").append("L;").append(CRLF);
+            tab(w, indent).append("static public long getModifiedAt() { return ").append(model.getModifiedAt() + "").append("L; }").append(CRLF);
         }
 
-        tab(w, indent).append("static public final String[] ARGUMENT_NAMES = {");
+        tab(w, indent).append("static public String[] getArgumentNames() { return new String[] {");
         StringBuilder argNameList = new StringBuilder();
         for (Argument arg : model.getArgumentsWithoutRockerBody()) {
             if (argNameList.length() > 0) { argNameList.append(","); }
             argNameList.append(" \"").append(arg.getExternalName()).append("\"");
         }
-        w.append(argNameList).append(" };").append(CRLF);
+        w.append(argNameList).append(" }; }").append(CRLF);
         
 
         // model arguments as members of model class
@@ -423,9 +423,9 @@ public class JavaGenerator {
         
         tab(w, indent+1).append("super(model);").append(CRLF);
         tab(w, indent+1).append("__internal.setCharset(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
-        tab(w, indent+1).append("__internal.setContentType(CONTENT_TYPE);").append(CRLF);
-        tab(w, indent+1).append("__internal.setTemplateName(TEMPLATE_NAME);").append(CRLF);
-        tab(w, indent+1).append("__internal.setTemplatePackageName(TEMPLATE_PACKAGE_NAME);").append(CRLF);
+        tab(w, indent+1).append("__internal.setContentType(getContentType());").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplateName(getTemplateName());").append(CRLF);
+        tab(w, indent+1).append("__internal.setTemplatePackageName(getTemplatePackageName());").append(CRLF);
         
         // each model argument passed along as well
         for (Argument arg : model.getArguments()) {

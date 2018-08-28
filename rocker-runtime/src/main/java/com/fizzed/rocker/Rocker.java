@@ -17,6 +17,7 @@ package com.fizzed.rocker;
 
 import com.fizzed.rocker.runtime.RockerRuntime;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  *
@@ -70,10 +71,10 @@ public class Rocker {
     
     static private String[] getModelArgumentNames(String templatePath, RockerModel model) {
         try {
-            Field f = model.getClass().getField("ARGUMENT_NAMES");
-            return (String[])f.get(null);
+            Method f = model.getClass().getMethod("getArgumentNames");
+            return (String[])f.invoke(null);
         } catch (Exception e) {
-            throw new TemplateBindException(templatePath, model.getClass().getCanonicalName(), "Unable to read ARGUMENT_NAMES static field from template");
+            throw new TemplateBindException(templatePath, model.getClass().getCanonicalName(), "Unable to read getModifiedAt static method from template");
         }
     }
     
