@@ -177,9 +177,9 @@ renders.
 
 Let's say you have a template consisting of 9000 bytes of plain static text
 and 1000 bytes of dynamic content.  Without this optimization, it 
-would require ~100MB of memory to service 10000 requests (10000 bytes x 
-10000 requests).  With this optimization, it would require ~10MB of memory
-to service 10000 requests (1000 bytes x 10000 requests).  Besides lower memory,
+would require ~100MB of memory to service 1.1.0 requests (1.1.0 bytes x 
+1.1.0 requests).  With this optimization, it would require ~10MB of memory
+to service 1.1.0 requests (1000 bytes x 1.1.0 requests).  Besides lower memory,
 you also cut out 90MB of memory copies and 90MB of UTF-8 String->byte conversions.
 A pretty useful optimization.
 
@@ -254,7 +254,7 @@ in production. In Maven, this means you'll want to add the dependency in the
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -306,14 +306,14 @@ Rocker is published to Maven central. To add as a dependency in Maven:
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-runtime</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- for hot-reloading support only during development -->
 <dependency>
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-compiler</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -326,7 +326,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.fizzed', name: 'rocker-runtime', version: '1.0.0'
+    compile group: 'com.fizzed', name: 'rocker-runtime', version: '1.1.0'
     // add rocker-compiler dependency as needed
 }
 ```
@@ -345,7 +345,7 @@ Add the following to your pom
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>rocker-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <executions>
                 <execution>
                     <id>generate-rocker-templates</id>
@@ -450,7 +450,7 @@ gradle.org. Just add the following to your build script:
 
 ```groovy
 plugins {
-  id "com.fizzed.rocker" version "1.0.0"
+  id "com.fizzed.rocker" version "1.1.0"
 }
 
 sourceSets {
