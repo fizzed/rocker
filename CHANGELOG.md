@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.1.0 - 2018-09-04
+
+ - Generated templates use static methods vs. final constants for a few key internal variables. Helps
+   with incremental compilation in gradle and other environments. (@breskeby)
+
 #### 1.0.0 - 2018-08-23
 
  - Rocker templates have been battle tested for years -- time to officially do a v1 release!
