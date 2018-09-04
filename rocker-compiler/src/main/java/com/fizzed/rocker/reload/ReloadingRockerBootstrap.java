@@ -31,6 +31,8 @@ import com.fizzed.rocker.runtime.DefaultRockerTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,37 +100,37 @@ public class ReloadingRockerBootstrap extends DefaultRockerBootstrap {
     
     private long getModelClassModifiedAt(Class modelType) throws RenderingException {
         try {
-            Field f = modelType.getField("MODIFIED_AT");
-            return f.getLong(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RenderingException("Unable to read MODIFIED_AT static field from class " + modelType.getName());
+            Method m = modelType.getMethod("getModifiedAt");
+            return (long) m.invoke(null);
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new RenderingException("Unable to read getModifiedAt static method from class " + modelType.getName());
         }
     }
     
     private String getModelClassHeaderHash(Class modelType) throws RenderingException {
         try {
-            Field f = modelType.getField("HEADER_HASH");
-            return (String)f.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RenderingException("Unable to read HEADER_HASH static field from class " + modelType.getName());
+            Method m = modelType.getMethod("getHeaderHash");
+            return (String)m.invoke(null);
+        } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+            throw new RenderingException("Unable to read getHeaderHash static method from class " + modelType.getName());
         }
     }
     
     private String getModelClassTemplatePackageName(Class modelType) throws RenderingException {
         try {
-            Field f = modelType.getField("TEMPLATE_PACKAGE_NAME");
-            return (String)f.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RenderingException("Unable to read TEMPLATE_PACKAGE_NAME static field from class " + modelType.getName());
+            Method m = modelType.getMethod("getTemplatePackageName");
+            return (String)m.invoke(null);
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new RenderingException("Unable to read getTemplatePackageName static method from class " + modelType.getName());
         }
     }
     
     private String getModelClassTemplateName(Class modelType) throws RenderingException {
         try {
-            Field f = modelType.getField("TEMPLATE_NAME");
-            return (String)f.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RenderingException("Unable to read TEMPLATE_NAME static field from class " + modelType.getName());
+            Method m = modelType.getMethod("getTemplateName");
+            return (String)m.invoke(null);
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RenderingException("Unable to read getTemplateName static method from class " + modelType.getName());
         }
     }
     

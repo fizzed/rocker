@@ -14,11 +14,11 @@ import com.fizzed.rocker.runtime.PlainTextUnloadedClassLoader;
  */
 public class Args extends com.fizzed.rocker.runtime.DefaultRockerModel {
 
-    static public final com.fizzed.rocker.ContentType CONTENT_TYPE = com.fizzed.rocker.ContentType.HTML;
-    static public final String TEMPLATE_NAME = "Args.rocker.html";
-    static public final String TEMPLATE_PACKAGE_NAME = "rocker";
-    static public final String HEADER_HASH = "379218683";
-    static public final long MODIFIED_AT = 1442956658000L;
+    static public com.fizzed.rocker.ContentType getContentType() { return com.fizzed.rocker.ContentType.HTML; }
+    static public String getTemplateName() { return "Args.rocker.html"; }
+    static public String getTemplatePackageName() { return "rocker"; }
+    static public String getHeaderHash() = { return "379218683"; }
+    static public long getModifiedAt() { return 1442956658000L; }
 
     // argument @ [4:6]
     private String s;

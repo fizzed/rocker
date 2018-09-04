@@ -917,8 +917,8 @@ public class CompiledTemplateTest {
         assertThat(html, is("b"));
     }
 
-    @Test(expected = NoSuchFieldException.class)
+    @Test(expected = NoSuchMethodException.class)
     public void optmizedCompilerOmitsModifedAtHeader() throws Exception {
-        rocker.A.class.getField("MODIFIED_AT");
+        rocker.A.class.getMethod("getModifiedAt");
     }
 }
