@@ -15,21 +15,21 @@
  */
 package com.fizzed.rocker.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  * @author joelauer
  */
 public enum JavaVersion {
-    
+
     v1_6 (6, "1.6"),
     v1_7 (7, "1.7"),
-    v1_8 (8, "1.8"),
-    V9   (9, "9"),
-    V10  (10, "10");
+    v1_8 (8, "1.8");
 
     private final int version;
     private final String label;
-    
+
     JavaVersion(int version, String label) {
         this.version = version;
         this.label = label;
@@ -42,8 +42,14 @@ public enum JavaVersion {
     public String getLabel() {
         return label;
     }
-    
+
     static public JavaVersion findByLabel(String label) {
+        // starting from Java 9, the version is simply a number, i.e. 9, 10, 11, and so on
+        // we select the best minimum compatible level for those Java versions
+        if (StringUtils.isNumeric(label)) {
+            return v1_8;
+        }
+
         for (JavaVersion jv : JavaVersion.values()) {
             if (jv.getLabel().equals(label)) {
                 return jv;
@@ -51,5 +57,5 @@ public enum JavaVersion {
         }
         return null;
     }
-    
+
 }
