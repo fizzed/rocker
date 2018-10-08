@@ -177,9 +177,9 @@ renders.
 
 Let's say you have a template consisting of 9000 bytes of plain static text
 and 1000 bytes of dynamic content.  Without this optimization, it 
-would require ~100MB of memory to service 1.1.0 requests (1.1.0 bytes x 
-1.1.0 requests).  With this optimization, it would require ~10MB of memory
-to service 1.1.0 requests (1000 bytes x 1.1.0 requests).  Besides lower memory,
+would require ~100MB of memory to service 10000 requests (10000 bytes x 
+10000 requests).  With this optimization, it would require ~10MB of memory
+to service 10000 requests (1000 bytes x 10000 requests).  Besides lower memory,
 you also cut out 90MB of memory copies and 90MB of UTF-8 String->byte conversions.
 A pretty useful optimization.
 
