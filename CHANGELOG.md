@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.2.0 - 2018-11-21
+
+ - More flexible approach to parsing Java version number to handle faster release cycle. (@drauf)
+
 #### 1.1.0 - 2018-09-04
 
  - Generated templates use static methods vs. final constants for a few key internal variables. Helps
