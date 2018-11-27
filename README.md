@@ -3,6 +3,8 @@ Rocker Templates by Fizzed
 
 [![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/fizzed/rocker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fizzed/rocker/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/fizzed/rocker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/fizzed/rocker/alerts)
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
