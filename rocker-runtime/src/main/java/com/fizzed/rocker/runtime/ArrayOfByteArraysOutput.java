@@ -17,7 +17,10 @@ package com.fizzed.rocker.runtime;
 
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.RockerOutputFactory;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ReadableByteChannel;
@@ -168,5 +171,8 @@ public class ArrayOfByteArraysOutput extends AbstractRockerOutput<ArrayOfByteArr
             }
         };
     }
-    
+
+    public InputStream asInputStream() {
+        return new ByteArrayInputStream(toByteArray());
+    }
 }
