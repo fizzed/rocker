@@ -10,7 +10,7 @@ import java.util.List;
  * @author joelauer
  */
 public class JavaVariableTest {
-    
+
     @Test
     public void parseToken() throws Exception {
 
@@ -112,7 +112,7 @@ public class JavaVariableTest {
         // simple types
         vars = JavaVariable.parseList("User u, String s");
 
-	Assert.assertEquals(2, vars.size());
+        Assert.assertEquals(2, vars.size());
         Assert.assertEquals(new JavaVariable("User", "u"), vars.get(0));
         Assert.assertEquals(new JavaVariable("String", "s"), vars.get(1));
 
@@ -164,6 +164,44 @@ public class JavaVariableTest {
         Assert.assertEquals(1, vars.size());
         Assert.assertEquals(new JavaVariable("java.lang.String  [  ] [  ]", "s"), vars.get(0));
         Assert.assertEquals("java.lang.String[][]", vars.get(0).getType());
-        
+
+    }
+
+    @Test
+    public void type_shouldBeParsedWithLeastWhitespacesAsPossible() {
+        final String unimportant = "foos";
+        final JavaVariable genericCollectionOfExtensions = new JavaVariable("Collection<? extends Foo>", unimportant);
+        final JavaVariable genericCollectionOfExtensionsWithLootsOfWhitespaces = new JavaVariable(
+                "    Collection\t     <    ?\t  extends    Foo     >   ", unimportant
+        );
+        final JavaVariable genericCollectionOfAncestorsWithLootsOfWhitespaces = new JavaVariable(
+                "    Collection\t     <    ?\t  super    Foo     >   ", unimportant
+        );
+        final JavaVariable complexFunctionWithLootsOfWhitespaces = new JavaVariable(
+                "      Function    <\t   ?    extends    Foo,     ?   super    \tBar  >   ", unimportant
+        );
+        final JavaVariable genericCollectionOfExtensionsWithFullyQualifiedClassNameAndLootsOfWhitespaces =
+                new JavaVariable(
+                        "   Collection  <  ? extends some   .  fancy. \t package   .Foo    > \n  ", unimportant
+                );
+        final JavaVariable genericCollectionOfFoosWithLootsOfWhitespaces = new JavaVariable(
+                "   Collection  < \tFoo    >  ", unimportant
+        );
+        final JavaVariable fooTypeWithLootsOfWhitespaces = new JavaVariable("  \t  Foo \t    ", unimportant);
+        final JavaVariable arrayOfFooWithLootsOfWhitespaces = new JavaVariable("    Foo  [ \t ]   ", unimportant);
+        final JavaVariable arrayOfSimpleIntTypeWithLootsOfWhitespaces = new JavaVariable(" \t  int  [  ] \t ", unimportant);
+
+        Assert.assertEquals("Collection<? extends Foo>", genericCollectionOfExtensions.getType());
+        Assert.assertEquals("Collection<? extends Foo>", genericCollectionOfExtensionsWithLootsOfWhitespaces.getType());
+        Assert.assertEquals("Collection<? super Foo>", genericCollectionOfAncestorsWithLootsOfWhitespaces.getType());
+        Assert.assertEquals("Function<? extends Foo,? super Bar>", complexFunctionWithLootsOfWhitespaces.getType());
+        Assert.assertEquals(
+                "Collection<? extends some.fancy.package.Foo>",
+                genericCollectionOfExtensionsWithFullyQualifiedClassNameAndLootsOfWhitespaces.getType()
+        );
+        Assert.assertEquals("Collection<Foo>", genericCollectionOfFoosWithLootsOfWhitespaces.getType());
+        Assert.assertEquals("Foo", fooTypeWithLootsOfWhitespaces.getType());
+        Assert.assertEquals("Foo[]", arrayOfFooWithLootsOfWhitespaces.getType());
+        Assert.assertEquals("int[]", arrayOfSimpleIntTypeWithLootsOfWhitespaces.getType());
     }
 }

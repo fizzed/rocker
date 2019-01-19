@@ -45,8 +45,8 @@ public class JavaVariable {
         if (type == null) {
             this.type = null;
         } else {
-            // remove all whitespace
-            this.type = type.replaceAll(" ", "");
+            // remove all unnecessary whitespaces
+            this.type = type.replaceAll("(?<!extends|super)\\s+(?!extends|super)", "");
         }
         this.name = name;
     }
