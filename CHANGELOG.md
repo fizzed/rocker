@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.2.1 - 2019-01-18
+
+ - @args supports advanced generics (e.g. List<? extends Foo>) (@plblueraven)
+
 #### 1.2.0 - 2018-11-21
 
  - More flexible approach to parsing Java version number to handle faster release cycle. (@drauf)
