@@ -12,7 +12,9 @@
 
     <groupId>com.fizzed</groupId>
     <artifactId>rocker-test-gradle</artifactId>
+    <name>rocker-test-gradle</name>
     <version>1.2.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
         <!-- compiler designed specifically to run on JDK 1.7+ -->
