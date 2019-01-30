@@ -21,10 +21,10 @@ public class TestGradleVersion {
 	@Parameterized.Parameters(name = "gradle version {0}")
 	public static Collection<Object[]> data(){
 		return Arrays.asList(new Object[][] {
-				{"3.5.1"},
-				{"4.0"},
-				{"4.1"},
-				{"4.2"},
+//				{"3.5.1"},
+//				{"4.0"},
+//				{"4.1"},
+//				{"4.2"},
 				{"4.3"},
 				{"4.4"},
 				{"4.5"},
