@@ -1,0 +1,33 @@
+apply plugin: 'com.fizzed.rocker'
+
+buildscript{
+    repositories {
+        mavenLocal()
+
+        dependencies{
+            classpath 'com.fizzed:rocker-gradle-plugin:1.2.1-SNAPSHOT'
+        }
+    }
+}
+
+sourceSets {
+    main {
+        rocker {
+            srcDir('src/main/java')
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.fizzed', name: 'rocker-runtime', version: '1.2.1-SNAPSHOT'
+    // add rocker-compiler dependency as needed
+}
+
+rocker {
+    javaVersion '1.8'
+}
