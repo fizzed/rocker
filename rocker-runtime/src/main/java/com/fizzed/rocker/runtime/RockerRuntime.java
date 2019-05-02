@@ -19,11 +19,15 @@ import com.fizzed.rocker.RockerStringify;
 import javax.tools.ToolProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLogger;
 
 public class RockerRuntime {
-    private final static Logger log = LoggerFactory.getLogger(RockerRuntime.class.getName());
+    
+    private Logger log = NOPLogger.NOP_LOGGER;
     
     static public final String KEY_RELOADING = "rocker.reloading";
+    static public final String KEY_LOGGING = "rocker.logging";
+
     static public final String CONF_RESOURCE_NAME = "/rocker-compiler.conf";
     
     private static class Holder {
@@ -31,12 +35,22 @@ public class RockerRuntime {
     }
     
     private Boolean reloading;
+    private Boolean logging;
     private RockerBootstrap bootstrap;
     
     private RockerRuntime() {
     
-        log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
         
+        String loggingPropery = System.getProperty(KEY_LOGGING, "false");
+        if (loggingPropery.equalsIgnoreCase("true")) {
+            setLogging(true);
+        } else if (loggingPropery.equalsIgnoreCase("false")) {
+            setLogging(false);
+        } else {
+            throw new IllegalArgumentException("Illegal value [" + loggingPropery + "] for rocker.logging sytem property");
+        }
+        
+        //We are safe to go ahead logging now
         String reloadingProperty = System.getProperty(KEY_RELOADING, "false");
         if (reloadingProperty.equalsIgnoreCase("true")) {
             setReloading(true);
@@ -52,8 +66,30 @@ public class RockerRuntime {
         return Holder.INSTANCE;
     }
     
+    public boolean isLogging() {
+        return this.logging;
+    }
+    
     public boolean isReloading() {
         return this.reloading;
+    }
+
+    final public void setLogging(boolean logging) {
+        if (this.logging != null && this.logging == logging) {
+            // noop
+            return;
+        }
+        if (logging) {
+            log = LoggerFactory.getLogger(RockerRuntime.class);
+            if (this.logging == null) {
+                //Log the version only once but log it if logging is turned on after instantiation
+                log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
+            }
+        }
+        else {
+            log = NOPLogger.NOP_LOGGER;
+        }
+        this.logging = logging;
     }
     
     final public void setReloading(boolean reloading) {
