@@ -81,10 +81,7 @@ public class RockerRuntime {
         }
         if (logging) {
             log = LoggerFactory.getLogger(RockerRuntime.class);
-            if (this.logging == null) {
-                //Log the version only once but log it if logging is turned on after instantiation
-                log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
-            }
+            log.info("Rocker version {}", com.fizzed.rocker.Version.getVersion());
         }
         else {
             log = NOPLogger.NOP_LOGGER;
