@@ -15,6 +15,7 @@
  */
 package com.fizzed.rocker.compiler;
 import com.fizzed.rocker.ContentType;
+import com.fizzed.rocker.Generated;
 import com.fizzed.rocker.RockerContent;
 import com.fizzed.rocker.model.*;
 import com.fizzed.rocker.runtime.*;
@@ -202,6 +203,10 @@ public class JavaGenerator {
         // annotations (https://github.com/fizzed/rocker/issues/59)
         tab(w, indent).append("@SuppressWarnings(\"unused\")")
             .append(CRLF);
+
+        if (model.getOptions().getMarkAsGenerated()) {
+            tab(w, indent).append('@').append(Generated.class.getCanonicalName()).append(CRLF);
+        }
         
         // class definition
         tab(w, indent).append("public class ")
@@ -327,6 +332,9 @@ public class JavaGenerator {
         
         w.append(CRLF);
         
+        if (model.getOptions().getMarkAsGenerated()) {
+            tab(w, indent).append('@').append(Generated.class.getCanonicalName()).append(CRLF);
+        }
         // class definition
         tab(w, indent)
             .append("static public class Template extends ")
@@ -978,6 +986,9 @@ public class JavaGenerator {
             
             w.append(CRLF);
             
+            if (model.getOptions().getMarkAsGenerated()) {
+                tab(w, indent).append('@').append(Generated.class.getCanonicalName()).append(CRLF);
+            }
             tab(w, indent).append("private static class PlainText {").append(CRLF);
             w.append(CRLF);
             

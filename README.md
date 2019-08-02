@@ -441,6 +441,11 @@ to Rocker's default value.
     parse.
     Defaults to Rocker's default.
 
+ * `markAsGenerated` adds a @Generated annotation to the generated classes.
+    The Retention is CLASS so that the annotation can be used by tools that
+    only rely on the class files and not on the source code.
+    Defaults to Rocker's default.
+
 #### Gradle
 
 Thanks to `@victory` and `@mnlipp` for contributing the gradle plugin. `@etiennestuder`
@@ -487,6 +492,7 @@ rocker {
     targetCharset null
     suffixRegex null
     postProcessing null
+    markAsGenerated null
 }
 
 ```

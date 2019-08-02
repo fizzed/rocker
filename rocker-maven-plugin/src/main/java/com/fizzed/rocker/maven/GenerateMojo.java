@@ -86,6 +86,12 @@ public class GenerateMojo extends AbstractMojo {
     
     @Parameter( property = "rocker.postProcessing", required = false)
     protected String[] postProcessing;
+
+    /**
+     * Weather or not to mark the generated classes as {@code @Generated}. 
+     * */
+    @Parameter(property = "rocker.markAsGenerated")
+    protected Boolean markAsGenerated;
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -164,6 +170,9 @@ public class GenerateMojo extends AbstractMojo {
             }
             if (postProcessing != null ) {
             	jgr.getParser().getConfiguration().getOptions().setPostProcessing(postProcessing);
+            }
+            if (markAsGenerated != null) {
+                jgr.getParser().getConfiguration().getOptions().setMarkAsGenerated(markAsGenerated);
             }
             
             jgr.run();

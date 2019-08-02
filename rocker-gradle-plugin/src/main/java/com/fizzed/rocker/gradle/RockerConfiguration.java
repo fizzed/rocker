@@ -28,6 +28,7 @@ public class RockerConfiguration {
     private File outputBaseDirectory;
     private File classBaseDirectory;
     private String[] postProcessing;
+    private Boolean markAsGenerated;
 
     public RockerConfiguration(Project project) {
 		super();
@@ -175,5 +176,15 @@ public class RockerConfiguration {
 
     public void setPostProcessing(String[] postProcessing) {
         this.postProcessing = postProcessing;
+    }
+
+    @Optional
+    @Input
+    public Boolean getMarkAsGenerated() {
+        return markAsGenerated;
+    }
+
+    public void setMarkAsGenerated(Boolean markAsGenerated) {
+        this.markAsGenerated = markAsGenerated;
     }
 }

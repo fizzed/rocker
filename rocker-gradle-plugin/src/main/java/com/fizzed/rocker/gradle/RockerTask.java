@@ -185,6 +185,9 @@ public class RockerTask extends DefaultTask {
             if (ext.getPostProcessing() != null ) {
                 rockerOptions.setPostProcessing(ext.getPostProcessing());
             }
+            if (ext.getMarkAsGenerated() != null) {
+                rockerOptions.setMarkAsGenerated(ext.getMarkAsGenerated());
+            }
 
             jgm.run();
 
