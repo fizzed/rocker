@@ -39,6 +39,7 @@ public class RockerOptions {
     static public final String TARGET_CHARSET = "targetCharset";
     static public final String OPTIMIZE = "optimize";
     static public final String POST_PROCESSING = "postProcessing";
+    static public final String MARK_AS_GENERATED = "markAsGenerated";
     
     // generated source compatiblity
     private JavaVersion javaVersion;
@@ -57,6 +58,8 @@ public class RockerOptions {
     private Boolean optimize;
     // names of classes to be used for post-processing the model in order of appearance
     private String[] postProcessing;
+    // mark generated classes with @Generated
+    private Boolean markAsGenerated;
     
     public RockerOptions() {
         this.javaVersion = JavaVersion.v1_8;
@@ -67,6 +70,7 @@ public class RockerOptions {
         this.targetCharset = "UTF-8";
         this.optimize = Boolean.FALSE;
         this.postProcessing = new String[0];
+        this.markAsGenerated = Boolean.FALSE;
     }
     
     public RockerOptions copy() {
@@ -81,6 +85,7 @@ public class RockerOptions {
         // do not copy post-processor class names from global configuration.
         // these need to be kept separate from per-template configurations.
         options.postProcessing = new String[0];
+        options.markAsGenerated = this.markAsGenerated;
         return options;
     }
 
@@ -168,6 +173,14 @@ public class RockerOptions {
         this.optimize = optimize;
     }
 
+    public Boolean getMarkAsGenerated() {
+        return markAsGenerated;
+    }
+
+    public void setMarkAsGenerated(Boolean markAsGenerated) {
+        this.markAsGenerated = markAsGenerated;
+    }
+
     public String[] getPostProcessing() {
     	return postProcessing;
     }
@@ -205,6 +218,9 @@ public class RockerOptions {
             case POST_PROCESSING:
             	this.setPostProcessing(parseStringArrayFromList(optionValue));
             	break;
+            case MARK_AS_GENERATED:
+                this.setMarkAsGenerated(parseBoolean(optionValue));
+                break;
             default:
                 throw new TokenException("Invalid option (" + optionName + ") is not a property)");
         }
@@ -228,6 +244,9 @@ public class RockerOptions {
         properties.put(RockerConfiguration.OPTION_PREFIX + TARGET_CHARSET, this.targetCharset);
         if (this.postProcessing != null && postProcessing.length != 0) {
             properties.put(RockerConfiguration.OPTION_PREFIX + POST_PROCESSING, StringUtils.join(this.postProcessing,","));
+        }
+        if (this.markAsGenerated != null) {
+            properties.put(RockerConfiguration.OPTION_PREFIX + MARK_AS_GENERATED, this.markAsGenerated.toString());
         }
     }
     
