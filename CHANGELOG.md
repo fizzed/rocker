@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.2.2 - 2019-09-10
+
+ - Support for marking classes with generated annotation (@serranya)
+
 #### 1.2.1 - 2019-01-18
 
  - @args supports advanced generics (e.g. List<? extends Foo>) (@plblueraven)
