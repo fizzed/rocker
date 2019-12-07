@@ -43,7 +43,7 @@ public enum JavaVersion {
         return label;
     }
 
-    static public JavaVersion findByLabel(String label) {
+    public static JavaVersion findByLabel(String label) {
         // starting from Java 9, the version is simply a number, i.e. 9, 10, 11, and so on
         // we select the best minimum compatible level for those Java versions
         if (StringUtils.isNumeric(label)) {
@@ -56,6 +56,20 @@ public enum JavaVersion {
             }
         }
         return null;
+    }
+
+    public static String current() {
+        return toVersion(System.getProperty("java.version"));
+    }
+
+    public static String toVersion(String version) {
+        if (version.startsWith("1.")) {
+            return version.substring(0, 3);
+        }
+
+        int dotIndex = version.indexOf('.');
+        int dashIndex = version.indexOf('-');
+        return version.substring(0, dotIndex > -1 ? dotIndex : dashIndex > -1 ? dashIndex : version.length());
     }
 
 }

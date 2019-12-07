@@ -4,6 +4,7 @@ import com.fizzed.rocker.compiler.JavaGeneratorMain;
 import com.fizzed.rocker.compiler.JavaGeneratorRunnable;
 import com.fizzed.rocker.compiler.RockerOptions;
 
+import com.fizzed.rocker.model.JavaVersion;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -143,7 +144,7 @@ public class RockerTask extends DefaultTask {
 
         if (ext.getJavaVersion() == null || ext.getJavaVersion().length() == 0) {
             // set to current jdk version
-            ext.setJavaVersion(System.getProperty("java.version").substring(0, 3));
+            ext.setJavaVersion(JavaVersion.current());
             logInfo("Property rocker.javaVersion not set. Using your JDK version "
                 + ext.getJavaVersion());
         } else {
