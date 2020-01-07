@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.2.3 - 2020-01-07
+
+ - Relaxed dynamic binding of template arguments. You can supply a map of keys and values
+   and valid keys are set on the template model. (@pmlopes)
+ - Additional improvements for Java version detection. (@igorbolic)
+
 #### 1.2.2 - 2019-09-10
 
  - Support for marking classes with generated annotation (@serranya)
