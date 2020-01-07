@@ -22,6 +22,9 @@ import com.fizzed.rocker.TemplateNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author joelauer
@@ -49,7 +52,24 @@ public class RockerTest {
         
         Assert.assertEquals("Test\n1", out);
     }
-    
+
+    @Test
+    public void templateWithRelaxedBindableProperties() throws Exception {
+        BindableRockerModel template = Rocker.template("rocker/Args.rocker.html");
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("s", "Test");
+        properties.put("i", 1);
+        // should not be considered
+        properties.put("non-existing", null);
+
+        template.relaxedBind(properties);
+
+        String out = template.render().toString().trim();
+
+        Assert.assertEquals("Test\n1", out);
+    }
+
     @Test
     public void templateWithArgumentsInlined() throws Exception {
         BindableRockerModel template = Rocker.template("rocker/Args.rocker.html", "Test", 1);

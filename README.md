@@ -237,6 +237,28 @@ String rendered = Rocker.template("views/index.rocker.html")
 The template path and arguments will be runtime-checked. Please note that each
 bindable value must match the name and type declared in your template.
 
+In case your bindable map may contain more values that than the required ones
+a relaxed bind is available. The relaxed alternative will not fail rendering
+if an attribute is extra to the required list. For example:
+
+```
+@args (String name)
+Hello ${name}!
+```
+
+Will render in relaxed mode as:
+
+```java
+Map map = new HashMap();
+map.put("name", "Joe");
+map.put("age", 42);
+
+Rocker.template("views/hello.rocker.html")
+    .relaxedBind(map)
+    .render();
+// -> Hello Joe!
+```
+
 ### Activate hot reloading
 
 Support for hot reloading is added to your generated templates by default in

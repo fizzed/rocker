@@ -41,6 +41,21 @@ public class BindableRockerModel implements RockerModel {
         }
         return this;
     }
+
+    public BindableRockerModel relaxedBind(Map<String,Object> values) {
+        try {
+            Method f = model.getClass().getMethod("getArgumentNames");
+            for (String k : (String[]) f.invoke(null)) {
+                if (!values.containsKey(k)) {
+                    throw new TemplateBindException(templatePath, templateClassName, "Unable to set property '" + k + "'");
+                }
+                bind(k, values.get(k));
+            }
+            return this;
+        } catch (Exception e) {
+            throw new TemplateBindException(templatePath, model.getClass().getCanonicalName(), "Unable to read getArgumentNames static method from template");
+        }
+    }
     
     public BindableRockerModel bind(String name, Object value) {
         Method setter = null;
