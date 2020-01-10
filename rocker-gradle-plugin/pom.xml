@@ -13,7 +13,7 @@
     </parent>
     
     <properties>
-        <gradle.version>3.5</gradle.version>
+        <gradle.version>5.1</gradle.version>
     </properties>
     
     <build>
@@ -49,6 +49,16 @@
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.gradle</groupId>
+                        <artifactId>gradle-tooling-api</artifactId>
+                        <version>${gradle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <gradleVersion>${gradle.version}</gradleVersion>
+                </configuration>
                 <executions>
                     <!--
                     <execution>
@@ -93,7 +103,7 @@
                         <configuration>
                             <gradleVersion>${gradle.version}</gradleVersion>
                             <args>
-                                <arg>-Pversion=${project.version}</arg> 
+                                <arg>-Pversion=${project.version}</arg>
                             </args>
                             <tasks>
                                 <task>publishPlugins</task>
@@ -117,7 +127,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <dependencies>
         <!-- only to force correct build order in maven -->
         <dependency>
