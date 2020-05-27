@@ -1,9 +1,14 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.2.5 - 2020-05-26
+
+ - Null safe operator guards against target value toString() also returning a null (@jjlauer)
+ - Bump gradle publish plugin to v0.12.0
+
 #### 1.2.4 - 2020-05-26
   
- - Null safe operator guards against target value toString() also returning a null (@jjlauer)
+ - Version skipped due to deploy issue to Maven Central
 
 #### 1.2.3 - 2020-01-07
 
