@@ -16,6 +16,7 @@
 package com.fizzed.rocker.compiler;
 
 import com.fizzed.rocker.RenderingException;
+import com.fizzed.test.ObjectWithToStringReturnsNull;
 import com.fizzed.test.User;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -813,6 +814,18 @@ public class CompiledTemplateTest {
     }
     
     @Test
+    public void valueNullSafeWithObjectReturningNulls() throws Exception {
+        ObjectWithToStringReturnsNull obj = new ObjectWithToStringReturnsNull();
+        String html = new rocker.ValueNullSafeWithObjectReturningNulls()
+            .a(obj)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is(""));
+    }
+    
+    @Test
     public void nullTernary() throws Exception {
         String html = new rocker.NullTernary()
             .a(null)
@@ -831,6 +844,18 @@ public class CompiledTemplateTest {
             .trim();
         
         assertThat(html, is("a"));
+    }
+    
+    @Test
+    public void nullTernaryWithObjectReturningNulls() throws Exception {
+        ObjectWithToStringReturnsNull obj = new ObjectWithToStringReturnsNull();
+        String html = new rocker.NullTernaryObjectToStringReturnsNull()
+            .a(obj)
+            .render()
+            .toString()
+            .trim();
+        
+        assertThat(html, is("none"));
     }
     
     @Test

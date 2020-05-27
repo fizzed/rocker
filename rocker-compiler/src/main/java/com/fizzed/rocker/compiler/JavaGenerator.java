@@ -491,13 +491,15 @@ public class JavaGenerator {
                 tab(w, depth+indent+1)
                    .append("final Object __v = ").append(nullTernary.getLeftExpression()).append(";").append(CRLF);
                 tab(w, depth+indent+1)
-                   .append("if (__v != null) { __internal.renderValue(__v, false); }").append(CRLF);
+                   .append("if (!__internal.renderValue(__v, true)) {").append(CRLF);
                 if (nullTernary.getRightExpression() != null) {
-                    tab(w, depth+indent+1)
-                        .append("else {__internal.renderValue(")
+                    tab(w, depth+indent+2)
+                        .append("__internal.renderValue(")
                         .append(nullTernary.getRightExpression())
-                        .append(", true); }").append(CRLF);
+                        .append(", true);").append(CRLF);
                 }
+                tab(w, depth+indent+1)
+                   .append("}").append(CRLF);
                 tab(w, depth+indent)
                     .append("}").append(CRLF);
             }
