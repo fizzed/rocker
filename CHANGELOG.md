@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 1.3.0 - 2020-05-29
+
+ - NOTE: Templates compiled before v1.2.5 are not runtime-compatible if compiled from v1.2.4 due to a change
+   of method signature in how values are rendered.  We are bumping up the minor number and re-releasing so
+   users take caution.  All templates are still source compatible and fine if generated with v1.2.5+.
+
 #### 1.2.5 - 2020-05-26
 
  - Null safe operator guards against target value toString() also returning a null (@jjlauer)
