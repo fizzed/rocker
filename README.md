@@ -161,6 +161,7 @@ If you want to link to a new framework added, please file an issue or submit a P
  * Ninja Framework: https://github.com/fizzed/ninja-rocker
  * Jooby: http://jooby.org/doc/rocker
  * Spark Framework: https://github.com/perwendel/spark-template-engines
+ * Micronaut Framework: https://micronaut-projects.github.io/micronaut-views/latest/guide/#rocker
 
 ## Near zero-copy rendering
 
