@@ -25,10 +25,10 @@ import java.util.Iterator;
  */
 public class IterableForIterator<T> implements ForIterator {
 
-    private final Iterator<T> iterator;
+    private final Iterator<? extends T> iterator;
     private int index;
 
-    public IterableForIterator(Iterable<T> c) {
+    public IterableForIterator(Iterable<? extends T> c) {
         this(c.iterator());
     }
 
