@@ -68,7 +68,7 @@ public class IterableForIterator<T> implements ForIterator {
         this((Iterable<T>) new PrimitiveCollections.DoubleCollection(a));
     }
 
-    public IterableForIterator(Iterator<T> iterator) {
+    public IterableForIterator(Iterator<? extends T> iterator) {
         this.iterator = iterator;
         this.index = -1;
     }
