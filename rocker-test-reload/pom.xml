@@ -46,6 +46,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/generated-test-sources/rocker</directory>
+                                    <targetPath>${basedir}/target/test-classes</targetPath>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- adjusts how surefire plugin manipulates classpath for testing -->
             <!-- only way to get compiling & reloading to work like we expect -->
             <plugin>
