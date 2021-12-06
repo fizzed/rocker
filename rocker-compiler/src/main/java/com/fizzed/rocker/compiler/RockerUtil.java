@@ -157,7 +157,7 @@ public class RockerUtil {
         
         for (File entry : dir.listFiles()) {
             if (entry.isFile()) fileTree.add(entry);
-            else fileTree.addAll(listFileTree(entry));
+            else if (entry.isDirectory()) fileTree.addAll(listFileTree(entry));
         }
         
         return fileTree;
