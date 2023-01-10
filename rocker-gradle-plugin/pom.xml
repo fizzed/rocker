@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fizzed</groupId>
     <artifactId>rocker-gradle-plugin</artifactId>
     <name>rocker-gradle-plugin</name>
     <packaging>jar</packaging>
@@ -13,9 +12,16 @@
     </parent>
     
     <properties>
-        <gradle.version>3.5</gradle.version>
+        <gradle.version>7.4</gradle.version>
     </properties>
-    
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gradle</id>
+            <url>https://repo.gradle.org/gradle/libs-releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <!-- skip compiling code since gradle will be used -->
@@ -49,9 +55,16 @@
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
+                <dependencies>
+                    <!-- this helps fix version detection for modern java version -->
+                    <dependency>
+                        <groupId>org.gradle</groupId>
+                        <artifactId>gradle-tooling-api</artifactId>
+                        <version>7.4.2</version>
+                    </dependency>
+                </dependencies>
                 <executions>
-                    <!--
-                    <execution>
+                    <!--<execution>
                         <id>gradle-compile</id>
                         <phase>compile</phase>
                         <goals>
@@ -60,13 +73,14 @@
                         <configuration>
                             <gradleVersion>${gradle.version}</gradleVersion>
                             <args>
-                                <arg>-Pversion=${project.version}</arg> 
+                                <arg>-Pversion=${project.version}</arg>
                             </args>
                             <tasks>
                                 <task>compileJava</task>
                             </tasks>
                         </configuration>
-                    </execution>
+                    </execution>-->
+                    <!--
                     <execution>
                         <id>gradle-test-compile</id>
                         <phase>test-compile</phase>
