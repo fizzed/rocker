@@ -1,8 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
-[![Build Status](https://travis-ci.org/fizzed/rocker.svg?branch=master)](https://travis-ci.org/fizzed/rocker)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/rocker)
+[![Maven Central](https://img.shields.io/maven-central/v/com.fizzed/rocker?color=blue&style=flat-square)](https://mvnrepository.com/artifact/com.fizzed/rocker)
+
+[![Java 8](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java8.yaml?branch=master&label=Java%208&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java8.yaml)
+[![Java 11](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java11.yaml?branch=master&label=Java%2011&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java11.yaml)
+[![Java 17](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java17.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java17.yaml)
+[![Java 19](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java19.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java19.yaml)
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
