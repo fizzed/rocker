@@ -6,7 +6,7 @@ Rocker Templates by Fizzed
 [![Java 8](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java8.yaml?branch=master&label=Java%208&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java8.yaml)
 [![Java 11](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java11.yaml?branch=master&label=Java%2011&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java11.yaml)
 [![Java 17](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java17.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java17.yaml)
-[![Java 19](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java19.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java19.yaml)
+[![Java 19](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java19.yaml?branch=master&label=Java%2019&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java19.yaml)
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
