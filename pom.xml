@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>maven-parent</artifactId>
-        <version>2.1.0</version>
+        <version>2.5.0</version>
     </parent>
     
     <scm>
@@ -37,6 +37,7 @@
         <module>rocker-gradle-plugin</module>
         <module>rocker-test-java7</module>
         <module>rocker-test-reload</module>
+        <module>rocker-bom</module>
     </modules>
     
     <!-- things to do if running on JDK 8 -->
@@ -57,6 +58,7 @@
                 <module>rocker-test-java7</module>
                 <module>rocker-test-java8</module>
                 <module>rocker-test-reload</module>
+                <module>rocker-bom</module>
             </modules>
         </profile>
     </profiles>

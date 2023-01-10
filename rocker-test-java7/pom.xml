@@ -2,7 +2,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rocker-test-java7</artifactId>
-    <name>rocker-test-java6</name>
+    <name>rocker-test-java7</name>
     <packaging>jar</packaging>
 
     <parent>
