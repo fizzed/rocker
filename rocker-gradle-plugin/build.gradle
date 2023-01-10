@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.fizzed', name: 'rocker-compiler', version: "${version}"
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    implementation group: 'com.fizzed', name: 'rocker-compiler', version: "${version}"
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
 }
 
 gradlePlugin {
