@@ -76,7 +76,7 @@ public class WithStatementTest {
             fail("Expected exception");
         }
         catch(ParserException e) {
-            assertThat(e.getMessage(), containsString("template-path:[1,18] missing ARGUMENT at '<EOF>'"));
+            assertThat(e.getMessage(), containsString("template-path:[1,18] extraneous input"));
         }
     }
 
