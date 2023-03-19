@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fizzed</groupId>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
     <version>1.3.1-SNAPSHOT</version>
@@ -9,7 +8,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>maven-parent</artifactId>
-        <version>2.1.0</version>
+        <version>2.5.0</version>
     </parent>
     
     <scm>
@@ -22,7 +21,7 @@
         <main.java.package />
         <slf4j.version>1.7.7</slf4j.version>
         <antlr.version>4.5.3</antlr.version>
-        <java.version>1.6</java.version>
+        <java.version>1.7</java.version>
         <license.skip>true</license.skip>
         <!-- netbeans specific -->
         <netbeans.compile.on.save>false</netbeans.compile.on.save>
@@ -30,14 +29,15 @@
         <maven.enforce.version>3.2.5</maven.enforce.version>
     </properties>
 
-    <!-- jdk 6+, profile below for java 8 stuff -->
+    <!-- jdk 7+, profile below for java 8 stuff -->
     <modules>
         <module>rocker-runtime</module>
         <module>rocker-compiler</module>
         <module>rocker-maven-plugin</module>
         <module>rocker-gradle-plugin</module>
-        <module>rocker-test-java6</module>
+        <module>rocker-test-java7</module>
         <module>rocker-test-reload</module>
+        <module>rocker-bom</module>
     </modules>
     
     <!-- things to do if running on JDK 8 -->
@@ -55,9 +55,10 @@
                 <module>rocker-compiler</module>
                 <module>rocker-maven-plugin</module>
                 <module>rocker-gradle-plugin</module>
-                <module>rocker-test-java6</module>
+                <module>rocker-test-java7</module>
                 <module>rocker-test-java8</module>
                 <module>rocker-test-reload</module>
+                <module>rocker-bom</module>
             </modules>
         </profile>
     </profiles>

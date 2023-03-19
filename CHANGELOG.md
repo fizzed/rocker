@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### To Be Released - 2023
+
+ - Java 6 support dropped. Java 7 is now minimum.
+ - Validation of Java 7, 8, 11, 17, and 19
+ - Gradle build process uses version 7.3
+
 #### 1.3.0 - 2020-05-29
 
  - NOTE: Templates compiled before v1.2.5 are not runtime-compatible if compiled from v1.2.4 due to a change
