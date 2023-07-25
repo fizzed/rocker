@@ -13,6 +13,8 @@
     
     <properties>
         <gradle.version>7.4</gradle.version>
+        <!-- skip javadoc since gradle will be used -->
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <pluginRepositories>
@@ -28,7 +30,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
                 <configuration>
                     <skipMain>true</skipMain>
                 </configuration>
@@ -46,6 +47,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>

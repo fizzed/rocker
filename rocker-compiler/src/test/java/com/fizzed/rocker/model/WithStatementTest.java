@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 public class WithStatementTest {
@@ -76,7 +76,7 @@ public class WithStatementTest {
             fail("Expected exception");
         }
         catch(ParserException e) {
-            assertThat(e.getMessage(), containsString("template-path:[1,18] missing ARGUMENT at '<EOF>'"));
+            assertThat(e.getMessage(), containsString("template-path:[1,18] extraneous input '<EOF>' expecting {ARGUMENT_COMMA, ARGUMENT}"));
         }
     }
 
