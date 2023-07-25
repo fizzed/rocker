@@ -13,7 +13,7 @@
     
     <properties>
         <main.java.package>com.fizzed.rocker.maven</main.java.package>
-        <maven.version>3.1.0</maven.version>
+        <maven.version>3.9.3</maven.version>
     </properties>
     
     <build>
@@ -21,7 +21,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.4</version>
+                <version>3.9.0</version>
                 <configuration>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
