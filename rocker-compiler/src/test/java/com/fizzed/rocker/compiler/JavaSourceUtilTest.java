@@ -41,20 +41,18 @@ public class JavaSourceUtilTest {
     
     @Test
     public void findSourcePosition() throws URISyntaxException, IOException {
-        
-        URL url = this.getClass().getResource("/generated/Args.java.txt");
+        URL url = Thread.currentThread().getContextClassLoader().getResource("generated/Args.java.txt");
+        Assert.assertNotNull("Could not load resource /generated/Args.java.txt", url);
+
         File f = new File(url.toURI());
         
-        SourcePosition pos;
-        
-        pos = JavaSourceUtil.findSourcePosition(f, 1, 1);
-        
+        SourcePosition pos = JavaSourceUtil.findSourcePosition(f, 1, 1);
         Assert.assertNull(pos);
-        
         
         // // argument @ [4:6]
         // private String s;
         pos = JavaSourceUtil.findSourcePosition(f, 24, 13);
+        Assert.assertNotNull("SourcePosition should not be null", pos);
         
         Assert.assertEquals(4, pos.getLineNumber());
         Assert.assertEquals(6, pos.getPosInLine());
@@ -63,6 +61,7 @@ public class JavaSourceUtilTest {
         // __internal.aboutToExecutePosInTemplate(5, 1);
         // __internal.renderValue(s);
         pos = JavaSourceUtil.findSourcePosition(f, 90, 36);
+        Assert.assertNotNull("SourcePosition should not be null", pos);
         
         Assert.assertEquals(5, pos.getLineNumber());
         Assert.assertEquals(1, pos.getPosInLine());
