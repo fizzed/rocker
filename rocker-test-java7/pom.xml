@@ -11,6 +11,10 @@
         <version>1.4.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
