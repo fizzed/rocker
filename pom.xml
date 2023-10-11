@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rocker</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.4.0</version>
 
     <parent>
         <groupId>com.fizzed</groupId>
@@ -14,7 +14,7 @@
     <scm>
         <url>https://github.com/fizzed/rocker</url>
         <connection>scm:git:git@github.com:fizzed/rocker.git</connection>
-      <tag>HEAD</tag>
+      <tag>v1.4.0</tag>
   </scm>
     
     <properties>
