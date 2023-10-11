@@ -13,6 +13,7 @@
     
     <properties>
         <gradle.version>7.4</gradle.version>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <pluginRepositories>
