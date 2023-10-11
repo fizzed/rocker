@@ -1,7 +1,7 @@
 Rocker Templates by Fizzed
 ==========================
 
-#### To Be Released - 2023
+#### 1.4.0 - 2023-10-11
 
  - Java 6 support dropped. Java 7 is now minimum.
  - Validation of Java 7, 8, 11, 17, and 19
