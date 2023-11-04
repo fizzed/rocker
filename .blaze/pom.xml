@@ -60,5 +60,10 @@
       <artifactId>zt-exec</artifactId>
       <version>1.12</version>
     </dependency>
+    <dependency>
+      <groupId>com.fizzed</groupId>
+      <artifactId>jne</artifactId>
+      <version>4.1.1</version>
+    </dependency>
   </dependencies>
 </project>

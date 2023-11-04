@@ -3,6 +3,8 @@ import com.fizzed.blaze.Contexts;
 import static com.fizzed.blaze.Contexts.fail;
 import static com.fizzed.blaze.Contexts.withBaseDir;
 import static com.fizzed.blaze.Systems.exec;
+import static java.util.Arrays.asList;
+
 import com.fizzed.blaze.Task;
 import com.fizzed.blaze.util.Streamables;
 import java.io.BufferedWriter;
@@ -10,13 +12,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fizzed.jne.JavaHome;
+import com.fizzed.jne.JavaHomeFinder;
 import org.slf4j.Logger;
 
 public class blaze {
-    static private final Logger log = Contexts.logger();
-    static private final Config config = Contexts.config();
+    private final Logger log = Contexts.logger();
+    private final Config config = Contexts.config();
+    private final Path projectDir = withBaseDir("../").toAbsolutePath();
     
     @Task(order=1, value="Demo of parsing a template and logs its structure. Argument of -Drocker.file=<file>")
     public void parser() {
@@ -63,7 +71,46 @@ public class blaze {
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.NettyMain").run();
     }
-    
+
+    @Task(order = 20)
+    public void test_all_jdks() throws Exception {
+        // collect and find all the jdks we will test on
+        final List<JavaHome> jdks = new ArrayList<>();
+        for (int jdkVersion : asList(21, 17, 11, 8)) {
+            jdks.add(new JavaHomeFinder()
+                .jdk()
+                .version(jdkVersion)
+                .preferredDistributions()
+                .sorted()
+                .find());
+        }
+
+        log.info("Detected JDKs:");
+        jdks.forEach(jdk -> log.info("  {}", jdk));
+
+        for (JavaHome jdk : jdks) {
+            try {
+                log.info("");
+                log.info("Using JDK {}", jdk);
+                log.info("");
+
+                exec("mvn", "clean", "test")
+                    .workingDir(this.projectDir)
+                    .env("JAVA_HOME", jdk.getDirectory().toString())
+                    .verbose()
+                    .run();
+            } catch (Exception e) {
+                log.error("");
+                log.error("Failed on JDK " + jdk);
+                log.error("");
+                throw e;
+            }
+        }
+
+        log.info("Success on JDKs:");
+        jdks.forEach(jdk -> log.info("  {}", jdk));
+    }
+
     @Task(order=99, value="Use by maintainers only. Updates REAME.md with latest git tag.")
     public void after_release() throws Exception {
         int exitValue = (int)exec("git", "diff-files", "--quiet")
