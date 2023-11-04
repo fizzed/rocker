@@ -38,7 +38,7 @@ public class blaze {
     
     @Task(order=3, value="Demo of rendering a template into a string.")
     public void render() {
-        exec("mvn", "-pl", "rocker-test-java6", "-am", "test", "-Pexec-java6test",
+        exec("mvn", "-pl", "rocker-test-template", "-am", "test", "-Pexec-java6test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.RenderMain").run();
     }
@@ -52,24 +52,23 @@ public class blaze {
     
     @Task(order=5, value="Demo of asynchronously sending a template in an Undertow-based HTTP server.")
     public void undertow() {
-        exec("mvn", "-pl", "rocker-test-java8", "-am", "test", "-Pexec-java8test",
+        exec("mvn", "-pl", "rocker-test-template", "-am", "test", "-Pexec-java8test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.UndertowMain").run();
     }
     
     @Task(order=6, value="Demo of asynchronously sending a template in an Netty-based HTTP server.")
     public void netty() {
-        exec("mvn", "-pl", "rocker-test-java8", "-am", "test", "-Pexec-java8test",
+        exec("mvn", "-pl", "rocker-test-template", "-am", "test", "-Pexec-java8test",
             "-DskipTests=true", "-Dexec.classpathScope=test",
             "-Dexec.mainClass=com.fizzed.rocker.bin.NettyMain").run();
     }
     
     @Task(order=99, value="Use by maintainers only. Updates REAME.md with latest git tag.")
     public void after_release() throws Exception {
-        Integer exitValue
-            = exec("git", "diff-files", "--quiet")
-                .exitValues(0,1)
-                .run();
+        int exitValue = (int)exec("git", "diff-files", "--quiet")
+            .exitValues(0,1)
+            .run();
         
         if (exitValue == 1) {
             fail("Uncommitted changes in git. Commit them first then re-run this task");
@@ -83,13 +82,12 @@ public class blaze {
     
     private String latest_tag() {
         // get latest tag and trim off "v"
-        String latestTag
-            = exec("git", "describe", "--abbrev=0", "--tags")
-                .pipeOutput(Streamables.captureOutput())
-                .runCaptureOutput()
-                .toString()
-                .trim()
-                .substring(1);
+        String latestTag = exec("git", "describe", "--abbrev=0", "--tags")
+            .pipeOutput(Streamables.captureOutput())
+            .runCaptureOutput()
+            .toString()
+            .trim()
+            .substring(1);
         
         return latestTag;
     }
