@@ -48,7 +48,7 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rocker.Stocks;
+import rocker8.Stocks;
 
 public class NettyMain {
     static private final Logger log = LoggerFactory.getLogger(NettyMain.class);
@@ -133,7 +133,7 @@ public class NettyMain {
             if (msg instanceof FullHttpRequest) {
                 FullHttpRequest request = (FullHttpRequest)msg;
                     
-                RockerOutput out = rocker.Stocks.template(stocks)
+                RockerOutput out = rocker8.Stocks.template(stocks)
                     .render();
 
                 //

@@ -946,4 +946,258 @@ public class CompiledTemplateTest {
     public void optmizedCompilerOmitsModifedAtHeader() throws Exception {
         rocker.A.class.getMethod("getModifiedAt");
     }
+
+    // originally these were in the java8 module, but now are combined into one
+
+    @Test
+    public void java8ContentClosure() throws Exception {
+        String html = new rocker8.Java8ContentClosureA()
+            .render()
+            .toString();
+
+        // newlines don't really matter - just verify what it did
+        Assert.assertEquals("i am a block of content\n\n\ni am another block of content", html.trim());
+    }
+
+    @Test
+    public void java8ValueClosure() throws Exception {
+        String html = new rocker8.Java8ValueClosureA()
+            .s("a")
+            .i(1)
+            .render()
+            .toString();
+
+        // newlines don't really matter - just verify what it did
+        Assert.assertEquals("a\ninside-a-closure\n1", html.trim().replace(" ", ""));
+    }
+
+    @Test
+    public void ifElseIfBlockInWithBlock8() throws Exception {
+        String html = new rocker8.IfElseIfBlockInWithBlock()
+            .values(Arrays.asList(1))
+            .render()
+            .toString()
+            .trim();
+        assertThat(html, containsString("else-if-block"));
+    }
+
+    @Test
+    public void forBlockEnhancedUntypedArray() throws Exception {
+        String html = new rocker8.ForBlockEnhancedUntypedArray()
+            .booleans(new boolean[] { false })
+            .chars(new char[] { 'a' })
+            .bytes(new byte[] { (byte)0x40 })
+            .shorts(new short[] { (short)1 })
+            .ints(new int[] { 2 })
+            .longs(new long[] { 3L })
+            .floats(new float[] { 1.1f })
+            .doubles(new double[] { 2.2d })
+            .strings(new String[] { "hello" })
+            .objects(new Object[] { new Object() { @Override public String toString() { return "obj"; } } })
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("false\na\n64\n1\n2\n3\n1.1\n2.2\nhello\nobj"));
+    }
+
+    @Test
+    public void forBlockEnhancedUntypedCollection() throws Exception {
+
+        String html = new rocker8.ForBlockEnhancedUntypedCollection()
+            .items(Arrays.asList("a", "b", "c"))
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("abc", html);
+
+    }
+
+    @Test
+    public void forBlockEnhancedUntypedCollectionWithIterator() throws Exception {
+
+        String html = new rocker8.ForBlockEnhancedUntypedCollectionWithIterator()
+            .items(Arrays.asList("a", "b", "c"))
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("first 0:a 1:b 2:c last", html);
+
+    }
+
+    @Test
+    public void forBlockEnhancedUntypedMap() throws Exception {
+
+        Map<Integer,String> items = new HashMap<>();
+        items.put(1, "a");
+        items.put(2, "b");
+        items.put(3, "c");
+
+        String html = new rocker8.ForBlockEnhancedUntypedMap()
+            .items(items)
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("1: a, 2: b, 3: c,", html);
+
+    }
+
+    @Test
+    public void forBlockEnhancedUntypedMapWithIterator() throws Exception {
+
+        Map<Integer,String> items = new HashMap<>();
+        items.put(1, "a");
+        items.put(2, "b");
+        items.put(3, "c");
+
+        String html = new rocker8.ForBlockEnhancedUntypedMapWithIterator()
+            .items(items)
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("first 0: 1=a, 1: 2=b, 2: 3=c", html);
+
+    }
+
+    @Test
+    public void forBlockIterator8() throws Exception {
+
+        String html = new rocker8.ForBlockIterator()
+            .strings(Arrays.asList("1", "2", "3"))
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("123\n--\n[0:1,1:2,2:3]", html);
+
+    }
+
+    @Test
+    public void forBlockWithJavaIterator() throws Exception {
+        String html = new rocker8.ForBlockWithJavaIterator()
+            .strings(Arrays.asList("1", "2", "3"))
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("123\n--\n[0:1,1:2,2:3]"));
+    }
+
+    @Test
+    public void forBlockWithJavaStream() throws Exception {
+        String html = new rocker8.ForBlockWithJavaStream()
+            .strings(Arrays.asList("1", "2", "3").stream())
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("[0:1,1:2,2:3]"));
+    }
+
+    @Test
+    public void breakStatement8() throws Exception {
+        String out = rocker8.BreakStatement.template()
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("012", out);
+    }
+
+    @Test
+    public void continueStatement8() throws Exception {
+        String out = rocker8.ContinueStatement.template()
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("013", out);
+    }
+
+    @Test
+    public void withBlock8() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+
+        String html = new rocker8.WithBlock()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("b", html);
+    }
+
+    @Test
+    public void withBlockUsingLambda() throws Exception {
+        List<String> strings = Arrays.asList("a", "c", "b");
+
+        String html = new rocker8.WithBlockUsingLamda()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("b", html);
+    }
+
+    @Test
+    public void withBlockNested8() throws Exception {
+        List<String> strings = Arrays.asList("b", "a", "c");
+
+        String html = new rocker8.WithBlockNested()
+            .strings(strings)
+            .render()
+            .toString()
+            .trim();
+
+        Assert.assertEquals("b a c", html);
+    }
+
+    @Test
+    public void withBlockNullSafeButWithValue8() throws Exception {
+        String html = new rocker8.WithBlockNullSafe()
+            .strings(Arrays.asList("a", "b", "c"))
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("a\n\nskipped"));
+    }
+
+    @Test
+    public void withBlockNullSafeExpressionReturnsNull8() throws Exception {
+        String html = new rocker8.WithBlockNullSafe()
+            .strings(Arrays.asList(null, "b", "c"))
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("skipped"));
+    }
+
+    @Test
+    public void withBlockElse8() throws Exception {
+        String html = new rocker8.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(0)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in-with-else-block"));
+
+        html = new rocker8.WithBlockElse()
+            .a(Arrays.asList(null, "b", "c"))
+            .i(1)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("b"));
+    }
+
 }
