@@ -10,13 +10,7 @@ Rocker Templates by Fizzed
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
-## Sponsored by
-
-Rocker is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>.  We love the service and think you would too.
-
-<a href="https://www.greenback.com/?utm_source=github.com&utm_medium=sponsorship&utm_campaign=fizzed-rocker" title="Greenback - Expenses made simple"><img src="https://www.greenback.com/assets/images/logo-greenback.png" height="48" width="166" alt="Greenback"></a>
-
-<a href="https://www.greenback.com?utm_source=github.com&utm_medium=sponsorship&utm_campaign=fizzed-rocker" title="Greenback - Expenses made simple">More engineering. Less paperwork. Expenses made simple.</a>
+<a href="http://fizzed.com" title="Fizzed"><img style="width:100px; height:70px;" id="logo-header" src="http://fizzed.com/assets/mfizz/img/logo-new.300x210.png" alt="Fizzed logo" itemprop="logo"></a>
 
 ## Overview
 
@@ -42,7 +36,7 @@ orders-of-magnitude less memory.
 
 ![Template Comparison](docs/benchmark.png)
 
-## Two-minute drill
+## Quick Start
 
 Most templates are used for websites, so here is a quick sample showing how
 Rocker templates work and can call each other during the rendering process.
