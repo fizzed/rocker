@@ -30,6 +30,10 @@ public class GuavaHtmlStringify extends DefaultHtmlStringify {
     
     @Override
     public String s(String str) {
+        // guava escape does not like nulls
+        if (str == null) {
+            return null;
+        }
         return this.escaper.escape(str);
     }
     

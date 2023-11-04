@@ -22,8 +22,10 @@ import com.fizzed.rocker.runtime.RockerRuntime;
 public interface RockerStringify {
     
     static public final RockerStringify RAW = new RawStringify();
-    //static public final RockerStringify HTML = RockerRuntime.createDefaultHtmlStringify();
-    static public final RockerStringify HTML = new DefaultHtmlStringify();
+    // delegate creating the default HTML stringify so that if guava is on classpath, rocker will leverage guava's
+    // fast "escape" of HTML vs. the one built-in with rocker
+    static public final RockerStringify HTML = RockerRuntime.createDefaultHtmlStringify();
+//    static public final RockerStringify HTML = new DefaultHtmlStringify();
     
     String s(String str);
     
