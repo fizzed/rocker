@@ -156,6 +156,11 @@ public class RockerConfiguration {
     }
 
     @Input // Neither input nor output directory, but generated rocker.conf depends on it
+    public String getClassBaseDirectoryPath() {
+        return classBaseDirectory.getAbsolutePath();
+    }
+
+    @Internal
     public File getClassBaseDirectory() {
         return classBaseDirectory;
     }
