@@ -13,7 +13,7 @@
     
     <properties>
         <main.java.package>com.fizzed.rocker.maven</main.java.package>
-        <maven.version>3.1.0</maven.version>
+        <maven.version>3.8.1</maven.version>
     </properties>
     
     <build>
