@@ -14,7 +14,7 @@ Rocker Templates by Fizzed
 
 ## Overview
 
-Rocker is a Java 8 optimized (runtime compat with 6+), near zero-copy rendering,
+Rocker is a Java 8+ optimized, near zero-copy rendering,
 speedy template engine that produces statically typed, plain java object templates
 that are compiled along with the rest of your project.  No more "warm-up" time
 in production, slow reflection-based logic, or nasty surprises that should have
@@ -113,9 +113,7 @@ rendering context (output buffer, application-specific context/implicit state).
 
 ## Features
 
- * Templates are runtime compatible with Java 6+
-
- * Optimizations enabled when targeting Java 8+ -- using Lambdas and type inference under-the-hood
+ * Templates are runtime compatible with Java 8+ -- using Lambdas and type inference under-the-hood
 
  * [Near zero-copy rendering](#near-zero-copy-rendering)
 
