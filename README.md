@@ -1,5 +1,4 @@
-Rocker Templates by Fizzed
-==========================
+# Rocker Templates by Fizzed
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.fizzed/rocker?color=blue&style=flat-square)](https://mvnrepository.com/artifact/com.fizzed/rocker)
 
@@ -7,10 +6,6 @@ Rocker Templates by Fizzed
 [![Java 11](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java11.yaml?branch=master&label=Java%2011&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java11.yaml)
 [![Java 17](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java17.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java17.yaml)
 [![Java 21](https://img.shields.io/github/actions/workflow/status/fizzed/rocker/java21.yaml?branch=master&label=Java%2021&style=flat-square)](https://github.com/fizzed/rocker/actions/workflows/java21.yaml)
-
-[Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
-
-<a href="http://fizzed.com" title="Fizzed"><img style="width:100px; height:70px;" id="logo-header" src="http://fizzed.com/assets/mfizz/img/logo-new.300x210.png" alt="Fizzed logo" itemprop="logo"></a>
 
 ## Overview
 
@@ -27,6 +22,22 @@ lifting is done by the Rocker parser during development -- which keeps the runti
 dependencies down to just a handful of classes.  Rocker will parse your templates
 and generate well-documented Java source files (so you can easily inspect and
 understand how it works).
+
+## Sponsorship & Support
+
+![](https://cdn.fizzed.com/github/fizzed-logo-100.png)
+
+Project by [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
+
+**Developing and maintaining opensource projects requires significant time.** If you find this project useful or need
+commercial support, we'd love to chat. Drop us an email at [ping@fizzed.com](mailto:ping@fizzed.com)
+
+Project sponsors may include the following benefits:
+
+- Priority support (outside of Github)
+- Feature development & roadmap
+- Priority bug fixes
+- Privately hosted continuous integration tests for their unique edge or use cases
 
 ## Performance
 
@@ -600,6 +611,6 @@ following for a complete list:
 
 ## License
 
-Copyright (C) 2015 Fizzed, Inc.
+Copyright (C) 2015+ Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
