@@ -23,6 +23,30 @@ dependencies down to just a handful of classes.  Rocker will parse your template
 and generate well-documented Java source files (so you can easily inspect and
 understand how it works).
 
+Includes the following features:
+
+* Templates are runtime compatible with Java 8+ -- using Lambdas and type inference under-the-hood
+* [Near zero-copy rendering](#near-zero-copy-rendering)
+* [Hot reload support in two flavors](#hot-reloading)
+* [Elegant, intuitive, tagless syntax](docs/SYNTAX.md) that infers when your logic ends for control / dynamic
+  content.  All dynamic / control code uses standard Java syntax.
+* A special `?` presence operator extends syntax for simplified handling of
+  null values.
+* Parsed templates become normal POJOs with defined arguments -- allowing you
+  to tap into your IDEs code completion, syntax highlighting, etc.
+* Support for injecting intermediate application-specific super classes during
+  parsing & generating phase  -- thereby creating your own app-specific template engine
+  where you can make implicit variables/methods available to all templates.
+* Since templates are just Java classes -- your logic / dynamic content can call
+  out to any other Java code. Your templates can be as advanced or as simple as
+  you need. No reflection used.
+* No runtime configuration/engine required -- there isn't any sort of RockerEngine
+  class required to execute templates.  Each compiled template is ready-to-go
+  and knows how to render itself.
+* Templates retain enough information about the original template to throw
+  exceptions at runtime (during render()) that let you track down the problematic line
+  in the original template source file.
+
 ## Sponsorship & Support
 
 ![](https://cdn.fizzed.com/github/fizzed-logo-100.png)
@@ -121,39 +145,6 @@ identical to how a lambda is defined in Java 8 (implemented with lambdas for Jav
 and anonymous inner classes for Java 6/7).  Rocker does a number of things behind
 the scenes to make sure templates that create other templates share the same
 rendering context (output buffer, application-specific context/implicit state).
-
-## Features
-
- * Templates are runtime compatible with Java 8+ -- using Lambdas and type inference under-the-hood
-
- * [Near zero-copy rendering](#near-zero-copy-rendering)
-
- * [Hot reload support in two flavors](#hot-reloading)
-
- * [Elegant, intuitive, tagless syntax](docs/SYNTAX.md) that infers when your logic ends for control / dynamic
-   content.  All dynamic / control code uses standard Java syntax.
-
- * A special `?` presence operator extends syntax for simplified handling of
-   null values.
-
- * Parsed templates become normal POJOs with defined arguments -- allowing you
-   to tap into your IDEs code completion, syntax highlighting, etc.
-
- * Support for injecting intermediate application-specific super classes during
-   parsing & generating phase  -- thereby creating your own app-specific template engine
-   where you can make implicit variables/methods available to all templates.
-
- * Since templates are just Java classes -- your logic / dynamic content can call
-   out to any other Java code. Your templates can be as advanced or as simple as
-   you need. No reflection used.
-
- * No runtime configuration/engine required -- there isn't any sort of RockerEngine
-   class required to execute templates.  Each compiled template is ready-to-go
-   and knows how to render itself.
-
- * Templates retain enough information about the original template to throw
-   exceptions at runtime (during render()) that let you track down the problematic line
-   in the original template source file.
 
 ## Syntax
 
