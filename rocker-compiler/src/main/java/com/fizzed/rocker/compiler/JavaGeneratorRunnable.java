@@ -117,7 +117,7 @@ public class JavaGeneratorRunnable implements Runnable {
             // use resource name, but strip leading slash
             // place it into the classes directory (not the compile directory)
             try{
-                File configFile = new File(this.configuration.getClassDirectory(), RockerRuntime.CONF_RESOURCE_NAME.substring(1));
+                File configFile = new File(this.configuration.getOutputDirectory(), RockerRuntime.CONF_RESOURCE_NAME.substring(1));
                 this.configuration.write(configFile);
                 log.info("Generated rocker configuration " + configFile);
             }catch(IOException iox){
