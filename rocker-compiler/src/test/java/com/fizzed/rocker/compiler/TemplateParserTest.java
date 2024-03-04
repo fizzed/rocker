@@ -841,4 +841,11 @@ public class TemplateParserTest {
             // Expected
         }
     }
+
+    @Test(expected = ParserException.class)
+        public void testMalformedTemplateParsing() throws Exception {
+            File f = findTemplate("malformed_template.rocker.html");
+            createParser().parse(f);
+        }
+
 }
