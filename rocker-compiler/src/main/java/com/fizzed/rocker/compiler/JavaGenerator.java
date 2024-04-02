@@ -430,7 +430,7 @@ public class JavaGenerator {
         tab(w, indent).append("public Template(").append(model.getName()).append(" model) {").append(CRLF);
         
         tab(w, indent+1).append("super(model);").append(CRLF);
-        tab(w, indent+1).append("__internal.setCharset(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
+        tab(w, indent+1).append("__internal.setCharsetName(\"").append(model.getOptions().getTargetCharset()).append("\");").append(CRLF);
         tab(w, indent+1).append("__internal.setContentType(getContentType());").append(CRLF);
         tab(w, indent+1).append("__internal.setTemplateName(getTemplateName());").append(CRLF);
         tab(w, indent+1).append("__internal.setTemplatePackageName(getTemplatePackageName());").append(CRLF);

@@ -150,11 +150,11 @@ public class NettyMain {
                 }
                 else {
                     // save to assume output is just a string w/ charset
-                    buffer = Unpooled.copiedBuffer(out.toString(), out.getCharset());
+                    buffer = Unpooled.copiedBuffer(out.toString(), out.getCharsetName());
                 }
 
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
-                response.headers().set(CONTENT_TYPE, "text/html; charset=" + out.getCharset());
+                response.headers().set(CONTENT_TYPE, "text/html; charset=" + out.getCharsetName());
                 response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
 
                 if (!keepAlive) {

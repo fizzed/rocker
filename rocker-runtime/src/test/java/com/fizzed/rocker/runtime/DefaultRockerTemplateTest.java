@@ -62,7 +62,7 @@ public class DefaultRockerTemplateTest {
                 return new DefaultRockerTemplate(this) {
                     // anonymous initializer!
                     {
-                        this.__internal.setCharset("UTF-8");
+                        this.__internal.setCharsetName("UTF-8");
                     }
                     
                     @Override
@@ -91,7 +91,7 @@ public class DefaultRockerTemplateTest {
                 return new DefaultRockerTemplate(this) {
                     // anonymous initializer!
                     {
-                        this.__internal.setCharset("UTF-8");
+                        this.__internal.setCharsetName("UTF-8");
                         this.__internal.setContentType(ContentType.HTML);
                     }
                     
@@ -118,7 +118,7 @@ public class DefaultRockerTemplateTest {
                 return new DefaultRockerTemplate(this) {
                     // anonymous initializer!
                     {
-                        this.__internal.setCharset("UTF-8");
+                        this.__internal.setCharsetName("UTF-8");
                         this.__internal.setContentType(ContentType.HTML);
                     }
                     
@@ -145,14 +145,14 @@ public class DefaultRockerTemplateTest {
                 return new DefaultRockerTemplate(this) {
                     // anonymous initializer!
                     {
-                        this.__internal.setCharset("UTF-8");
+                        this.__internal.setCharsetName("UTF-8");
                         this.__internal.setContentType(ContentType.HTML);
                     }
 
                     @Override
                     protected void __doRender() throws IOException, RenderingException {
                         RockerContent c = null;
-                        this.__internal.renderValue(c, true);
+                        this.__internal.renderValue(c, true, this);
                     }
                 };
             }

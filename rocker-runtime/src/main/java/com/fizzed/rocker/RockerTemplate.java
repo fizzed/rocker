@@ -15,6 +15,8 @@
  */
 package com.fizzed.rocker;
 
+import com.fizzed.rocker.runtime.Raw;
+import java.io.IOException;
 public abstract class RockerTemplate {
 
     /**
@@ -44,6 +46,22 @@ public abstract class RockerTemplate {
     @Override
     public String toString() {
         throw new UnsupportedOperationException("toString() not permitted on a RockerTemplate. Use render() method.");
+    }
+
+    public Raw raw(Object obj) throws IOException {
+        if (obj == null) {
+            throw new NullPointerException("Value was null");
+        }
+
+        return Raw.of(obj.toString());
+    }
+
+    public Raw raw(String s) throws IOException {
+        if (s == null) {
+            throw new NullPointerException("Value was null");
+        }
+        
+        return Raw.of(s);
     }
             
 }

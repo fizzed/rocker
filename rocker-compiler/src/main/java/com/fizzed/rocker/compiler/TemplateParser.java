@@ -313,16 +313,24 @@ public class TemplateParser {
                 }
             }
             
-            // do we chop this line?
-            if ((prevPlain != null && prevUnitTrailingWhitespaceLengthToStartOfLine >= 0) &&
-                    (lastUnit || (nextPlain != null && nextUnitLeadingWhitespaceLengthToEndOfLine >= 0))) {
-                
+            boolean hasPreviousPlain = prevPlain != null;
+            boolean hasNextPlain = nextPlain != null;
+            boolean prevUnitHasTrailingWhitespace = prevUnitTrailingWhitespaceLengthToStartOfLine >= 0;
+            boolean nextUnitHasLeadingWhitespace = nextUnitLeadingWhitespaceLengthToEndOfLine >= 0;
+
+            boolean shouldChompPrevious = hasPreviousPlain && prevUnitHasTrailingWhitespace;
+            boolean shouldChompNext = lastUnit || (hasNextPlain && nextUnitHasLeadingWhitespace);
+
+            if (shouldChompPrevious && shouldChompNext) {
                 prevPlain.chompTrailingLength(prevUnitTrailingWhitespaceLengthToStartOfLine);
-                if (nextPlain != null && nextUnitLeadingWhitespaceLengthToEndOfLine > 0) {
+
+                boolean shouldChompLeadingNewline = hasNextPlain && nextUnitLeadingWhitespaceLengthToEndOfLine > 0;
+                if (shouldChompLeadingNewline) {
                     // we actually want to chop the newline char as well!
                     nextPlain.chompLeadingLength(nextUnitLeadingWhitespaceLengthToEndOfLine);
                 }
             }
+
         }
         
         // remove any empty plain text units (since many above may have been chopped down to nothing)

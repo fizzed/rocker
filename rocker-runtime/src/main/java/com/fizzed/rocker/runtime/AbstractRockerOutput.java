@@ -50,7 +50,7 @@ public abstract class AbstractRockerOutput<T extends AbstractRockerOutput> imple
     }
     
     @Override
-    public Charset getCharset() {
+    public Charset getCharsetName() {
         return this.charset;
     }
 

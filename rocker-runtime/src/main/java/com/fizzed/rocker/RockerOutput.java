@@ -27,7 +27,7 @@ public interface RockerOutput<T extends RockerOutput> {
     
     public ContentType getContentType();
     
-    public Charset getCharset();
+    public Charset getCharsetName();
     
     /**
      * Writes a String to the output. Implementations are responsible for handling
