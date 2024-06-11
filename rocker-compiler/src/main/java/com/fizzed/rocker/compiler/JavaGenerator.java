@@ -373,6 +373,15 @@ public class JavaGenerator {
                             .append(chunk.getKey())
                             .append(";")
                             .append(CRLF);
+                    } 
+                    else if (this.plainTextStrategy == PlainTextStrategy.STATIC_BYTE_ARRAYS) {
+                        tab(w, indent).append("static private final byte[] ")
+                            .append(chunk.getKey())
+                            .append(" = ")
+                            .append(RockerUtil.getTextAsJavaByteArrayInitializer(chunk.getValue(),model.getOptions().getTargetCharset()))
+                            .append(";")
+                            .append(CRLF);
+
                     }
  
                 }
