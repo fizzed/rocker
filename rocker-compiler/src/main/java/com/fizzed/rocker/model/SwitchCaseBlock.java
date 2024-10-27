@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Fizzed Inc.
+ * Copyright 2017 Fizzed Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,15 @@
 package com.fizzed.rocker.model;
 
 /**
- *
- * @author joelauer
+ * Represents else-if part of an if block.
  */
-public class TemplateUnit {
-    
-    private final SourceRef sourceRef;
-    
-    public TemplateUnit(SourceRef sourceRef) {
-        this.sourceRef = sourceRef;
-    }
-    
-    public SourceRef getSourceRef() {
-        return sourceRef;
-    }
-    
-    public boolean isBlockLevel() {
-        return false;
-    }
-    public boolean supportsSourceJournaling(){
-        return true;
-    }
-    
+public class SwitchCaseBlock extends BlockBegin {
+
+  public SwitchCaseBlock(final SourceRef sourceRef, final String expression) {
+    super(sourceRef, expression);
+  }
+  @Override
+  public boolean supportsSourceJournaling() {
+    return false;
+  }
 }

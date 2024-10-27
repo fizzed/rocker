@@ -870,5 +870,49 @@ public class TemplateParser {
             
             model.getUnits().add(new IfBlockElse(sourceRef));
         }
-    }   
+
+        @Override
+        public void enterSwitchBlock(RockerParser.SwitchBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            final String text = ctx.MV_SWITCH().getText();
+            final int idxFirst = text.indexOf('(');
+            final int idxLast = text.lastIndexOf(')');
+            final String expression = text.substring(idxFirst, idxLast + 1);
+            model.getUnits().add(new SwitchBlock(sourceRef, expression));
+        }
+
+        @Override
+        public void exitSwitchBlock(RockerParser.SwitchBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchBlockEnd(sourceRef));
+        }
+
+        @Override
+        public void enterSwitchCase(RockerParser.SwitchCaseContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            final String text = ctx.CASE().getText();
+            final int idxFirst = text.indexOf('(');
+            final int idxLast = text.lastIndexOf(')');
+            final String expression = text.substring(idxFirst+1, idxLast );
+            model.getUnits().add(new SwitchCaseBlock(sourceRef, expression));
+        }
+
+        @Override
+        public void exitSwitchCase(RockerParser.SwitchCaseContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchCaseBlockEnd(sourceRef));
+        }
+
+        @Override
+        public void enterSwitchDefault(RockerParser.SwitchDefaultContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchDefaultBlock(sourceRef));
+        }
+
+        @Override
+        public void exitSwitchDefault(RockerParser.SwitchDefaultContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchDefaultBlockEnd(sourceRef));
+        }
+    }
 }

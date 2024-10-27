@@ -776,6 +776,41 @@ public class TemplateParserTest {
     }
 
     @Test
+    public void testSwitchBlockWithDefault() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockWithDefault.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchBlock switchBlock = model.findUnitByOccurrence(SwitchBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseBlock case1 = model.findUnitByOccurrence(SwitchCaseBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseBlock case2 = model.findUnitByOccurrence(SwitchCaseBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+        SwitchDefaultBlock defaultBlock = model.findUnitByOccurrence(SwitchDefaultBlock.class, 1);
+        assertNull(defaultBlock.getExpression());
+    }
+
+    @Test
+    public void testSwitchBlockWithoutDefault() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockWithoutDefault.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchBlock switchBlock = model.findUnitByOccurrence(SwitchBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseBlock case1 = model.findUnitByOccurrence(SwitchCaseBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseBlock case2 = model.findUnitByOccurrence(SwitchCaseBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+
+    }
+
+    @Test
     public void testIfElseStatement() throws Exception {
         TemplateParser parser = createParser();
         File f = findTemplate("rocker/parser/IfElseStatement.rocker.html");
@@ -787,7 +822,7 @@ public class TemplateParserTest {
 
         unit = model.findUnitByOccurrence(IfBlockElse.class, 2);
         assertThat(unit.getExpression(), nullValue());
-        assertThat(unit.getSourceRef().getText(), is("}\nelse {\nspacy\n}"));
+        assertThat(unit.getSourceRef().getText(), is("}"+System.lineSeparator()+"else {"+System.lineSeparator()+"spacy"+System.lineSeparator()+"}"));
     }
 
     @Test
@@ -812,7 +847,7 @@ public class TemplateParserTest {
         // Check that else is there as well.
         IfBlockElse elseUnit = model.findUnitByOccurrence(IfBlockElse.class, 1);
         assertThat(elseUnit.getExpression(), nullValue());
-        assertThat(elseUnit.getSourceRef().getText(), is("}\nelse {else}"));
+        assertThat(elseUnit.getSourceRef().getText(), is("}"+System.lineSeparator()+"else {else}"));
 
         // Finally since we had nested javascript in the template, we should find no more occurrences
         // of if, else if and else.

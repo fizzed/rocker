@@ -59,7 +59,7 @@ templateContent
     ;
 
 block
-    :   (ifBlock | forBlock | withBlock)
+    :   (ifBlock | forBlock | withBlock|switchBlock)
     ;
 
 ifBlock
@@ -125,3 +125,17 @@ eval
 evalExpression
     :   MV_EVAL
     ;
+
+switchBlock
+    :   AT MV_SWITCH  (switchCase |switchDefault | templateContent)*  END_SWITCH_BLOCK
+    ;
+
+switchCase
+    :   CASE templateContent*  RCURLY
+    ;
+
+switchDefault
+    :   DEFAULT templateContent*  RCURLY
+    ;
+
+
