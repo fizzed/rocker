@@ -22,6 +22,7 @@ import com.fizzed.rocker.antlr4.RockerParserBaseListener;
 import com.fizzed.rocker.model.*;
 import com.fizzed.rocker.runtime.ParserException;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,8 +170,8 @@ public class TemplateParser {
             // pass the tokens to the parser
             log.trace("Parsing tokens");
             RockerParser parser = new RockerParser(tokens);
-            parser.removeErrorListeners();
-            parser.addErrorListener(new DescriptiveErrorListener());
+            parser.addErrorListener(new DiagnosticErrorListener());
+            parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
             
             TemplateModel model = new TemplateModel(packageName, templateName, modifiedAt, configuration.getOptions().copy());
             
@@ -445,6 +447,67 @@ public class TemplateParser {
             
             return false;
         }
+
+        public boolean areWeCurrentlyInASwitchBlock() {
+            int depth = 0;
+
+            // start from where we are and search backwards
+            for (int i = this.model.getUnits().size() - 1; i >= 0; i--) {
+                TemplateUnit unit = this.model.getUnits().get(i);
+                if (unit instanceof SwitchBlock) {
+                    if (depth == 0) {
+                        return true;         // we are good!
+                    } else {
+                        depth--;
+                    }
+                } else if (unit instanceof SwitchBlockEnd) {
+                    depth++;
+                }
+            }
+
+            return false;
+        }
+
+        public boolean areWeCurrentlyInACase() {
+            int depth = 0;
+
+            // start from where we are and search backwards
+            for (int i = this.model.getUnits().size() - 1; i >= 0; i--) {
+                TemplateUnit unit = this.model.getUnits().get(i);
+                if (unit instanceof SwitchCaseBlock) {
+                    if (depth == 0) {
+                        return true;         // we are good!
+                    } else {
+                        depth--;
+                    }
+                } else if (unit instanceof SwitchCaseBlockEnd) {
+                    depth++;
+                }
+            }
+
+            return false;
+        }
+
+        public boolean areWeCurrentlyInADefault() {
+            int depth = 0;
+
+            // start from where we are and search backwards
+            for (int i = this.model.getUnits().size() - 1; i >= 0; i--) {
+                TemplateUnit unit = this.model.getUnits().get(i);
+                if (unit instanceof SwitchDefaultBlock) {
+                    if (depth == 0) {
+                        return true;         // we are good!
+                    } else {
+                        depth--;
+                    }
+                } else if (unit instanceof SwitchDefaultBlockEnd) {
+                    depth++;
+                }
+            }
+
+            return false;
+        }
+
 
         @Override
         public void enterComment(RockerParser.CommentContext ctx) {
@@ -885,6 +948,42 @@ public class TemplateParser {
         public void exitSwitchBlock(RockerParser.SwitchBlockContext ctx) {
             SourceRef sourceRef = createSourceRef(ctx);
             model.getUnits().add(new SwitchBlockEnd(sourceRef));
+            verifySwitchBlock();
+        }
+
+        private void verifySwitchBlock() {
+
+            List<TemplateUnit> units = this.model.getUnits();
+            List<TemplateUnit> toRemove=new ArrayList<>();
+            for (int i = 0, unitsSize = units.size(); i < unitsSize; i++) {
+                TemplateUnit unit = units.get(i);
+                    if (unit instanceof PlainText) {
+                        PlainText plain = (PlainText) unit;
+                        if (inSwitchButNotCaseOrDefault(i)) {
+                            if (plain.isWhitespace()) {
+                                toRemove.add(unit);
+                            } else {
+                                // no plain allowed
+                                SourcePosition pos = plain.findSourcePositionOfNonWhitespace();
+                                throw new ParserRuntimeException(pos.getLineNumber(), pos.getPosInLine(), "plain text not allowed before end of switch block");
+                            }
+                        }
+                    }
+            }
+            units.removeAll(toRemove);
+        }
+
+        private boolean inSwitchButNotCaseOrDefault(int i) {
+            for (int j = i; j >= 0; j--) {
+                TemplateUnit templateUnit = model.getUnits().get(j);
+                if (templateUnit instanceof SwitchCaseBlockEnd || templateUnit instanceof SwitchDefaultBlockEnd || templateUnit instanceof SwitchBlock) {
+                    return true;
+                }
+                if (templateUnit instanceof SwitchCaseBlock || templateUnit instanceof SwitchDefaultBlock || templateUnit instanceof SwitchBlockEnd) {
+                    return false;
+                }
+            }
+            return false;
         }
 
         @Override

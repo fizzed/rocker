@@ -15,11 +15,14 @@
  */
 package com.fizzed.rocker.compiler;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import com.fizzed.rocker.ContentType;
 import com.fizzed.rocker.model.*;
 import com.fizzed.rocker.runtime.ParserException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -59,6 +62,7 @@ public class TemplateParserTest {
 
         Assert.assertEquals(JavaVersion.v1_7, model.getOptions().getJavaVersion());
     }
+
 
     @Test
     public void optionJavaVersion8() throws Exception {
@@ -777,6 +781,8 @@ public class TemplateParserTest {
 
     @Test
     public void testSwitchBlockWithDefault() throws Exception {
+
+        ((Logger) LoggerFactory.getLogger(TemplateParser.class)).setLevel(Level.TRACE);
         TemplateParser parser = createParser();
         File f = findTemplate("rocker/parser/SwitchBlockWithDefault.rocker.html");
         TemplateModel model = parser.parse(f);

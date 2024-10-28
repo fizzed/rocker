@@ -127,7 +127,7 @@ evalExpression
     ;
 
 switchBlock
-    :   AT MV_SWITCH  (switchCase |switchDefault | templateContent)*  END_SWITCH_BLOCK
+    :   AT MV_SWITCH  (switchCase|switchDefault|plain|comment)*  RCURLY
     ;
 
 switchCase

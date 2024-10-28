@@ -29,10 +29,7 @@ RCURLY
     :   '}'
     ;
 
-//switch block should not allow WS as this will generate statments within switch block which are not case or default
-END_SWITCH_BLOCK
-    :   Ws RCURLY Ws
-    ;
+
 
 COMMENT
     :   '@*' .*? '*@'
