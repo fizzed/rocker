@@ -19,23 +19,14 @@ package com.fizzed.rocker.model;
  *
  * @author joelauer
  */
-public class TemplateUnit {
-    
-    private final SourceRef sourceRef;
-    
-    public TemplateUnit(SourceRef sourceRef) {
-        this.sourceRef = sourceRef;
+public class SwitchDefaultBlockEnd extends BlockEnd {
+
+    public SwitchDefaultBlockEnd(SourceRef sourceRef) {
+        super(sourceRef);
     }
-    
-    public SourceRef getSourceRef() {
-        return sourceRef;
-    }
-    
-    public boolean isBlockLevel() {
+
+    @Override
+    public boolean supportsSourceJournaling() {
         return false;
     }
-    public boolean supportsSourceJournaling(){
-        return true;
-    }
-    
 }

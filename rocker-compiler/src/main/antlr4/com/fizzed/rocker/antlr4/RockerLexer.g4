@@ -2,6 +2,7 @@ lexer grammar RockerLexer;
 
 // content mode (by default)
 
+
 ELSE_IF
     :   '}' Ws? 'else' Ws? 'if' Ws? Parentheses Ws? '{'
     ;
@@ -10,6 +11,16 @@ ELSE
     :   '}' Ws? 'else' Ws? '{'
     ;
 
+//switch block should not allow WS as this will generate statments within switch block which are not case or default
+CASE
+    :   Ws? 'case' Ws? Parentheses Ws? '{'
+    ;
+
+//switch block should not allow WS as this will generate statments within switch block which are not case or default
+DEFAULT
+    :   Ws? 'default' Ws? '{' Ws?;
+
+
 LCURLY
     :   '{'
     ;
@@ -17,6 +28,8 @@ LCURLY
 RCURLY
     :   '}'
     ;
+
+
 
 COMMENT
     :   '@*' .*? '*@'
@@ -54,6 +67,11 @@ MV_ARGS
 
 MV_IF
     :   'if' Ws? Parentheses Ws? '{'                                -> popMode
+    ;
+
+//switch block should not allow WS as this will generate statments within switch block which are not case or default
+MV_SWITCH
+    :   'switch' Ws? Parentheses Ws? '{' Ws?                                -> popMode
     ;
 
 MV_FOR
@@ -122,7 +140,7 @@ fragment Parentheses
     ;
 
 fragment RerservedQualifiedNames
-    :   ('if' | 'for')
+    :   ('if' | 'for' | 'switch' | 'case' | 'default')
     ;
 
 fragment LineBreak

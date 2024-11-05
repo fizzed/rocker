@@ -461,8 +461,10 @@ public class JavaGenerator {
             // something like
             // IfBeginBlock
             // __internal.aboutToExecutePosInSourceTemplate(5, 10);
-            appendCommentAndSourcePositionUpdate(w, depth+indent, unit);
-            
+            if(unit.supportsSourceJournaling()){
+                appendCommentAndSourcePositionUpdate(w, depth+indent, unit);
+            }
+
             if (unit instanceof PlainText) {
                 PlainText plain = (PlainText)unit;
  
@@ -968,6 +970,59 @@ public class JavaGenerator {
             else if (unit instanceof ContinueStatement) {
                 tab(w, depth+indent)
                         .append("__internal.throwContinueException();").append(CRLF);
+            }
+            else if(unit instanceof SwitchBlock){
+
+                SwitchBlock block = (SwitchBlock) unit;
+
+                tab(w, depth+indent)
+                        .append("switch ")
+                        .append(block.getExpression())
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+                depth++;
+            } else if (unit instanceof SwitchBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // switch end ").append(sourceRef(unit)).append(CRLF);
+            } else if (unit instanceof SwitchCaseBlock) {
+
+                SwitchCaseBlock block = (SwitchCaseBlock) unit;
+
+                tab(w, depth+indent)
+                        .append("case ")
+                        .append(block.getExpression())
+                        .append("->")
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+                depth++;
+            }
+            else if (unit instanceof SwitchCaseBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // case end ").append(sourceRef(unit)).append(CRLF);
+            }else if (unit instanceof SwitchDefaultBlock) {
+
+                tab(w, depth+indent)
+                        .append("default ")
+                        .append("->")
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+                depth++;
+            }
+            else if (unit instanceof SwitchDefaultBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // default end ").append(sourceRef(unit)).append(CRLF);
             }
             //log.info(" src (@ {}): [{}]", unit.getSourceRef(), unit.getSourceRef().getConsoleFriendlyText());
         }
