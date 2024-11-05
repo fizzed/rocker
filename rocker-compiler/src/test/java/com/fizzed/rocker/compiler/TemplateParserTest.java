@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.List;
 
+import static com.fizzed.rocker.compiler.TestHelper.normalizeNewlines;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -787,7 +788,7 @@ public class TemplateParserTest {
 
         unit = model.findUnitByOccurrence(IfBlockElse.class, 2);
         assertThat(unit.getExpression(), nullValue());
-        assertThat(unit.getSourceRef().getText(), is("}\nelse {\nspacy\n}"));
+        assertThat(normalizeNewlines(unit.getSourceRef().getText()), is("}\nelse {\nspacy\n}"));
     }
 
     @Test
@@ -812,7 +813,7 @@ public class TemplateParserTest {
         // Check that else is there as well.
         IfBlockElse elseUnit = model.findUnitByOccurrence(IfBlockElse.class, 1);
         assertThat(elseUnit.getExpression(), nullValue());
-        assertThat(elseUnit.getSourceRef().getText(), is("}\nelse {else}"));
+        assertThat(normalizeNewlines(elseUnit.getSourceRef().getText()), is("}\nelse {else}"));
 
         // Finally since we had nested javascript in the template, we should find no more occurrences
         // of if, else if and else.
