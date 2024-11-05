@@ -22,7 +22,6 @@ import com.fizzed.rocker.antlr4.RockerParserBaseListener;
 import com.fizzed.rocker.model.*;
 import com.fizzed.rocker.runtime.ParserException;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
@@ -170,8 +169,8 @@ public class TemplateParser {
             // pass the tokens to the parser
             log.trace("Parsing tokens");
             RockerParser parser = new RockerParser(tokens);
-            parser.addErrorListener(new DiagnosticErrorListener());
-            parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+            parser.removeErrorListeners();
+            parser.addErrorListener(new DescriptiveErrorListener());
             
             TemplateModel model = new TemplateModel(packageName, templateName, modifiedAt, configuration.getOptions().copy());
             
