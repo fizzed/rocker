@@ -46,6 +46,7 @@ Includes the following features:
 * Templates retain enough information about the original template to throw
   exceptions at runtime (during render()) that let you track down the problematic line
   in the original template source file.
+* GraalVM compatability if you leverage the new PlainText strategy of STATIC_BYTE_ARRAYS
 
 ## Sponsorship & Support
 
@@ -448,7 +449,11 @@ to Rocker's default value.
     Useful for application-specific intermediate classes that you'd like all
     template models to extend.
     Defaults to Rocker's default.
-    
+
+ * `plainTextStrategy` is the strategy used for embedding plain text as part
+   of templates. Default is STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS but if you
+   need GraalVM compatability, you would try STATIC_BYTE_ARRAYS
+
  * `discardLogicWhitespace` determines whether whitespace in templates that is
     determined to be only a part of logic/control blocks should be discarded.
     Helps make rendered content look more professional, while still keeping 

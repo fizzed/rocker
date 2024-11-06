@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.0.1 - 2024-11-06
+
+ - New PlainTextStrategy of STATIC_BYTE_ARRAYS (helps with GraalVM compatability) (@ppedregal)
+ - Maven plugin supports setting "plainTextStrategy" as a new configuration option (@ppedregal)
+
 #### 2.0.0 - 2024-11-06
 
  - Java 7 support dropped. Java 8 is now minimum supported version (Java 21 will no longer compile < 8).
