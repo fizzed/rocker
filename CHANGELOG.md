@@ -1,9 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
-## TBD
+#### 2.0.0 - 2024-11-06
 
- - Java 8 is now minimum supported version (Java 21 will no longer compile < 8)
+ - Java 7 support dropped. Java 8 is now minimum supported version (Java 21 will no longer compile < 8).
+ - New switch statement feature (@asaf-wizzdi)
  - Merged rocker-test-java7 and rocker-test-java8 modules together into rocker-test-template
  - Blaze build system updated to v1.5.1 (which works on Java 21)
  - CI automated tests for Java 21

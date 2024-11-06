@@ -754,8 +754,8 @@ public class TemplateParser {
             // break, continue
             if (expr.equals("break")) {
                 // verify we're in a "for" loop that hasn't ended yet...
-                if (!areWeCurrentlyInAForLoop()) {
-                    throw new ParserRuntimeException(sourceRef, "@break used outside @for loop", null);
+                if (!areWeCurrentlyInAForLoop() && !areWeCurrentlyInASwitchBlock()) {
+                    throw new ParserRuntimeException(sourceRef, "@break used outside @for loop OR @switch block", null);
                 }
                 model.getUnits().add(new BreakStatement(sourceRef));
             } else if (expr.equals("continue")) {

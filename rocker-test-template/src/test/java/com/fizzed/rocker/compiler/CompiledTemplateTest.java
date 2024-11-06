@@ -1200,4 +1200,51 @@ public class CompiledTemplateTest {
         assertThat(html, is("b"));
     }
 
+    @Test
+    public void statementBlock() throws Exception {
+        String html = new rocker8.SwitchStatement()
+            .i(1)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in 1"));
+
+        // case 2 should flow thru 2 & 3
+        html = new rocker8.SwitchStatement()
+            .i(2)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in 2in 3"));
+
+        // case 3
+        html = new rocker8.SwitchStatement()
+            .i(3)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in 3"));
+
+        // case 4 will flow thru to default too
+        html = new rocker8.SwitchStatement()
+            .i(4)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in 4in default"));
+
+        // case 10 is only default
+        html = new rocker8.SwitchStatement()
+            .i(10)
+            .render()
+            .toString()
+            .trim();
+
+        assertThat(html, is("in default"));
+    }
+
 }

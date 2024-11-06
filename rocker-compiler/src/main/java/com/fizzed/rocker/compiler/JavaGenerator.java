@@ -975,12 +975,19 @@ public class JavaGenerator {
 
                 SwitchBlock block = (SwitchBlock) unit;
 
+                // break support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("try {").append(CRLF);
+
+                depth++;
+
                 tab(w, depth+indent)
                         .append("switch ")
                         .append(block.getExpression())
                         .append(" {").append(CRLF);
 
                 blockEnd.push("}");
+
                 depth++;
             } else if (unit instanceof SwitchBlockEnd) {
                 depth--;
@@ -988,6 +995,19 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append(blockEnd.pop())
                         .append(" // switch end ").append(sourceRef(unit)).append(CRLF);
+
+                depth--;
+
+                // break support via try and catch mechanism (works across lambdas!)
+                tab(w, depth+indent)
+                    .append("} catch (").append(BreakException.class.getCanonicalName()).append(" e) {") .append(CRLF);
+
+                tab(w, depth+indent+1)
+                    .append("// support for breaking switch statements").append(CRLF);
+
+                tab(w, depth+indent)
+                    .append("}").append(CRLF);
+
             } else if (unit instanceof SwitchCaseBlock) {
 
                 SwitchCaseBlock block = (SwitchCaseBlock) unit;
@@ -995,13 +1015,13 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append("case ")
                         .append(block.getExpression())
-                        .append("->")
+                        .append(": ")
                         .append(" {").append(CRLF);
 
                 blockEnd.push("}");
+
                 depth++;
-            }
-            else if (unit instanceof SwitchCaseBlockEnd) {
+            } else if (unit instanceof SwitchCaseBlockEnd) {
                 depth--;
 
                 tab(w, depth+indent)
@@ -1011,7 +1031,7 @@ public class JavaGenerator {
 
                 tab(w, depth+indent)
                         .append("default ")
-                        .append("->")
+                        .append(": ")
                         .append(" {").append(CRLF);
 
                 blockEnd.push("}");
