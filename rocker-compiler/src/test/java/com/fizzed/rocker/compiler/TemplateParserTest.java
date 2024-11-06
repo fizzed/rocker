@@ -796,6 +796,25 @@ public class TemplateParserTest {
     }
 
     @Test
+    public void testSwitchBlockWithDefaultSpaces() throws Exception {
+
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockWithDefaultSpaces.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchBlock switchBlock = model.findUnitByOccurrence(SwitchBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseBlock case1 = model.findUnitByOccurrence(SwitchCaseBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseBlock case2 = model.findUnitByOccurrence(SwitchCaseBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+        SwitchDefaultBlock defaultBlock = model.findUnitByOccurrence(SwitchDefaultBlock.class, 1);
+        assertNull(defaultBlock.getExpression());
+    }
+
+    @Test
     public void testSwitchBlockWithoutDefault() throws Exception {
         TemplateParser parser = createParser();
         File f = findTemplate("rocker/parser/SwitchBlockWithoutDefault.rocker.html");
