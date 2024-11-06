@@ -23,10 +23,13 @@ public enum PlainTextStrategy {
     
     // as strings (chunked to get around java length limits)
     STATIC_STRINGS,
-    
+
     // as byte arrays (loaded at runtime via an unloaded class to prevent
     // both the string constant in the class file + the byte array from
     // using heap/permgen memory)
-    STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS
+    STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS,
+
+    // as byte arrays (chunked to get around java length limits)
+    STATIC_BYTE_ARRAYS
 
 }

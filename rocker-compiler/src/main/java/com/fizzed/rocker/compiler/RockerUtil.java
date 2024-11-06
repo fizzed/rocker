@@ -15,14 +15,10 @@
  */
 package com.fizzed.rocker.compiler;
 
-import com.fizzed.rocker.ContentType;
-import com.fizzed.rocker.model.JavaVersion;
-import com.fizzed.rocker.model.TemplateModel;
-//import org.apache.commons.lang3.text.translate.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,10 +31,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 //import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
+
+import com.fizzed.rocker.ContentType;
+import com.fizzed.rocker.model.JavaVersion;
+import com.fizzed.rocker.model.TemplateModel;
+//import org.apache.commons.lang3.text.translate.*;
 
 public class RockerUtil {
     
@@ -236,6 +239,24 @@ public class RockerUtil {
         }
         
         return strings;
+    }
+
+    public static String getTextAsJavaByteArrayInitializer(String text,String charsetName) throws UnsupportedEncodingException{
+
+        byte[] bytes = text.getBytes(charsetName);
+        StringBuilder s = new StringBuilder();
+        s.append("new byte[] { ");
+        boolean first = true;
+        for (byte b:bytes){
+            if (!first){
+                s.append(", ");
+            }
+            appendByteAsJavaByteInitializer(s, b);
+            first = false;
+        }
+        s.append(" }");
+        return s.toString();
+
     }
     
     static public List<String> getTextAsJavaByteArrayInitializer(String text, String charsetName, int maxArraySize) throws UnsupportedEncodingException {

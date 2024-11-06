@@ -1,6 +1,7 @@
 package com.fizzed.rocker.maven;
 
 import com.fizzed.rocker.compiler.JavaGeneratorRunnable;
+import com.fizzed.rocker.compiler.PlainTextStrategy;
 import com.fizzed.rocker.model.JavaVersion;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -88,6 +89,9 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter( property = "rocker.postProcessing", required = false)
     protected String[] postProcessing;
 
+    @Parameter(property =" rocker.plainTextStrategy", required=false, defaultValue = "STATIC_BYTE_ARRAYS_VIA_UNLOADED_CLASS")
+    protected PlainTextStrategy plainTextStrategy;
+
     /**
      * Weather or not to mark the generated classes as {@code @Generated}. 
      * */
@@ -133,6 +137,7 @@ public class GenerateMojo extends AbstractMojo {
             jgr.getParser().getConfiguration().setTemplateDirectory(templateDirectory);
             jgr.getGenerator().getConfiguration().setOutputDirectory(outputDirectory);
             jgr.getGenerator().getConfiguration().setClassDirectory(classDirectory);
+            jgr.getGenerator().setPlainTextStrategy(plainTextStrategy);
             //jgr.getGenerator().getConfiguration().setCompileDirectory(compileDirectory);
             jgr.setFailOnError(failOnError);
             
