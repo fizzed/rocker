@@ -208,9 +208,11 @@ Switch block with case and default example.
     @switch (s) {
         case ("a") { 
             i am in the "a" block
+            @break
         }
         case ("b") {
             i am in the "b" block
+            @break
         }
         default {
             i am in the "default" block
@@ -222,9 +224,24 @@ Without a default block.
     @switch (v) {
         case (1) { 
             i am in the "a" block
+            @break
         }
         case (2) {
             i am in the "b" block
+            @break
+        }
+    }
+
+Without including an @break which could run multiple case statements just like standard Java.  If ```v``` was 1 then
+both ```i am in the "a" block``` and ```i am in the "b" block"``` would be output.
+
+    @switch (v) {
+        case (1) { 
+            i am in the "a" block
+        }
+        case (2) {
+            i am in the "b" block
+            @break
         }
     }
 
@@ -240,7 +257,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @s
     }
 
-For Java 6/7
+For Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @with (String s = list.get(0)) {
         @s
@@ -257,7 +274,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @s2.get(0)
     }
 
-For Java 6/7
+For Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @with (String s1 = list.get(0), List<String> s2=map.get("key").subList(0,3)) {
         @s1
@@ -335,7 +352,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @item
     }
 
-And for Java 6/7
+And for Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @for (String item : items) {
         @item
@@ -349,7 +366,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @i.index(): @item
     }
 
-And for Java 6/7
+And for Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @for ((ForIterator i, String item) : items) {
         @i.index(): @item
@@ -363,7 +380,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @key: @item
     }
 
-And for Java 6/7
+And for Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @for ((String key, String item) : itemMap) {
         @key: @item
@@ -377,7 +394,7 @@ For Java 8 (note this is statically typed and checked at compile time)
         @key: @item (at index @i.index())
     }
 
-And for Java 6/7
+And for Java 6/7 (Note: rocker v2.0.0 drops Java 6/7 support)
 
     @for ((ForIterator i, String key, String item) : itemMap) {
         @key: @item (at index @i.index())
