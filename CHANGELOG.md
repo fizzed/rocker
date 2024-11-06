@@ -8,6 +8,8 @@ Rocker Templates by Fizzed
  - Merged rocker-test-java7 and rocker-test-java8 modules together into rocker-test-template
  - Blaze build system updated to v1.5.1 (which works on Java 21)
  - CI automated tests for Java 21
+ - Bump maven-parent v2.6.0
+ - Bump project blaze.jar to v1.6.0
 
 #### 1.4.0 - 2023-10-11
 
