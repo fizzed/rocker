@@ -830,6 +830,60 @@ public class TemplateParserTest {
 
 
     }
+    @Test
+    public void testSwitchExpressionBlockWithDefault() throws Exception {
+
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockExpressionWithDefault.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchExpressionBlock switchBlock = model.findUnitByOccurrence(SwitchExpressionBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseExpressionBlock case1 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseExpressionBlock case2 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+        SwitchDefaultExpressionBlock defaultBlock = model.findUnitByOccurrence(SwitchDefaultExpressionBlock.class, 1);
+        assertNull(defaultBlock.getExpression());
+    }
+
+    @Test
+    public void testSwitchExpressionBlockWithDefaultSpaces() throws Exception {
+
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockExpressionWithDefaultSpaces.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchExpressionBlock switchBlock = model.findUnitByOccurrence(SwitchExpressionBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseExpressionBlock case1 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseExpressionBlock case2 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+        SwitchDefaultExpressionBlock defaultBlock = model.findUnitByOccurrence(SwitchDefaultExpressionBlock.class, 1);
+        assertNull(defaultBlock.getExpression());
+    }
+
+    @Test
+    public void testSwitchExpressionBlockWithoutDefault() throws Exception {
+        TemplateParser parser = createParser();
+        File f = findTemplate("rocker/parser/SwitchBlockExpressionWithoutDefault.rocker.html");
+        TemplateModel model = parser.parse(f);
+        SwitchExpressionBlock switchBlock = model.findUnitByOccurrence(SwitchExpressionBlock.class, 1);
+        assertThat(switchBlock.getExpression(), is("(s)"));
+
+        SwitchCaseExpressionBlock case1 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 1);
+        assertThat(case1.getExpression(), is("\"test\""));
+
+        SwitchCaseExpressionBlock case2 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 2);
+        assertThat(case2.getExpression(), is("\"test2\""));
+
+
+    }
 
     @Test
     public void testIfElseStatement() throws Exception {

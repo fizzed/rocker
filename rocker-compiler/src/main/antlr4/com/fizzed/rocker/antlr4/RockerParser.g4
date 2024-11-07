@@ -59,7 +59,7 @@ templateContent
     ;
 
 block
-    :   (ifBlock | forBlock | withBlock|switchBlock)
+    :   (ifBlock | forBlock | withBlock|switchBlock|switchExpressionBlock)
     ;
 
 ifBlock
@@ -138,4 +138,15 @@ switchDefault
     :   DEFAULT templateContent*  RCURLY
     ;
 
+switchExpressionBlock
+    :   AT MV_SWITCH  (switchExpressionCase|switchExpressionDefault|plain|comment)*  RCURLY
+    ;
+
+switchExpressionCase
+    :   CASE_EXPRESSION templateContent*  RCURLY
+    ;
+
+switchExpressionDefault
+    :   DEFAULT_EXPRESSION templateContent*  RCURLY
+    ;
 

@@ -950,6 +950,55 @@ public class TemplateParser {
             verifySwitchBlock();
         }
 
+        @Override
+        public void enterSwitchExpressionBlock(RockerParser.SwitchExpressionBlockContext ctx) {
+
+            SourceRef sourceRef = createSourceRef(ctx);
+            final String text = ctx.MV_SWITCH().getText();
+            final int idxFirst = text.indexOf('(');
+            final int idxLast = text.lastIndexOf(')');
+            final String expression = text.substring(idxFirst, idxLast + 1);
+            model.getUnits().add(new SwitchExpressionBlock(sourceRef, expression));
+        }
+
+        @Override
+        public void exitSwitchExpressionBlock(RockerParser.SwitchExpressionBlockContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchExpressionBlockEnd(sourceRef));
+            verifySwitchExpressionBlock();
+        }
+
+        @Override
+        public void enterSwitchExpressionCase(RockerParser.SwitchExpressionCaseContext ctx) {
+
+            SourceRef sourceRef = createSourceRef(ctx);
+            final String text = ctx.CASE_EXPRESSION().getText();
+            final int idxFirst = text.indexOf('(');
+            final int idxLast = text.lastIndexOf(')');
+            final String expression = text.substring(idxFirst+1, idxLast );
+            model.getUnits().add(new SwitchCaseExpressionBlock(sourceRef, expression));
+
+        }
+
+        @Override
+        public void exitSwitchExpressionCase(RockerParser.SwitchExpressionCaseContext ctx) {
+             SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchCaseExpressionBlockEnd(sourceRef));
+        }
+
+        @Override
+        public void enterSwitchExpressionDefault(RockerParser.SwitchExpressionDefaultContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchDefaultExpressionBlock(sourceRef));
+        }
+
+        @Override
+        public void exitSwitchExpressionDefault(RockerParser.SwitchExpressionDefaultContext ctx) {
+            SourceRef sourceRef = createSourceRef(ctx);
+            model.getUnits().add(new SwitchDefaultExpressionBlockEnd(sourceRef));
+
+        }
+
         private void verifySwitchBlock() {
 
             List<TemplateUnit> units = this.model.getUnits();
@@ -971,6 +1020,27 @@ public class TemplateParser {
             }
             units.removeAll(toRemove);
         }
+        private void verifySwitchExpressionBlock() {
+
+            List<TemplateUnit> units = this.model.getUnits();
+            List<TemplateUnit> toRemove=new ArrayList<>();
+            for (int i = 0, unitsSize = units.size(); i < unitsSize; i++) {
+                TemplateUnit unit = units.get(i);
+                if (unit instanceof PlainText) {
+                    PlainText plain = (PlainText) unit;
+                    if (inSwitchExpressionButNotCaseOrDefault(i)) {
+                        if (plain.isWhitespace()) {
+                            toRemove.add(unit);
+                        } else {
+                            // no plain allowed
+                            SourcePosition pos = plain.findSourcePositionOfNonWhitespace();
+                            throw new ParserRuntimeException(pos.getLineNumber(), pos.getPosInLine(), "plain text not allowed before end of switch block");
+                        }
+                    }
+                }
+            }
+            units.removeAll(toRemove);
+        }
 
         private boolean inSwitchButNotCaseOrDefault(int i) {
             for (int j = i; j >= 0; j--) {
@@ -979,6 +1049,18 @@ public class TemplateParser {
                     return true;
                 }
                 if (templateUnit instanceof SwitchCaseBlock || templateUnit instanceof SwitchDefaultBlock || templateUnit instanceof SwitchBlockEnd) {
+                    return false;
+                }
+            }
+            return false;
+        }
+        private boolean inSwitchExpressionButNotCaseOrDefault(int i) {
+            for (int j = i; j >= 0; j--) {
+                TemplateUnit templateUnit = model.getUnits().get(j);
+                if (templateUnit instanceof SwitchCaseExpressionBlockEnd || templateUnit instanceof SwitchDefaultExpressionBlockEnd || templateUnit instanceof SwitchExpressionBlock) {
+                    return true;
+                }
+                if (templateUnit instanceof SwitchCaseExpressionBlock || templateUnit instanceof SwitchDefaultExpressionBlock || templateUnit instanceof SwitchExpressionBlockEnd) {
                     return false;
                 }
             }
