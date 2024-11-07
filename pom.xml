@@ -174,10 +174,10 @@
 
         </dependencies>
     </dependencyManagement>
-    <!-- things to do if running on JDK 8 -->
+    <!-- things to do if running on JDK 17 -->
     <profiles>
         <profile>
-            <id>java8-settings</id>
+            <id>java17-settings</id>
             <activation>
                 <jdk>[17,)</jdk>
             </activation>
