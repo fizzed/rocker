@@ -17,8 +17,17 @@ CASE
     ;
 
 //switch block should not allow WS as this will generate statments within switch block which are not case or default
+CASE_EXPRESSION
+    :   Ws? 'case' Ws? Parentheses Ws? '->' Ws? '{'
+    ;
+
+//switch block should not allow WS as this will generate statments within switch block which are not case or default
 DEFAULT
     :   Ws? 'default' Ws? '{' Ws?;
+
+//switch block should not allow WS as this will generate statments within switch block which are not case or default
+DEFAULT_EXPRESSION
+    :   Ws? 'default' Ws? '->' Ws? '{' Ws?;
 
 
 LCURLY
