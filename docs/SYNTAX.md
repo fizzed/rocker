@@ -198,10 +198,8 @@ these characters as long as you have matching left and right curly brackets.
 
 ### Switch - case - default blocks (@switch)
 
-Standard Java switch - case - defai;t control flow. The left curly character ```{``` indicates
+Standard Java switch - case - default control flow. The left curly character ```{``` indicates
 the start of a block and the right curly character ```}``` marks the end.
-
-The ```else if``` option is available as of v0.16.0.
 
 Switch block with case and default example.
 
