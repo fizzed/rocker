@@ -1,7 +1,0 @@
-@option discardLogicWhitespace=true
-@option javaVersion=1.8
-@import java.util.stream.Stream
-
-@args (Stream<String> strings)
-
-@for ((i, message) : strings.iterator()) {@if (i.first()) {[} else {,}@i.index():@message@if (i.last()) {]}}

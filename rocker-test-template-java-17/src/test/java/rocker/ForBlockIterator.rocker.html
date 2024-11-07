@@ -1,8 +1,0 @@
-@option discardLogicWhitespace=true
-@option javaVersion=1.7
-
-@args (Iterable<String> strings)
-
-@for (String message : strings) {@message}
---
-@for ((ForIterator i, String message) : strings) {@if (i.first()) {[} else {,}@i.index():@message@if (i.last()) {]}}

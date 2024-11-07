@@ -1,8 +1,0 @@
-@option discardLogicWhitespace=true
-@option javaVersion=1.8
-
-@args (Iterable<String> strings)
-
-@for (message : strings) {@message}
---
-@for ((i, message) : strings) {@if (i.first()) {[} else {,}@i.index():@message@if (i.last()) {]}}
