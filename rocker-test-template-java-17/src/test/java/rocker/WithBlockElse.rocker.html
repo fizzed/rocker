@@ -1,0 +1,7 @@
+@import java.util.List
+@args (List<String> a, int i)
+@with? (String b = a.get(i)) {
+  @b
+} else {
+  in-with-else-block
+}

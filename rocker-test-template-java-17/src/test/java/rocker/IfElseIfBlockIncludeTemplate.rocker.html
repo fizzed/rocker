@@ -1,0 +1,13 @@
+@import java.util.List
+
+@args (Integer value)
+
+@rocker.ArgsRockerBody.template() -> {
+  @if (value == 0) {
+    if-block
+  } else if (value == 1) {
+    else-if-block
+  } else {
+    else-block
+  }
+}

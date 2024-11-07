@@ -1,0 +1,40 @@
+@args(String value)
+@if(value.equals("hello")){
+hello
+}
+else if(value.equals("dance")) {
+dance
+}
+else if(value.equals("x") && value.indexOf("a") != -1) {
+dddd
+}else if(value.equals("nope")) {
+  @if(value.hashCode() == 1) {
+    Really it is 1?
+  }
+  else if(value.hashCode() == 2) {
+    Really it is 2!
+  }
+  else {
+    No idea.
+  }
+}
+else{
+else
+}
+
+@if ( value.equals("no") ) {
+  no
+}
+else if ( value.equals("spacy") ) {
+  spacy
+}
+else if ( value.equals("morespace") ) {
+  more space
+}
+else if ( value.equals("plain inside") ) {
+  plain inside
+  <div onclick="javascript:if(x > 0 && y < 10) { doSomething() } else if(x == 10) { somethingElse('yes'); } else { console.log('fail'); }">click me</div>
+}
+else {
+  Stop.
+}

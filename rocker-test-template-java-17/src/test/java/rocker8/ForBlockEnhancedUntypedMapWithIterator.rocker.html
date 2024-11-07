@@ -1,0 +1,3 @@
+@option javaVersion=1.8
+@args(java.util.Map<Integer,String> items)
+@for ((i, k,v) : items) {@if(i.first()) {first }@i.index(): @k=@v@if(!i.last()) {, }}
