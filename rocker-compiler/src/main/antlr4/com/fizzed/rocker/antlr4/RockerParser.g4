@@ -59,7 +59,7 @@ templateContent
     ;
 
 block
-    :   (ifBlock | forBlock | withBlock|switchBlock|switchExpressionBlock)
+    :   (ifBlock | forBlock | withBlock | switchBlock | switchExpressionBlock)
     ;
 
 ifBlock
@@ -127,7 +127,7 @@ evalExpression
     ;
 
 switchBlock
-    :   AT MV_SWITCH  (switchCase|switchDefault|plain|comment)*  RCURLY
+    :   AT MV_SWITCH  ( switchCase | switchDefault | plain | comment)*  RCURLY
     ;
 
 switchCase
@@ -139,7 +139,7 @@ switchDefault
     ;
 
 switchExpressionBlock
-    :   AT MV_SWITCH  (switchExpressionCase|switchExpressionDefault|plain|comment)*  RCURLY
+    :   AT MV_SWITCH  ( switchExpressionCase | switchExpressionDefault | plain | comment)*  RCURLY
     ;
 
 switchExpressionCase
