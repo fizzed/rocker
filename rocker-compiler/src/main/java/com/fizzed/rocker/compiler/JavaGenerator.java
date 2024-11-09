@@ -1058,12 +1058,6 @@ public class JavaGenerator {
 
                 SwitchExpressionBlock block = (SwitchExpressionBlock) unit;
 
-                // break support via try and catch mechanism (works across lambdas!)
-                tab(w, depth+indent)
-                        .append("try {").append(CRLF);
-
-                depth++;
-
                 tab(w, depth+indent)
                         .append("switch ")
                         .append(block.getExpression())
@@ -1079,17 +1073,6 @@ public class JavaGenerator {
                         .append(blockEnd.pop())
                         .append(" // switch end ").append(sourceRef(unit)).append(CRLF);
 
-                depth--;
-
-                // break support via try and catch mechanism (works across lambdas!)
-                tab(w, depth+indent)
-                        .append("} catch (").append(BreakException.class.getCanonicalName()).append(" e) {") .append(CRLF);
-
-                tab(w, depth+indent+1)
-                        .append("// support for breaking switch statements").append(CRLF);
-
-                tab(w, depth+indent)
-                        .append("}").append(CRLF);
 
             } else if (unit instanceof SwitchCaseExpressionBlock) {
 
@@ -1098,7 +1081,7 @@ public class JavaGenerator {
                 tab(w, depth+indent)
                         .append("case ")
                         .append(block.getExpression())
-                        .append("-> ")
+                        .append(" -> ")
                         .append(" {").append(CRLF);
 
                 blockEnd.push("}");
