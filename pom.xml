@@ -190,7 +190,7 @@
                 <module>rocker-maven-plugin</module>
                 <module>rocker-gradle-plugin</module>
                 <module>rocker-test-template</module>
-                <module>rocker-test-template-java-17</module>
+                <module>rocker-test-template17</module>
                 <module>rocker-test-reload</module>
                 <module>rocker-bom</module>
             </modules>
