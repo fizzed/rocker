@@ -877,7 +877,7 @@ public class TemplateParserTest {
         assertThat(switchBlock.getExpression(), is("(s)"));
 
         SwitchCaseExpressionBlock case1 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 1);
-        assertThat(case1.getExpression(), is("\"test\""));
+        assertThat(case1.getExpression(), is("\"test\",\"test1\""));
 
         SwitchCaseExpressionBlock case2 = model.findUnitByOccurrence(SwitchCaseExpressionBlock.class, 2);
         assertThat(case2.getExpression(), is("\"test2\""));

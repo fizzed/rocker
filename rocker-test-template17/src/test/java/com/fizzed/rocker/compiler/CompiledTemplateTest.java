@@ -39,6 +39,21 @@ this is a test
     }
 
     @Test
+    public void switchBlockExpressionWithDefaultAndCommaDelimited() throws Exception {
+        String html = new rocker17.SwitchBlockExpressionWithDefaultAndCommaDelimited().s("test").render().toString();
+
+        Assert.assertEquals(
+                """
+                
+ this is a test or test1
+
+
+this is a test
+                """, html);
+
+    }
+
+    @Test
     public void switchBlockExpressionWithDefaultSpaces() throws Exception {
         String html = new rocker17.SwitchBlockExpressionWithDefaultSpaces().s("test").render().toString();
 
