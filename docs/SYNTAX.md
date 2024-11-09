@@ -267,11 +267,9 @@ Without a default block.
     @switch (v) {
         case (1) -> { 
             i am in the "a" block
-            @break
         }
         case (2) -> {
             i am in the "b" block
-            @break
         }
     }
 
