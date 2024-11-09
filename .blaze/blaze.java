@@ -111,6 +111,26 @@ public class blaze {
         jdks.forEach(jdk -> log.info("  {}", jdk));
     }
 
+    @Task(order = 98)
+    public void release() throws Exception {
+        // we MUST be running on Java 17+
+        final JavaHome javaHome = new JavaHomeFinder()
+            .jdk()
+            .version(17)
+            .preferredDistributions()
+            .find();
+
+        log.info("");
+        log.info("Using JDK {}", javaHome);
+        log.info("");
+
+        exec("mvn", "release:prepare", "release:perform")
+            .workingDir(this.projectDir)
+            .env("JAVA_HOME", javaHome.getDirectory().toString())
+            .verbose()
+            .run();
+    }
+
     @Task(order=99, value="Use by maintainers only. Updates REAME.md with latest git tag.")
     public void after_release() throws Exception {
         int exitValue = (int)exec("git", "diff-files", "--quiet")
