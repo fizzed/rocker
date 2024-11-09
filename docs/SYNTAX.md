@@ -243,6 +243,40 @@ both ```i am in the "a" block``` and ```i am in the "b" block"``` would be outpu
         }
     }
 
+### Enhanced Switch - case - default blocks (@switch) JDK17+
+
+Enhanced Java switch - case - default control flow. The left curly character ```{``` indicates
+the start of a block and the right curly character ```}``` marks the end.
+
+Switch block with case and default example.
+
+    @switch (s) {
+        case ("a") -> { 
+            i am in the "a" block
+        }
+        case ("b") -> {
+            i am in the "b" block
+        }
+        default -> {
+            i am in the "default" block
+        }
+    }
+
+Without a default block.
+
+    @switch (v) {
+        case (1) -> { 
+            i am in the "a" block
+            @break
+        }
+        case (2) -> {
+            i am in the "b" block
+            @break
+        }
+    }
+
+The Difference from normal Switch block is that @break is not required and each case is separate from the other.
+
 ### With blocks (set one or more variables) (@with)
 
 As of v0.12.0 a `@with` block sets a variable to a value within a scoped block. Once the block
