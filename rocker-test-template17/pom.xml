@@ -103,7 +103,8 @@
         
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>rocker-maven-plugin</artifactId>
+            <artifactId>rocker-test-template</artifactId>
+            <version>${project.version}</version>
         </dependency>
         
         <!-- test -->
@@ -120,28 +121,8 @@
         </dependency>
         
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-        
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
         </dependency>
         
     </dependencies>

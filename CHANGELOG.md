@@ -1,6 +1,11 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.1.0 - 2024-11-09
+
+ - New Switch Expression feature for Java 17+ (@asaf-wizzdi)
+ - New ```rocker-test-template17``` module for testing code on Java 17+ only
+
 #### 2.0.1 - 2024-11-06
 
  - New PlainTextStrategy of STATIC_BYTE_ARRAYS (helps with GraalVM compatability) (@ppedregal)
