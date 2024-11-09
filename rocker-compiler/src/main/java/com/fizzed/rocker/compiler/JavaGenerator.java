@@ -1053,6 +1053,63 @@ public class JavaGenerator {
                         .append(blockEnd.pop())
                         .append(" // default end ").append(sourceRef(unit)).append(CRLF);
             }
+
+            else if(unit instanceof SwitchExpressionBlock){
+
+                SwitchExpressionBlock block = (SwitchExpressionBlock) unit;
+
+                tab(w, depth+indent)
+                        .append("switch ")
+                        .append(block.getExpression())
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+
+                depth++;
+            } else if (unit instanceof SwitchExpressionBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // switch end ").append(sourceRef(unit)).append(CRLF);
+
+
+            } else if (unit instanceof SwitchCaseExpressionBlock) {
+
+                SwitchCaseExpressionBlock block = (SwitchCaseExpressionBlock) unit;
+
+                tab(w, depth+indent)
+                        .append("case ")
+                        .append(block.getExpression())
+                        .append(" -> ")
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+
+                depth++;
+            } else if (unit instanceof SwitchCaseExpressionBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // case end ").append(sourceRef(unit)).append(CRLF);
+            }else if (unit instanceof SwitchDefaultExpressionBlock) {
+
+                tab(w, depth+indent)
+                        .append("default ")
+                        .append("-> ")
+                        .append(" {").append(CRLF);
+
+                blockEnd.push("}");
+                depth++;
+            }
+            else if (unit instanceof SwitchDefaultExpressionBlockEnd) {
+                depth--;
+
+                tab(w, depth+indent)
+                        .append(blockEnd.pop())
+                        .append(" // default end ").append(sourceRef(unit)).append(CRLF);
+            }
             //log.info(" src (@ {}): [{}]", unit.getSourceRef(), unit.getSourceRef().getConsoleFriendlyText());
         }
         
@@ -1149,5 +1206,7 @@ public class JavaGenerator {
 
         return templateModel;
     }
+
+
     
 }
