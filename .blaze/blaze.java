@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fizzed.buildx.Buildx;
+import com.fizzed.buildx.Target;
 import com.fizzed.jne.JavaHome;
 import com.fizzed.jne.JavaHomeFinder;
 import org.slf4j.Logger;
@@ -214,5 +216,28 @@ public class blaze {
         Thread.sleep(2000L);
         Files.move(newReadmeFile, readmeFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
-    
+
+    private final List<Target> crossTestTargets = asList(
+        new Target("linux", "x64").setTags("test").setHost("bmh-build-x64-linux-latest"),
+        new Target("linux", "arm64").setTags("test").setHost("bmh-build-arm64-linux-latest"),
+        new Target("linux", "riscv64").setTags("extended-test").setHost("bmh-build-riscv64-linux-latest"),
+        new Target("linux_musl", "x64").setTags("test").setHost("bmh-build-x64-linux-musl-latest"),
+        new Target("macos", "x64").setTags("test").setHost("bmh-build-x64-macos-latest"),
+        new Target("macos", "arm64").setTags("test").setHost("bmh-build-arm64-macos-latest"),
+        new Target("windows", "x64").setTags("test").setHost("bmh-build-x64-windows-latest"),
+        new Target("windows", "arm64").setTags("test").setHost("bmh-build-arm64-windows-latest"),
+        new Target("freebsd", "x64").setTags("test").setHost("bmh-build-x64-freebsd-latest"),
+        new Target("openbsd", "x64").setTags("test").setHost("bmh-build-x64-openbsd-latest")
+    );
+
+    @Task(order = 100)
+    public void cross_tests() throws Exception {
+        new Buildx(crossTestTargets)
+            .tags("test")
+            .execute((target, project) -> {
+                project.action("mvn", "clean", "test")
+                    .run();
+            });
+    }
+
 }
