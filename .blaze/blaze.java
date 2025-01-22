@@ -12,8 +12,8 @@ public class blaze extends PublicBlaze {
 
     @Override
     protected int minimumSupportedJavaVersion() {
-        // we want to release with Java 17
-        return 17;
+        // we want to release with Java 11 (which ignores template17 tests, which also ruin the build order)
+        return 11;
     }
 
     @Override
