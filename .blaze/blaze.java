@@ -2,6 +2,11 @@ import static com.fizzed.blaze.Systems.exec;
 
 import com.fizzed.blaze.Task;
 import com.fizzed.blaze.project.PublicBlaze;
+import com.fizzed.buildx.Buildx;
+import com.fizzed.buildx.Target;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class blaze extends PublicBlaze {
 
@@ -9,6 +14,14 @@ public class blaze extends PublicBlaze {
     protected int minimumSupportedJavaVersion() {
         // we want to release with Java 17
         return 17;
+    }
+
+    @Override
+    protected List<Target> crossTestTargets() {
+        // weird gradle test issue occurs only on riscv64
+        return super.crossTestTargets().stream()
+            .filter(v -> !v.getArch().contains("riscv64"))
+            .collect(Collectors.toList());
     }
 
     // public demos
