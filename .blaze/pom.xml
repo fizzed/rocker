@@ -21,14 +21,14 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>com.fizzed</groupId>
+      <artifactId>blaze-ivy</artifactId>
+      <version>1.9.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.ivy</groupId>
       <artifactId>ivy</artifactId>
       <version>2.5.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fizzed</groupId>
-      <artifactId>blaze-core</artifactId>
-      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -42,8 +42,8 @@
     </dependency>
     <dependency>
       <groupId>com.fizzed</groupId>
-      <artifactId>blaze-ivy</artifactId>
-      <version>1.8.0</version>
+      <artifactId>blaze-core</artifactId>
+      <version>1.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -63,17 +63,12 @@
     <dependency>
       <groupId>com.fizzed</groupId>
       <artifactId>blaze-ssh</artifactId>
-      <version>1.8.0</version>
+      <version>1.9.0</version>
     </dependency>
     <dependency>
       <groupId>com.fizzed</groupId>
-      <artifactId>buildx</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fizzed</groupId>
-      <artifactId>jne</artifactId>
-      <version>4.3.0</version>
+      <artifactId>blaze-public-project</artifactId>
+      <version>1.0.1</version>
     </dependency>
   </dependencies>
 </project>
