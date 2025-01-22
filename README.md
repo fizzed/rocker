@@ -625,6 +625,6 @@ following for a complete list:
 
 ## License
 
-Copyright (C) 2015+ Fizzed, Inc.
+Copyright (C) 2025+ Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
