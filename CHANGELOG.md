@@ -1,6 +1,12 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.2.0 - 2025-01-22
+ 
+ - Bump commons-lang3 to v3.17.0
+ - Bump slf4j-api to v1.7.36
+ - Numerous changes to build process
+
 #### 2.1.0 - 2024-11-09
 
  - New Switch Expression feature for Java 17+ (@asaf-wizzdi)
