@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.2.1 - 2025-01-22
+
+ - Same as v2.2.0, but issue deploying to maven central so needed new version.
+
 #### 2.2.0 - 2025-01-22
  
  - Bump commons-lang3 to v3.17.0
