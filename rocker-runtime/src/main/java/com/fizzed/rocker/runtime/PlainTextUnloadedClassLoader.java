@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,7 +98,7 @@ public class PlainTextUnloadedClassLoader {
 
         // chop off path at end to get the base url we will use to load
         // the class via a temporary URLClassLoader below
-        String resourcePath = url.toString();
+        String resourcePath = URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name());
         int pos = resourcePath.lastIndexOf("/" + resourceName);
         if (pos < 0) {
             throw new ClassNotFoundException("Unable to compute resource base for [" + resourceName + "]");
