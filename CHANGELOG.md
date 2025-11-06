@@ -1,6 +1,10 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.3.0 - 2025-11-05
+
+ - Ignore this version. Bad deploy to maven central w/ no ability to rollback due to gradle plugin release as well.
+
 #### 2.2.1 - 2025-01-22
 
  - Same as v2.2.0, but issue deploying to maven central so needed new version.
