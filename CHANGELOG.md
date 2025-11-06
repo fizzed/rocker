@@ -1,6 +1,13 @@
 Rocker Templates by Fizzed
 ==========================
 
+#### 2.3.1 - 2025-11-05
+
+ - Fix PlainTextUnloadedClassLoader to decode url to handle special characters in resource path (NikolajCupan)
+ - Bump commons-lang3 to v3.18.0
+ - Confirm and add unit tests for Java 25 support
+ - Only related to building project: update blaze.jar to v2.3.0; support for improved cross host testing
+
 #### 2.3.0 - 2025-11-05
 
  - Ignore this version. Bad deploy to maven central w/ no ability to rollback due to gradle plugin release as well.
