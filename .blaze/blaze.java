@@ -1,27 +1,17 @@
 import static com.fizzed.blaze.Systems.exec;
 
 import com.fizzed.blaze.Task;
+import com.fizzed.blaze.TaskGroup;
 import com.fizzed.blaze.project.PublicBlaze;
-import com.fizzed.buildx.Buildx;
-import com.fizzed.buildx.Target;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@TaskGroup(value="project", name="Project", order=1)
+@TaskGroup(value="maintainers", name="Maintainers Only", order=2)
 public class blaze extends PublicBlaze {
 
     @Override
     protected int minimumSupportedJavaVersion() {
         // we want to release with Java 11 (which ignores template17 tests, which also ruin the build order)
         return 11;
-    }
-
-    @Override
-    protected List<Target> crossTestTargets() {
-        // weird gradle test issue occurs only on riscv64
-        return super.crossTestTargets().stream()
-            .filter(v -> !v.getArch().contains("riscv64"))
-            .collect(Collectors.toList());
     }
 
     // public demos

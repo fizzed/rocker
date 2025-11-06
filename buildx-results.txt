@@ -1,16 +1,313 @@
 Buildx Results
---------------
-Cross platform tests use the Buildx project: https://github.com/fizzed/buildx
-Commit: f75455e02e8fc2f46e8718ee8c126e5c8599531f
-Date: 2025-01-22T18:24:55.593635Z[UTC]
+====================================================================================================
 
-linux-x64                                                         success
-linux-arm64                                                       success
-linux_musl-x64                                                    success
-macos-x64                                                         success
-macos-arm64                                                       success
-windows-x64                                                       success
-windows-arm64                                                     success
-freebsd-x64                                                       success
-openbsd-x64                                                       success
+Cross platform tests based on https://github.com/fizzed/buildx
 
+Commit: 90eaf235fe83a6996bc77bf8f91c7f36f969640d
+Date: 2025-11-06T01:02:21.15354117Z[UTC]
+
+jdk-25 (Zulu JDK 25.0.1 (Linux, x64, /usr/lib/jvm/zulu-jdk-25.0.1.8))...... success
+jdk-21 (Zulu JDK 21.0.8 (Linux, x64, /usr/lib/jvm/zulu-jdk-21.0.8.9))...... success
+jdk-17 (Zulu JDK 17.0.16 (Linux, x64, /usr/lib/jvm/zulu-jdk-17.0.16.8)).... success
+jdk-11 (Zulu JDK 11.0.28 (Linux, x64, /usr/lib/jvm/zulu-jdk-11.0.28.6)).... success
+jdk-8 (Zulu JDK 8.0.462 (Linux, x64, /usr/lib/jvm/zulu-jdk-8.0.462.8))..... success
+linux-x64 (Ubuntu 22.04)................................................... success
+linux-x64 (Ubuntu 24.04)................................................... success
+linux-x64 (Ubuntu 20.04)................................................... success
+linux-arm64 (Ubuntu 24.04)................................................. success
+linux-arm64 (Ubuntu 20.04)................................................. success
+linux-riscv64 (Ubuntu 24.04)............................................... success
+linux_musl-x64 (Alpine 3.22)............................................... success
+linux_musl-x64 (Alpine 3.15)............................................... success
+linux_musl-arm64 (Alpine 3.22)............................................. success
+linux_musl-arm64 (Alpine 3.15)............................................. success
+linux_musl-riscv64 (Alpine 3.22)........................................... success
+macos-x64 (MacOS 15)....................................................... success
+macos-x64 (MacOS 11)....................................................... success
+macos-arm64 (MacOS 15)..................................................... success
+macos-arm64 (MacOS 12)..................................................... success
+windows-x64 (Windows 11)................................................... success
+windows-x64 (Windows 10)................................................... success
+windows-arm64 (Windows 11)................................................. success
+freebsd-x64 (FreeBSD 15)................................................... success
+freebsd-x64 (FreeBSD 13)................................................... success
+freebsd-arm64 (FreeBSD 15)................................................. success
+freebsd-arm64 (FreeBSD 14)................................................. success
+openbsd-x64 (OpenBSD 7.8).................................................. success
+openbsd-arm64 (OpenBSD 7.8)................................................ success
+
+Details =>
+
+jdk-25 (Zulu JDK 25.0.1 (Linux, x64, /usr/lib/jvm/zulu-jdk-25.0.1.8))
+  status: success
+  tags: <none>
+  data:
+    java_home: /usr/lib/jvm/zulu-jdk-25.0.1.8
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+jdk-21 (Zulu JDK 21.0.8 (Linux, x64, /usr/lib/jvm/zulu-jdk-21.0.8.9))
+  status: success
+  tags: <none>
+  data:
+    java_home: /usr/lib/jvm/zulu-jdk-21.0.8.9
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+jdk-17 (Zulu JDK 17.0.16 (Linux, x64, /usr/lib/jvm/zulu-jdk-17.0.16.8))
+  status: success
+  tags: <none>
+  data:
+    java_home: /usr/lib/jvm/zulu-jdk-17.0.16.8
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+jdk-11 (Zulu JDK 11.0.28 (Linux, x64, /usr/lib/jvm/zulu-jdk-11.0.28.6))
+  status: success
+  tags: <none>
+  data:
+    java_home: /usr/lib/jvm/zulu-jdk-11.0.28.6
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+jdk-8 (Zulu JDK 8.0.462 (Linux, x64, /usr/lib/jvm/zulu-jdk-8.0.462.8))
+  status: success
+  tags: <none>
+  data:
+    java_home: /usr/lib/jvm/zulu-jdk-8.0.462.8
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+linux-x64 (Ubuntu 22.04)
+  status: success
+  tags: [container]
+  containerImage: docker.io/fizzed/buildx:x64-ubuntu22-jdk21
+  host:
+    name: null
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-jjlauer-4 6.17.0-6-generic #6-Ubuntu SMP PREEMPT_DYNAMIC Tue Oct  7 13:34:17 UTC 2025 x86_64 GNU/Linux
+
+linux-x64 (Ubuntu 24.04)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-linux-latest
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-build-x64-ubuntu24-1 6.8.0-87-generic #88-Ubuntu SMP PREEMPT_DYNAMIC Sat Oct 11 09:28:41 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+linux-x64 (Ubuntu 20.04)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-x64-linux-baseline
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-build-x64-ubuntu20-1 5.4.0-216-generic #236-Ubuntu SMP Fri Apr 11 19:53:21 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+linux-arm64 (Ubuntu 24.04)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-linux-latest
+    os: LINUX
+    arch: ARM64
+    uname: Linux bmh-build-arm64-ubuntu24-1 6.8.0-87-generic #88-Ubuntu SMP PREEMPT_DYNAMIC Sat Oct 11 09:16:38 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+
+linux-arm64 (Ubuntu 20.04)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-arm64-linux-baseline
+    os: LINUX
+    arch: ARM64
+    uname: Linux bmh-build-arm64-ubuntu20-1 5.4.0-216-generic #236-Ubuntu SMP Fri Apr 11 19:55:34 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+
+linux-riscv64 (Ubuntu 24.04)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-riscv64-linux-latest
+    os: LINUX
+    arch: RISCV64
+    uname: Linux bmh-build-riscv64-ubuntu24-1 6.14.0-35-generic #35.1~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Oct 16 08:15:18 UTC riscv64 riscv64 riscv64 GNU/Linux
+
+linux_musl-x64 (Alpine 3.22)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-linux-musl-latest
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-build-x64-alpine322-1 6.12.55-0-virt #1-Alpine SMP PREEMPT_DYNAMIC 2025-10-27 09:36:08 x86_64 Linux
+
+linux_musl-x64 (Alpine 3.15)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-x64-linux-musl-baseline
+    os: LINUX
+    arch: X64
+    uname: Linux bmh-build-x64-alpine315-1 5.15.140-0-virt #1-Alpine SMP Wed, 29 Nov 2023 21:47:33 +0000 x86_64 Linux
+
+linux_musl-arm64 (Alpine 3.22)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-linux-musl-latest
+    os: LINUX
+    arch: ARM64
+    uname: Linux bmh-build-arm64-alpine322-1 6.12.55-0-virt #1-Alpine SMP PREEMPT_DYNAMIC 2025-10-27 09:36:08 aarch64 Linux
+
+linux_musl-arm64 (Alpine 3.15)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-arm64-linux-musl-baseline
+    os: LINUX
+    arch: ARM64
+    uname: Linux bmh-build-arm64-alpine315-1 5.15.140-0-virt #1-Alpine SMP Wed, 29 Nov 2023 21:47:33 +0000 aarch64 Linux
+
+linux_musl-riscv64 (Alpine 3.22)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-riscv64-linux-musl-latest
+    os: LINUX
+    arch: RISCV64
+    uname: Linux bmh-build-riscv64-alpine322-1 6.12.55-0-lts #1-Alpine SMP PREEMPT_DYNAMIC 2025-10-27 09:36:08 riscv64 Linux
+
+macos-x64 (MacOS 15)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-macos-latest
+    os: MACOS
+    arch: X64
+    uname: Darwin bmh-build-x64-macos15-1.lauer.lan 24.1.0 Darwin Kernel Version 24.1.0: Thu Oct 10 21:02:27 PDT 2024; root:xnu-11215.41.3~2/RELEASE_X86_64 x86_64
+
+macos-x64 (MacOS 11)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-x64-macos-baseline
+    os: MACOS
+    arch: X64
+    uname: Darwin bmh-build-x64-macos11-1.lauer.lan 20.6.0 Darwin Kernel Version 20.6.0: Sun Nov  6 23:17:00 PST 2022; root:xnu-7195.141.46~1/RELEASE_X86_64 x86_64
+
+macos-arm64 (MacOS 15)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-macos-latest
+    os: MACOS
+    arch: ARM64
+    uname: Darwin bmh-dev-arm64-macos15-1.lauer.lan 24.6.0 Darwin Kernel Version 24.6.0: Mon Aug 11 21:16:05 PDT 2025; root:xnu-11417.140.69.701.11~1/RELEASE_ARM64_VMAPPLE arm64
+
+macos-arm64 (MacOS 12)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-arm64-macos-baseline
+    os: MACOS
+    arch: ARM64
+    uname: Darwin bmh-build-arm64-macos12-1.lauer.lan 21.6.0 Darwin Kernel Version 21.6.0: Mon Jun 24 00:58:51 PDT 2024; root:xnu-8020.240.18.709.2~1/RELEASE_ARM64_VMAPPLE arm64
+
+windows-x64 (Windows 11)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-windows-latest
+    os: WINDOWS
+    arch: X64
+    uname: Microsoft Windows [Version 10.0.26200.7019] AMD64
+
+windows-x64 (Windows 10)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-x64-windows-baseline
+    os: WINDOWS
+    arch: X64
+    uname: CYGWIN_NT-10.0-19045 bmh-build-x64-win10-1 3.4.3-1.x86_64 2022-12-16 12:38 UTC x86_64 Cygwin
+
+windows-arm64 (Windows 11)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-windows-latest
+    os: WINDOWS
+    arch: ARM64
+    uname: Microsoft Windows [Version 10.0.26100.7019] ARM64
+
+freebsd-x64 (FreeBSD 15)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-freebsd-latest
+    os: FREEBSD
+    arch: X64
+    uname: FreeBSD bmh-build-x64-freebsd15-1 15.0-ALPHA1 FreeBSD 15.0-ALPHA1 #0 stable/15-n280099-0b3d82579a01: Sat Sep  6 19:04:24 -00 2025     root@releng3.nyi.freebsd.org:/usr/obj/usr/src/amd64.amd64/sys/GENERIC amd64
+
+freebsd-x64 (FreeBSD 13)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-x64-freebsd-baseline
+    os: FREEBSD
+    arch: X64
+    uname: FreeBSD bmh-build-x64-freebsd13-1 13.5-RELEASE-p6 FreeBSD 13.5-RELEASE-p6 GENERIC amd64
+
+freebsd-arm64 (FreeBSD 15)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-freebsd-latest
+    os: FREEBSD
+    arch: ARM64
+    uname: FreeBSD bmh-build-arm64-freebsd15-1 15.0-BETA2 FreeBSD 15.0-BETA2 releng/15.0-n280707-3edefa72bc4e GENERIC arm64
+
+freebsd-arm64 (FreeBSD 14)
+  status: success
+  tags: [baseline]
+  host:
+    name: bmh-build-arm64-freebsd-baseline
+    os: FREEBSD
+    arch: ARM64
+    uname: FreeBSD bmh-build-arm64-freebsd14-1 14.3-RELEASE-p5 FreeBSD 14.3-RELEASE-p5 GENERIC arm64
+
+openbsd-x64 (OpenBSD 7.8)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-x64-openbsd-latest
+    os: OPENBSD
+    arch: X64
+    uname: OpenBSD bmh-build-x64-openbsd78-1 7.8 GENERIC.MP#54 amd64
+
+openbsd-arm64 (OpenBSD 7.8)
+  status: success
+  tags: [latest]
+  host:
+    name: bmh-build-arm64-openbsd-latest
+    os: OPENBSD
+    arch: ARM64
+    uname: OpenBSD bmh-build-arm64-openbsd78-1 7.8 GENERIC.MP#38 arm64
+
+====================================================================================================
