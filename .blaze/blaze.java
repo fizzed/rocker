@@ -10,8 +10,8 @@ public class blaze extends PublicBlaze {
 
     @Override
     protected int minimumSupportedJavaVersion() {
-        // we want to release with Java 11 (which ignores template17 tests, which also ruin the build order)
-        return 11;
+        // we want to release with Java 17 so that the rocker-test-template17 gets its version changed
+        return 17;
     }
 
     // public demos
