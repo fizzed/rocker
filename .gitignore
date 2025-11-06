@@ -4,3 +4,5 @@ target
 .gradle
 build
 .buildx
+.buildx-cache
+.buildx-logs

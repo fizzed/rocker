@@ -1,13 +1,11 @@
 import static com.fizzed.blaze.Systems.exec;
 
 import com.fizzed.blaze.Task;
+import com.fizzed.blaze.TaskGroup;
 import com.fizzed.blaze.project.PublicBlaze;
-import com.fizzed.buildx.Buildx;
-import com.fizzed.buildx.Target;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@TaskGroup(value="project", name="Project", order=1)
+@TaskGroup(value="maintainers", name="Maintainers Only", order=2)
 public class blaze extends PublicBlaze {
 
     @Override
@@ -16,13 +14,13 @@ public class blaze extends PublicBlaze {
         return 11;
     }
 
-    @Override
+    /*@Override
     protected List<Target> crossTestTargets() {
         // weird gradle test issue occurs only on riscv64
         return super.crossTestTargets().stream()
             .filter(v -> !v.getArch().contains("riscv64"))
             .collect(Collectors.toList());
-    }
+    }*/
 
     // public demos
 
