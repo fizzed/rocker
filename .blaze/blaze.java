@@ -14,14 +14,6 @@ public class blaze extends PublicBlaze {
         return 11;
     }
 
-    /*@Override
-    protected List<Target> crossTestTargets() {
-        // weird gradle test issue occurs only on riscv64
-        return super.crossTestTargets().stream()
-            .filter(v -> !v.getArch().contains("riscv64"))
-            .collect(Collectors.toList());
-    }*/
-
     // public demos
 
     @Task(order=1, value="Demo of parsing a template and logs its structure. Argument of -Drocker.file=<file>")
